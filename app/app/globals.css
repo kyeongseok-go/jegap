@@ -21,7 +21,7 @@ h1,h2,h3{scroll-margin-top:80px}
 .num{font-family:var(--num);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
 
 /* ── 헤더 ── */
-header{position:sticky;top:0;z-index:30;background:rgba(250,250,248,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--hair)}
+header{position:sticky;top:0;z-index:30;background:rgba(250,250,248,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--hair)}
 header .wrap{display:flex;align-items:center;gap:22px;height:62px}
 .brand{flex:none;display:flex;flex-direction:column;justify-content:center;gap:1px;text-decoration:none;color:inherit;line-height:1;min-height:44px;touch-action:manipulation}
 .bmark{font-weight:800;font-size:19px;letter-spacing:.02em}

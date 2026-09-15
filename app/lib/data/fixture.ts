@@ -27,10 +27,10 @@ function synth(i: number): DanjiData {
     builtYear, households, heating,
     isSample: true,
   };
-  // 장충금: 120~380원 분포, 난방 상승률: 12~35%
-  const reserve = 120 + Math.floor(r(4) * 260);
+  // 장충금: 43~353원 삼각분포(워스트 92가 하위 ~5%), 난방 상승률: 15~27%(평균 20% → 워스트 42%가 2.1배)
+  const reserve = 43 + Math.floor(((r(4) + r(9)) / 2) * 310);  // 삼각분포 — 대부분은 가운데, 꼬리는 얇게
   const h0 = 380 + Math.floor(r(5) * 80);
-  const rise = 0.12 + r(6) * 0.23;
+  const rise = 0.15 + r(6) * 0.12;
   const t0 = 1100 + Math.floor(r(7) * 300);
   const months = ["202309", "202403", "202409", "202503", "202509", "202603", "202607"];
   const fees = months.map((ym, k) => {

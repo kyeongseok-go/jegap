@@ -44,6 +44,7 @@ export default function CheckupView({
   const fee = c.exams.find((e) => e.key === "fees");
   const res = c.exams.find((e) => e.key === "reserve");
   const rep = c.exams.find((e) => e.key === "repairs");
+  const displayPct = Math.max(1, c.reservePercentile);
 
   const feeFirst = data.fees[0], feeLast = data.fees[data.fees.length - 1];
   const y0 = feeFirst ? feeFirst.ym.slice(0, 4) : "";
@@ -111,7 +112,7 @@ export default function CheckupView({
         {res && dist && (
           <section className="centerpiece">
             <HeroCount
-              percentile={c.reservePercentile}
+              percentile={Math.max(1, c.reservePercentile)}
               signal={res.signal}
               signalLabel={SIG_LABEL[res.signal]}
               meX={meX}
@@ -121,10 +122,10 @@ export default function CheckupView({
                 <p className="big">
                   {res.signal === "good"
                     ? <>비슷한 단지들의 <em>일반적인 범위</em> 안에 있습니다</>
-                    : <>비슷한 단지 <em className="num" data-count>{c.reservePercentile}</em><em>%</em> 아래에 있습니다</>}
+                    : <>비슷한 단지 <em className="num" data-count>{displayPct}</em><em>%</em> 아래에 있습니다</>}
                 </p>
                 <p className="why">
-                  {age >= 25
+                  {age >= 25 && res.signal !== "good"
                     ? <>{age}년차 단지가 이 정도만 쌓고 있다면, 배관·승강기 교체가 시작될 때 세대마다 목돈을 내야 할 수 있습니다. </>
                     : <>지금의 적립 속도가 미래 수선 비용을 감당할 수 있는지 확인해 보세요. </>}
                   <a href="/method">어떻게 계산했나</a>
@@ -164,7 +165,7 @@ export default function CheckupView({
               <span className="yr">{y0} — {y1}</span>
               <p className="txt">
                 관리비 <b>㎡당 {feeFirst.total.toLocaleString()}원 → {feeLast.total.toLocaleString()}원</b>.
-                난방비가 {fee.facts.risePct}% 올랐습니다. 같은 조건 단지보다 <b>{fee.facts.multiple}배{fee.facts.multiple >= 2 ? " 빠른" : ""}</b> 상승입니다.
+                난방비가 {fee.facts.risePct}% 올랐습니다. 같은 조건 단지 평균의 <b>{fee.facts.multiple}배</b> 속도입니다.
               </p>
             </div>
           )}
@@ -181,7 +182,9 @@ export default function CheckupView({
             <Reveal className="row">
               <div className="name">관리비 흐름<span>최근 {data.fees.length}개 공시 · ㎡당</span></div>
               <div className="body">
-                난방비가 <b>{fee.facts.risePct}%</b> 올랐습니다. 같은 조건 단지들의 평균 상승 속도보다 <b>{fee.facts.multiple}배</b>{fee.facts.multiple >= 1.5 ? " 빠릅니다" : " 수준입니다"}.
+                난방비가 <b>{fee.facts.risePct}%</b> 올랐습니다. {fee.facts.multiple >= 1.5
+                  ? <>같은 조건 단지들의 평균 상승 속도보다 <b>{fee.facts.multiple}배</b> 빠릅니다.</>
+                  : <>같은 조건 단지들의 평균 상승 속도의 <b>{fee.facts.multiple}배</b> 수준입니다.</>}
                 <Spark ours={sparkPts.ours} peer={sparkPts.peer} end={sparkPts.end} />
               </div>
               <div className="metric">
@@ -195,7 +198,7 @@ export default function CheckupView({
             <Reveal className="row">
               <div className="name">미래 수리비 저금<span>장기수선충당금</span></div>
               <div className="body">
-                비슷한 단지 {c.peerCount}곳 가운데 <b>하위 {c.reservePercentile}%</b>입니다.
+                비슷한 단지 {c.peerCount}곳 가운데 <b>하위 {displayPct}%</b>입니다.
                 {age >= 25 && res.signal !== "good" && <> 준공 {age}년차 기준으로는 낮은 수준입니다.</>}
               </div>
               <div className="metric">
