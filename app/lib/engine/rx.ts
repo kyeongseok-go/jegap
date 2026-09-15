@@ -23,3 +23,29 @@ export function buildInquiry(c: Checkup): string {
     `회신 희망일  요청일로부터 14일 이내`,
   ].join("\n");
 }
+
+/** 입주자대표회의 안건 초안 — 동일 원칙: 법 조항 고정, 수치 삽입, 판정 없음 */
+export function buildAgenda(c: Checkup): string {
+  const res = c.exams.find((e) => e.key === "reserve");
+  const lines = [
+    `안건명  장기수선충당금 적립 수준 점검 및 적정성 검토의 건`,
+    ``,
+    `제안 취지`,
+    `공동주택관리법 제29조·제30조에 따른 장기수선계획과 충당금 적립 수준을 정기적으로 점검하고자 함.`,
+  ];
+  if (res)
+    lines.push(
+      ``,
+      `참고 수치 (국토교통부 K-apt 공시 기준)`,
+      `- 현재 적립: ㎡당 월 ${res.facts.perM2}원`,
+      `- 유사 단지 ${c.peerCount}곳 대비 위치: 하위 ${c.reservePercentile}%`,
+    );
+  lines.push(
+    ``,
+    `심의 요청 사항`,
+    `1. 현행 장기수선계획 대비 적립률 보고`,
+    `2. 향후 5년 예정 공사 및 소요액 대비 적립 계획 검토`,
+    `3. 필요 시 적립 요율 조정안 검토`,
+  );
+  return lines.join("\n");
+}
