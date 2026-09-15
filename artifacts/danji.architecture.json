@@ -1,0 +1,336 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "단지 건강검진 시스템 아키텍처",
+    "output": "danji-architecture.html",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1320,
+      724
+    ],
+    "views": [
+      {
+        "id": "main-path",
+        "label": "검진 경로",
+        "focus": [
+          "user",
+          "web",
+          "api",
+          "engine"
+        ],
+        "note": "검색 1클릭에서 검진표까지 30초. 로그인 없음."
+      },
+      {
+        "id": "ai-roles",
+        "label": "AI 3역할",
+        "focus": [
+          "engine",
+          "prescribe",
+          "dossier",
+          "claude"
+        ],
+        "note": "해설가·대필가·조사관. 계산은 전부 코드 — LLM에 산수를 맡기지 않는다."
+      },
+      {
+        "id": "ingest",
+        "label": "데이터 인제스트",
+        "focus": [
+          "ingest",
+          "datagov",
+          "db"
+        ],
+        "note": "수도권 2,000단지 사전 배치 + 나머지 온디맨드. 공공데이터 API 상한 내 분할."
+      },
+      {
+        "id": "safety",
+        "label": "무소음 게이트",
+        "focus": [
+          "api",
+          "dossier",
+          "naver"
+        ],
+        "note": "병력 기사는 3중 일치 게이트를 통과한 것만 표시. 불확실하면 표시하지 않는다."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "naver",
+      "type": "external",
+      "label": "네이버 뉴스 API",
+      "sublabel": "기사 후보",
+      "pos": [
+        250,
+        180
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "dossier",
+      "type": "security",
+      "label": "병력 조사관",
+      "sublabel": "3중 일치 게이트",
+      "tag": "무소음 원칙",
+      "pos": [
+        480,
+        180
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "claude",
+      "type": "external",
+      "label": "Claude API",
+      "sublabel": "Anthropic",
+      "tag": "역할별 단가 상한",
+      "pos": [
+        850,
+        180
+      ],
+      "size": [
+        300,
+        64
+      ]
+    },
+    {
+      "id": "user",
+      "type": "external",
+      "label": "사용자",
+      "sublabel": "무로그인",
+      "pos": [
+        40,
+        400
+      ],
+      "size": [
+        120,
+        64
+      ]
+    },
+    {
+      "id": "web",
+      "type": "frontend",
+      "label": "Next.js 웹",
+      "sublabel": "검색 + 프리셋",
+      "tag": "Vercel ISR",
+      "pos": [
+        250,
+        400
+      ],
+      "size": [
+        140,
+        64
+      ]
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "Route Handlers",
+      "sublabel": "검진 요청",
+      "pos": [
+        510,
+        400
+      ],
+      "size": [
+        140,
+        64
+      ]
+    },
+    {
+      "id": "engine",
+      "type": "backend",
+      "label": "검진 엔진",
+      "sublabel": "백분위 · 신호등",
+      "tag": "LLM 아님",
+      "pos": [
+        770,
+        400
+      ],
+      "size": [
+        140,
+        64
+      ]
+    },
+    {
+      "id": "prescribe",
+      "type": "backend",
+      "label": "처방전 생성",
+      "sublabel": "질의서 초안",
+      "pos": [
+        1030,
+        400
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "datagov",
+      "type": "external",
+      "label": "공공데이터 API",
+      "sublabel": "K-apt · 장충금",
+      "tag": "실재 확인됨",
+      "pos": [
+        40,
+        620
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "ingest",
+      "type": "backend",
+      "label": "인제스트 배치",
+      "sublabel": "cron 분할",
+      "pos": [
+        280,
+        620
+      ],
+      "size": [
+        140,
+        64
+      ]
+    },
+    {
+      "id": "db",
+      "type": "database",
+      "label": "Supabase",
+      "sublabel": "테이블 6개",
+      "tag": "인증 없음",
+      "pos": [
+        530,
+        620
+      ],
+      "size": [
+        150,
+        64
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "search",
+      "from": "user",
+      "to": "web",
+      "label": "단지 검색",
+      "variant": "emphasis"
+    },
+    {
+      "id": "req",
+      "from": "web",
+      "to": "api",
+      "label": "검진 요청"
+    },
+    {
+      "id": "calc",
+      "from": "api",
+      "to": "engine",
+      "label": "지표 계산"
+    },
+    {
+      "id": "result",
+      "from": "engine",
+      "to": "prescribe",
+      "label": "검진 결과"
+    },
+    {
+      "id": "probe",
+      "from": "api",
+      "to": "dossier",
+      "label": "병력 조사",
+      "fromSide": "top",
+      "toSide": "bottom",
+      "variant": "dashed"
+    },
+    {
+      "id": "news",
+      "from": "dossier",
+      "to": "naver",
+      "label": "기사 검색"
+    },
+    {
+      "id": "vet",
+      "from": "dossier",
+      "to": "claude",
+      "label": "게이트 · 요약"
+    },
+    {
+      "id": "narrate",
+      "from": "engine",
+      "to": "claude",
+      "label": "해설 생성",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "id": "draft",
+      "from": "prescribe",
+      "to": "claude",
+      "label": "질의서 생성",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "id": "fetch",
+      "from": "ingest",
+      "to": "datagov",
+      "label": "수집 호출"
+    },
+    {
+      "id": "load",
+      "from": "ingest",
+      "to": "db",
+      "label": "적재"
+    },
+    {
+      "id": "series",
+      "from": "engine",
+      "to": "db",
+      "label": "시계열 조회",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [
+        700,
+        545
+      ]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "검진 경로",
+      "items": [
+        "프리셋 클릭 1회로 검진표 도달 — 심사위원 동선",
+        "계산은 전부 코드, 결과는 ISR 캐시",
+        "빈 데이터 상태까지 화면마다 정의"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "AI 3역할",
+      "items": [
+        "해설가 — 수치 JSON 밖 인용 금지",
+        "대필가 — 법 조항 템플릿 고정, 가변부만 생성",
+        "조사관 — 3중 일치 통과분만, 영구 캐시"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "법·운영 방어",
+      "items": [
+        "등급 대신 신호등 + 백분위 사실 서술 + 산식 공개",
+        "오귀속 표본 50단지 수동 검증 = D3 게이트",
+        "심사기간 uptime 5분 핑 + 정정 채널 24h"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "TIMEBACK 시스템 아키텍처",
+    "output": "timeback-architecture.html",
+    "quality_profile": "showcase",
+    "viewBox": [1320, 830],
+    "views": [
+      { "id": "main-path", "label": "요청 경로", "focus": ["user", "web", "api", "reverse"], "note": "파일 업로드에서 역추론까지의 주 경로. 로그인 없이 여기까지 30초." },
+      { "id": "ai-loop", "label": "AI 구간", "focus": ["reverse", "claude", "agentgen"], "note": "LLM이 실제로 필요한 두 지점 — 작업 단계 역추론과 에이전트 명세 생성." },
+      { "id": "no-llm", "label": "LLM을 쓰지 않는 곳", "focus": ["calc", "db"], "note": "시간·시급 환산은 코드가 한다. 숫자를 LLM에 맡기면 신뢰할 수 없다." },
+      { "id": "safety", "label": "신뢰 경계", "focus": ["guard", "api"], "note": "업로드 검증과 프롬프트 인젝션 차단. 원본 파일은 저장하지 않는다." }
+    ]
+  },
+  "components": [
+    { "id": "guard", "type": "security", "label": "입력 가드", "sublabel": "확장자 · 크기", "tag": "인젝션 차단", "pos": [570, 200], "size": [140, 64] },
+    { "id": "claude", "type": "external", "label": "Claude API", "sublabel": "Anthropic", "tag": "유료 · 자비 부담", "pos": [880, 200], "size": [300, 64] },
+    { "id": "user", "type": "external", "label": "사용자", "sublabel": "무로그인", "pos": [50, 430], "size": [140, 64] },
+    { "id": "web", "type": "frontend", "label": "Next.js 웹 앱", "sublabel": "S1 ~ S5 화면", "tag": "Vercel", "pos": [310, 430], "size": [140, 64] },
+    { "id": "api", "type": "backend", "label": "Route Handlers", "sublabel": "업로드 · 파싱", "tag": "원본 미저장", "pos": [570, 430], "size": [140, 64] },
+    { "id": "reverse", "type": "backend", "label": "역추론 엔진", "sublabel": "산출물 → 단계", "tag": "제품의 핵심", "pos": [830, 430], "size": [140, 64] },
+    { "id": "agentgen", "type": "backend", "label": "에이전트 생성", "sublabel": "명세 + 실행", "pos": [1090, 430], "size": [140, 64] },
+    { "id": "calc", "type": "backend", "label": "시간·시급 환산", "sublabel": "분 → 연간", "tag": "LLM 아님", "pos": [830, 680], "size": [140, 64] },
+    { "id": "db", "type": "database", "label": "Supabase", "sublabel": "테이블 4개", "tag": "인증 없음", "pos": [1090, 680], "size": [140, 64] }
+  ],
+  "boundaries": [
+    { "kind": "security-group", "label": "업로드 신뢰 경계", "wraps": ["guard", "api"] }
+  ],
+  "connections": [
+    { "id": "upload", "from": "user", "to": "web", "label": "파일 업로드", "variant": "emphasis" },
+    { "id": "analyze-req", "from": "web", "to": "api", "label": "POST /analyze" },
+    { "id": "sse", "from": "api", "to": "web", "label": "SSE 진행", "variant": "dashed", "labelDy": -28 },
+    { "id": "validate", "from": "guard", "to": "api", "label": "업로드 검증", "variant": "security", "fromSide": "bottom", "toSide": "top", "labelAt": [640, 347] },
+    { "id": "normalized", "from": "api", "to": "reverse", "label": "정규화 텍스트" },
+    { "id": "decompose", "from": "reverse", "to": "claude", "label": "단계 역추론", "fromSide": "top", "toSide": "bottom" },
+    { "id": "automatable", "from": "reverse", "to": "agentgen", "label": "자동화 단계" },
+    { "id": "spec-gen", "from": "agentgen", "to": "claude", "label": "명세 생성", "fromSide": "top", "toSide": "bottom" },
+    { "id": "steps-to-calc", "from": "reverse", "to": "calc", "label": "작업 단계 목록", "fromSide": "bottom", "toSide": "top", "labelAt": [900, 587] },
+    { "id": "persist-agent", "from": "agentgen", "to": "db", "label": "에이전트 저장", "fromSide": "bottom", "toSide": "top", "labelAt": [1160, 587] },
+    { "id": "persist-analysis", "from": "calc", "to": "db", "label": "분석 결과 저장" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "요청 경로", "items": ["로그인 없이 파일 하나로 시작한다", "Next.js 한 저장소가 프론트와 백엔드를 겸한다", "진행 상황은 SSE로 흘려 화면이 멈추지 않는다"] },
+    { "dot": "emerald", "title": "AI가 실제로 필요한 두 지점", "items": ["산출물에서 작업 단계를 역추론한다", "자동화 가능 단계로 에이전트 명세를 만든다", "그 외 구간에는 LLM을 넣지 않는다"] },
+    { "dot": "amber", "title": "저장하지 않는 것", "items": ["원본 파일 — 파싱 텍스트만 쓰고 폐기한다", "사용자 — users 테이블이 없다", "남는 건 analysis · step · agent · share 넷뿐"] },
+    { "dot": "rose", "title": "게으르지 않은 곳", "items": ["업로드 검증과 프롬프트 인젝션 차단", "LLM 응답은 zod 스키마로만 수용한다", "시간·시급은 코드가 계산한다"] }
+  ]
+}

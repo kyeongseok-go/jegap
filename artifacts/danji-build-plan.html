@@ -1,0 +1,416 @@
+<title>단지 건강검진 빌드 플랜</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Gowun+Batang:wght@400;700&display=swap">
+
+<style>
+:root{
+  --ground:#F4F5F8; --surface:#FFFFFF; --surface-2:#ECEEF4;
+  --ink:#14161D; --ink-2:#3C4152; --muted:#656A7A;
+  --line:#DFE2EA; --line-2:#C9CEDC;
+  --accent:#0E7D68; --accent-soft:#DFF2ED;
+  --blue:#2F4EE0; --blue-soft:#E6EAFD;
+  --warn:#C0412E; --warn-soft:#FBE9E5;
+  --hold:#8A6A0C; --hold-soft:#F8F0DA;
+  --fs-display:clamp(2rem,4.4vw,3.1rem);
+  --fs-h2:clamp(1.35rem,2.3vw,1.75rem);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#0E0F14; --surface:#16181F; --surface-2:#1E212B;
+  --ink:#E8E9EF; --ink-2:#B6BAC8; --muted:#8E94A6;
+  --line:#262A35; --line-2:#343949;
+  --accent:#3ACFA9; --accent-soft:#0F2A26;
+  --blue:#7C93FF; --blue-soft:#1B2140;
+  --warn:#FF8168; --warn-soft:#331C18;
+  --hold:#E0B84A; --hold-soft:#2B2414;
+}}
+:root[data-theme="dark"]{
+  --ground:#0E0F14; --surface:#16181F; --surface-2:#1E212B;
+  --ink:#E8E9EF; --ink-2:#B6BAC8; --muted:#8E94A6;
+  --line:#262A35; --line-2:#343949;
+  --accent:#3ACFA9; --accent-soft:#0F2A26;
+  --blue:#7C93FF; --blue-soft:#1B2140;
+  --warn:#FF8168; --warn-soft:#331C18;
+  --hold:#E0B84A; --hold-soft:#2B2414;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;
+  font-size:.9375rem;line-height:1.65;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+h1,h2,h3,h4{text-wrap:balance;margin:0;line-height:1.25;letter-spacing:-.018em}
+p{margin:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.mono{font-family:"IBM Plex Mono",monospace}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:.6875rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:500}
+
+.strip{position:sticky;top:0;z-index:40;background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:stretch;flex-wrap:wrap}
+.strip-b{display:flex;align-items:center;gap:10px;padding:11px 20px;border-right:1px solid var(--line)}
+.mark{width:22px;height:22px;flex:none;border:1.5px solid var(--accent);border-radius:50%;position:relative}
+.mark::before{content:"";position:absolute;left:50%;top:50%;width:10px;height:10px;transform:translate(-50%,-50%);border-radius:50%;background:var(--accent);opacity:.35}
+.mark::after{content:"";position:absolute;left:50%;top:50%;width:4px;height:4px;transform:translate(-50%,-50%);border-radius:50%;background:var(--accent)}
+.strip-b b{font-weight:600;font-size:.8125rem;letter-spacing:.04em}
+.cd{display:flex;align-items:center;gap:12px;padding:9px 20px;border-right:1px solid var(--line)}
+.cd-l{font-family:"IBM Plex Mono",monospace;font-size:.6875rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.cd-v{font-family:"IBM Plex Mono",monospace;font-size:1rem;font-weight:600;color:var(--warn)}
+.sp{flex:1}
+.tbtn{border:none;background:transparent;color:var(--muted);cursor:pointer;padding:0 18px;font-family:"IBM Plex Mono",monospace;font-size:.6875rem;letter-spacing:.1em;text-transform:uppercase;border-left:1px solid var(--line)}
+.tbtn:hover{color:var(--ink);background:var(--surface-2)}
+
+.shell{max-width:1240px;margin:0 auto;padding:0 24px}
+.hero{padding:72px 0 52px;border-bottom:1px solid var(--line)}
+.hero h1{font-size:var(--fs-display);font-weight:700;max-width:22ch;margin:14px 0 0}
+.hero .lede{margin-top:20px;max-width:64ch;font-size:1.0625rem;color:var(--ink-2);line-height:1.72}
+.quote{font-family:"Gowun Batang",Georgia,serif;font-size:1.35rem;line-height:1.6;margin:26px 0 0;max-width:40ch;color:var(--ink)}
+.hero-meta{display:flex;gap:28px;flex-wrap:wrap;margin-top:30px;padding-top:22px;border-top:1px solid var(--line)}
+.hero-meta div{display:flex;flex-direction:column;gap:3px}
+.hero-meta b{font-family:"IBM Plex Mono",monospace;font-size:1.0625rem;font-weight:600}
+
+section{padding:56px 0;border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:none}
+.sec-h{display:flex;align-items:baseline;gap:14px;margin-bottom:8px}
+.sec-n{font-family:"IBM Plex Mono",monospace;font-size:.8125rem;color:var(--accent);font-weight:600}
+h2{font-size:var(--fs-h2);font-weight:650}
+.sub{color:var(--muted);max-width:66ch;margin:10px 0 30px;font-size:.875rem}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:22px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(178px,1fr))}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px 20px;display:flex;flex-direction:column;gap:5px}
+.stat b{font-family:"IBM Plex Mono",monospace;font-size:1.6rem;font-weight:600;line-height:1.1}
+.stat span{font-size:.8125rem;color:var(--muted)}
+.stat.warn b{color:var(--warn)} .stat.go b{color:var(--accent)}
+
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:.8125rem}
+th,td{text-align:left;padding:11px 15px;border-bottom:1px solid var(--line);vertical-align:top}
+thead th{font-family:"IBM Plex Mono",monospace;font-size:.6875rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:500;background:var(--surface-2)}
+tbody tr:last-child td{border-bottom:none}
+td.n{font-family:"IBM Plex Mono",monospace;text-align:right;white-space:nowrap}
+
+.tag{display:inline-flex;padding:2px 8px;border-radius:4px;font-family:"IBM Plex Mono",monospace;font-size:.6875rem;font-weight:500;white-space:nowrap}
+.tag.go{background:var(--accent-soft);color:var(--accent)}
+.tag.blue{background:var(--blue-soft);color:var(--blue)}
+.tag.warn{background:var(--warn-soft);color:var(--warn)}
+.tag.hold{background:var(--hold-soft);color:var(--hold)}
+
+.note{margin-top:18px;padding:14px 17px;border-left:2px solid var(--accent);background:var(--accent-soft);border-radius:0 6px 6px 0;font-size:.8125rem;color:var(--ink-2)}
+.note b{color:var(--ink)}
+.note.warn{border-left-color:var(--warn);background:var(--warn-soft)}
+
+.items{display:flex;flex-direction:column;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.item{display:grid;grid-template-columns:minmax(140px,190px) 1fr;gap:18px;padding:13px 17px;background:var(--surface)}
+.item-k b{font-size:.8125rem;font-weight:600;display:block}
+.item-k .src{font-family:"IBM Plex Mono",monospace;font-size:.6875rem;color:var(--muted)}
+.item-v{font-size:.8125rem;color:var(--ink-2)}
+.item-v .skip{color:var(--warn);font-weight:600}
+.item-v code{font-family:"IBM Plex Mono",monospace;font-size:.8125em;background:var(--surface-2);padding:1px 5px;border-radius:3px;border:1px solid var(--line)}
+
+.pipe{display:grid;grid-template-columns:232px 1fr;border:1px solid var(--line);border-radius:9px;background:var(--surface);overflow:hidden}
+.rail{border-right:1px solid var(--line);background:var(--surface-2);padding:12px 0}
+.rail-h{padding:6px 18px 12px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.rstep{display:grid;grid-template-columns:44px 1fr;align-items:center;width:100%;border:none;background:transparent;cursor:pointer;font:inherit;color:var(--muted);padding:9px 14px 9px 0;text-align:left;position:relative}
+.tick{display:flex;align-items:center;justify-content:flex-end;height:100%;position:relative}
+.tick::before{content:"";position:absolute;right:13px;top:-9px;bottom:-9px;width:1px;background:var(--line-2)}
+.rstep:first-of-type .tick::before{top:50%}
+.rstep:last-of-type .tick::before{bottom:50%}
+.tick i{width:9px;height:9px;border-radius:50%;background:var(--ground);border:1.5px solid var(--line-2);margin-right:9px;z-index:1;flex:none}
+.rstep-t b{font-weight:500;font-size:.8125rem;display:block}
+.rstep-t span{font-family:"IBM Plex Mono",monospace;font-size:.6875rem;letter-spacing:.06em;opacity:.75}
+.rstep:hover{color:var(--ink-2)}
+.rstep[aria-selected="true"]{color:var(--ink);background:var(--surface)}
+.rstep[aria-selected="true"] .tick i{background:var(--accent);border-color:var(--accent);transform:scale(1.22)}
+.panes{padding:26px 30px 30px;min-height:400px}
+.pane[hidden]{display:none}
+.pane-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.pane-h h3{font-size:1.3rem;font-weight:650}
+.pane-lede{color:var(--muted);max-width:64ch;margin-bottom:22px;font-size:.8125rem}
+
+.sched{display:flex;flex-direction:column;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.day{display:grid;grid-template-columns:110px 1fr minmax(160px,230px);gap:16px;padding:12px 17px;background:var(--surface);align-items:baseline}
+.day.is-dl{background:var(--warn-soft)}
+.day-d{font-family:"IBM Plex Mono",monospace;font-size:.8125rem;font-weight:600}
+.day.is-dl .day-d{color:var(--warn)}
+.day-t{font-size:.8125rem}
+.day-c{font-size:.6875rem;color:var(--muted);font-family:"IBM Plex Mono",monospace}
+
+footer{padding:40px 0 64px;color:var(--muted);font-size:.8125rem}
+footer .src{font-family:"IBM Plex Mono",monospace;font-size:.6875rem;line-height:2;display:block;margin-top:10px}
+
+@media (max-width:880px){
+  .pipe{grid-template-columns:1fr}
+  .rail{border-right:none;border-bottom:1px solid var(--line);display:flex;overflow-x:auto;padding:0}
+  .rail-h{display:none}
+  .rstep{grid-template-columns:1fr;padding:12px 16px;flex:none;border-right:1px solid var(--line)}
+  .tick{display:none}
+  .panes{padding:22px 18px 26px}
+  .item{grid-template-columns:1fr;gap:5px}
+  .day{grid-template-columns:1fr;gap:4px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="strip">
+  <div class="strip-b"><span class="mark" aria-hidden="true"></span><b>단지 건강검진</b></div>
+  <div class="cd"><div><div class="cd-l">참가 접수</div><div class="cd-l" style="letter-spacing:0;text-transform:none">09.18 금 23:59</div></div><div class="cd-v" id="c1">—</div></div>
+  <div class="cd"><div><div class="cd-l">과제 제출</div><div class="cd-l" style="letter-spacing:0;text-transform:none">09.20 일 23:59</div></div><div class="cd-v" id="c2">—</div></div>
+  <div class="sp"></div>
+  <button class="tbtn" id="tb" type="button">테마</button>
+</div>
+
+<div class="shell">
+
+  <header class="hero">
+    <div class="eyebrow">원티드 AI Championship 2026 · 최종 출품작 설계 · 2026.09.15 확정</div>
+    <h1>정부는 데이터를 열었다. 우리는 국민이 읽게 만든다.</h1>
+    <p class="lede">
+      정부 감사 표본의 <b>72%에서 관리비 비리 1,255건</b>이 나왔다. 국토부는 2026년 5월 전 단지 회계감사를 의무화했다.
+      그런데 그 데이터를 읽을 수 있는 국민이 없다. <b>단지 건강검진</b>은 단지명 검색 30초로
+      관리비 3년 궤적, 장기수선충당금 건강도, 수선 이력 공백을 진단하고 — AI가 관리사무소 질의서까지 대신 쓴다.
+    </p>
+    <blockquote class="quote">"관리비가 싼 단지가 좋은 단지가 아닙니다.<br>미래를 안 쌓고 있는 단지일 수 있습니다."</blockquote>
+    <div class="hero-meta">
+      <div><span class="eyebrow">아이디어 여정</span><b>10라운드 · 60여 건</b></div>
+      <div><span class="eyebrow">설계 루프</span><b>5인 패널 · 4사이클</b></div>
+      <div><span class="eyebrow">최종 점수</span><b style="color:var(--accent)">예선 95 · 본선 92</b></div>
+      <div><span class="eyebrow">빌드</span><b>5일 + 심사기간 고도화</b></div>
+    </div>
+  </header>
+
+  <section>
+    <div class="sec-h"><span class="sec-n">01</span><h2>왜 이 아이디어인가</h2></div>
+    <p class="sub">60여 건을 생성하고 다 죽여본 뒤에 남은 결론. 스냅샷 비교는 전부 기존 제품이 있었고, 살아남는 건 "아무도 측정하지 않던 것"뿐이었다.</p>
+
+    <div class="grid g4" style="margin-bottom:22px">
+      <div class="stat warn"><b>72%</b><span>감사 표본 단지의 비리 적발률</span></div>
+      <div class="stat"><b>1,255건</b><span>비위·부적정 사례 (429단지)</span></div>
+      <div class="stat"><b>'26.05</b><span>국토부, 전 단지 회계감사 의무화</span></div>
+      <div class="stat go"><b>0개</b><span>이 데이터를 읽게 해주는 소비자 제품</span></div>
+    </div>
+
+    <div class="grid g2">
+      <div class="card">
+        <div class="eyebrow">차별화 — 왜 기존 앱이 못 하나</div>
+        <div class="items" style="margin-top:12px">
+          <div class="item"><div class="item-k"><b>아파트아이</b><span class="src">1,200만 세대</span></div><div class="item-v">고객이 관리사무소·입대의 — <span class="skip">자기 고객을 비판하는 리포트를 낼 수 없다</span></div></div>
+          <div class="item"><div class="item-k"><b>직방 · 호갱노노</b></div><div class="item-v">상품이 매물 — <span class="skip">자기 상품의 리스크를 보여줄 수 없다</span></div></div>
+          <div class="item"><div class="item-k"><b>K-apt (정부)</b></div><div class="item-v">데이터는 있으나 해석이 없다. 검색 결과 전부가 "조회하는 법" 블로그</div></div>
+          <div class="item"><div class="item-k"><b>우리</b></div><div class="item-v">이해관계 없는 유일한 <b>"국민 쪽 감사관"</b> — 구조가 해자다</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="eyebrow">한 문장 방어</div>
+        <blockquote class="quote" style="font-size:1.15rem;margin:14px 0 18px">"아파트아이는 이번 달 내 고지서의 위치를 말합니다. 우리는 이 단지의 10년 뒤 청구서를 말합니다."</blockquote>
+        <p style="font-size:.8125rem;color:var(--ink-2)">
+          비교(스냅샷)가 아니라 <b>미래 리스크 진단(종단)</b>. 장충금을 안 쌓는 단지는 노후 공사가 닥치면
+          세대당 수백만 원이 일시 부과된다 — 이미 안양 등에서 터지고 있는 실제 사건이고, 어떤 앱도 이걸 미리 알려주지 않는다.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h"><span class="sec-n">02</span><h2>제품 — 검진표의 구조</h2></div>
+    <p class="sub">건강검진의 언어를 그대로 쓴다. 검사 · 가족력 · 병력 · 처방전 · 정기검진.</p>
+    <div class="tw">
+      <table>
+        <thead><tr><th>층</th><th>내용</th><th>차별화 레버</th></tr></thead>
+        <tbody>
+          <tr><td><b>검사 ①</b> 관리비 궤적</td><td>3년 시계열 — "난방비가 유사 단지보다 2배 빠르게 상승 중"</td><td><span class="tag go">종단성</span></td></tr>
+          <tr><td><b>검사 ②</b> 장충금 건강도</td><td>적립 수준 vs 경과연수·유사 단지 → 일시 부과 리스크 신호</td><td><span class="tag go">반사실 — 아직 안 온 청구서</span></td></tr>
+          <tr><td><b>검사 ③</b> 수선 공백</td><td>유지관리 이력 등록 데이터로 "미뤄진 수선" 표시</td><td><span class="tag go">사실 화법</span></td></tr>
+          <tr><td><b>가족력</b></td><td>같은 시도 + 연식 ±5년 + 세대수 구간 + 난방방식 일치 단지 분포 위 내 위치</td><td><span class="tag blue">규칙 필터 — 설명가능성이 법적 방어</span></td></tr>
+          <tr><td><b>병력</b></td><td>AI가 조사한 언론 보도(횡령·소송·감사 지적) — 3중 일치 게이트 통과분만, 기본 접힘</td><td><span class="tag warn">무소음 원칙</span></td></tr>
+          <tr><td><b>처방전</b></td><td>AI가 관리사무소 질의서·입주자대표회의 안건 초안 작성</td><td><span class="tag go">행동 대행</span></td></tr>
+          <tr><td><b>정기검진</b></td><td>매달 새 데이터 반영 알림 + 전국 단지 공개 검진표(SEO)</td><td><span class="tag blue">재방문 + 투표 유입</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note warn">
+      <b>표현의 헌법.</b> "등급 B-"라고 말하지 않는다 — 그건 의견이다. <b>신호등(양호/관찰/주의) + "유사 단지 하위 34%"</b>라는 산술만 말하고,
+      산식 전문을 공개 페이지로 연다. 병력은 요약 2문장 + 원문 링크(인용 범위) + 정정 채널 24시간. 사실적시·인용·정정의 3중 방어.
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h"><span class="sec-n">03</span><h2>설계 루프 — 어떻게 이 설계가 검증됐나</h2></div>
+    <p class="sub">workmate 차터(자체) + skill-eval + spec-kit + Loop Architect + open-collider에서 차용해 만든 5인 적대 패널 루프. 4사이클에 전 차원 9.0 도달.</p>
+    <div class="grid g2">
+      <div class="card">
+        <div class="eyebrow">심사 페르소나 5인</div>
+        <div class="items" style="margin-top:12px">
+          <div class="item"><div class="item-k"><b>J1 예선 내부심사역</b></div><div class="item-v">하루 50개 심사. "설명이 필요한 제품 = 탈락"</div></div>
+          <div class="item"><div class="item-k"><b>J2 크래프톤 AI 엔지니어</b></div><div class="item-v">"AI가 어디에 본질적으로 쓰였나? 래퍼 아닌가?"</div></div>
+          <div class="item"><div class="item-k"><b>J3 스파크랩 VC</b></div><div class="item-v">"아파트아이가 내일 이 기능 내면? 왜 지금? 왜 너?"</div></div>
+          <div class="item"><div class="item-k"><b>J4 시니어 개발자</b></div><div class="item-v">"5일 안에? 그 API 진짜 그 필드 줌? 폴백은?"</div></div>
+          <div class="item"><div class="item-k"><b>J5 법·리스크 심사역</b></div><div class="item-v">"단지에 등급 매기기 — 사실적시인가 의견인가?"</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="eyebrow">사이클 기록</div>
+        <div class="items" style="margin-top:12px">
+          <div class="item"><div class="item-k"><b>사이클 1</b><span class="src">최저 6.0</span></div><div class="item-v">치명 결함 6건 — 단지명 오귀속, "등급=의견" 법리, 병력 AI 설계 부재…</div></div>
+          <div class="item"><div class="item-k"><b>사이클 2</b><span class="src">최저 8.0</span></div><div class="item-v">3중 일치 게이트 · 신호등 강등 · 병력 파이프라인 완결 · SEO 축소</div></div>
+          <div class="item"><div class="item-k"><b>사이클 3</b><span class="src">최저 9.0</span></div><div class="item-v">병력 표시 3단 강등(검증 완료 단지만) + 정정 채널 내장</div></div>
+          <div class="item"><div class="item-k"><b>사이클 4</b><span class="src">기계 체커</span></div><div class="item-v">프로그램 체커가 LLM 심사 전 3건 추가 적발(빈 상태 2, 요강 절차 1) — 심사 환각 방지 구조 검증</div></div>
+        </div>
+        <div class="note" style="margin-top:14px"><b>종료 판정.</b> 전 차원 ≥ 9.0 + 기계 체커 전 항목 green. 외부 교차검증 브리프(Codex용)는 별도 파일로 개방.</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h"><span class="sec-n">04</span><h2>서비스 개발 전체 과정</h2></div>
+    <p class="sub">기획부터 유지보수·수익화까지. 각 단계의 결정과 — 더 중요한 — 하지 않기로 한 것.</p>
+    <div class="pipe">
+      <div class="rail" role="tablist" aria-label="개발 단계" id="rail"><div class="rail-h eyebrow">Pipeline</div></div>
+      <div class="panes" id="panes"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h"><span class="sec-n">05</span><h2>5일 실행 일정</h2></div>
+    <p class="sub">모든 항목에 시간 상자와 폴백. 컷 순서는 뒤에서부터: 랭킹 → 병력 → 처방전. 검진 3종 + 신호등이 최소 성립선이다.</p>
+    <div class="sched">
+      <div class="day"><div class="day-d">D1 <span style="color:var(--muted)">09.15</span></div><div class="day-t"><b>생사 게이트:</b> 공공데이터 API 실호출 — 장충금·시계열 필드 실측 (3h) · 저장소+Vercel 첫 배포 (1h)</div><div class="day-c">실패 → K-apt CSV 폴백</div></div>
+      <div class="day"><div class="day-d">D2 <span style="color:var(--muted)">09.16</span></div><div class="day-t">인제스트 파이프라인 + 수도권 2,000단지 (4h) · 유사단지 통계 배치 (2h) · 검진표 화면 v0 (3h)</div><div class="day-c">지연 → 500단지로 축소</div></div>
+      <div class="day"><div class="day-d">D3 <span style="color:var(--muted)">09.17</span></div><div class="day-t">신호등·백분위 산식 + 산식 공개 페이지 (3h) · 병력 파이프라인 + <b>표본 50단지 오귀속 수동 검증</b> (4h)</div><div class="day-c">오귀속 &gt;2% → 병력 전체 드롭</div></div>
+      <div class="day is-dl"><div class="day-d">D4 <span>09.18</span></div><div class="day-t"><b>참가 접수 (오전 필수)</b> · 처방전 생성 (3h) · 프리셋 + 공유카드 (3h)</div><div class="day-c">처방전 지연 → 정적 템플릿</div></div>
+      <div class="day"><div class="day-d">D5 <span style="color:var(--muted)">09.19</span></div><div class="day-t">랭킹 (2h) · 반응형·OG·엣지 상태 (3h) · 외부인 3명 테스트 (2h)</div><div class="day-c">랭킹 = 컷 1순위</div></div>
+      <div class="day is-dl"><div class="day-d">제출 <span>09.20</span></div><div class="day-t"><b>과제 제출</b> — 설명서에는 당일 실동작 기능만 · AI_TOOLS.md 이식</div><div class="day-c">임시저장 ≠ 제출</div></div>
+    </div>
+    <div class="note"><b>이후 27일(09.21~10.17)은 품질 트랙.</b> 같은 URL에서 계속 고도화 — 심사위원이 언제 열어도 한 달치 완성도. 단, 제출 설명은 09.20 시점 기능만 약속한다.</div>
+  </section>
+
+  <section>
+    <div class="sec-h"><span class="sec-n">06</span><h2>리스크 — 전부 설계에 대응이 있다</h2></div>
+    <div class="tw">
+      <table>
+        <thead><tr><th style="width:40%">리스크</th><th>설계 내 대응</th></tr></thead>
+        <tbody>
+          <tr><td><b>단지명 오귀속</b> — 다른 "래미안" 기사를 붙이면 명예훼손+환각 동시 발생</td><td>시군구+단지명+고유명 3중 일치 게이트 · 불확실=미표시 · 표본 50 수동 검증(D3) · 검증 완료 단지만 표시</td></tr>
+          <tr><td>"등급 = 의견 표명" 법리</td><td>신호등+백분위 사실 서술 · 산식 전문 공개</td></tr>
+          <tr><td>기사 저작권</td><td>2문장 요약 + 원문 링크 + 출처 = 인용 범위</td></tr>
+          <tr><td>API 상한·지연</td><td>사전 2,000 + 온디맨드 + CSV 폴백</td></tr>
+          <tr><td>심사기간 다운 = 심사 제외</td><td>외부 uptime 5분 핑 + Supabase 유휴 방지 — 가용성이 기능보다 우선(헌법)</td></tr>
+          <tr><td>정정 요청</td><td>푸터 정정 채널 + 24시간 내 숨김 약속</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section style="border-bottom:none">
+    <div class="sec-h"><span class="sec-n">07</span><h2>3분 발표</h2></div>
+    <div class="sched">
+      <div class="day"><div class="day-d">0:00</div><div class="day-t">"감사 표본의 72%에서 비리 1,255건. 정부는 5월에 전 단지 회계감사를 의무화했습니다."</div><div class="day-c">문제</div></div>
+      <div class="day"><div class="day-d">0:30</div><div class="day-t">"그런데 그 데이터를 읽을 수 있는 국민이 없습니다. 아파트아이요? 그들의 고객은 관리사무소입니다."</div><div class="day-c">공백</div></div>
+      <div class="day"><div class="day-d">1:00</div><div class="day-t">라이브 — 프리셋 '전국 워스트' 클릭. "이 단지, 장충금이 유사 단지 하위 6%. 2027년 배관 교체가 오면 세대당 부담이 옵니다."</div><div class="day-c">데모 1</div></div>
+      <div class="day"><div class="day-d">1:50</div><div class="day-t">심사위원 단지 즉석 검진 — 백업 단지 2개 사전 리허설로 라이브 실패 대비</div><div class="day-c">데모 2</div></div>
+      <div class="day"><div class="day-d">2:20</div><div class="day-t">처방전 생성 — "진단에서 끝나지 않습니다. AI가 질의서를 대신 씁니다."</div><div class="day-c">행동</div></div>
+      <div class="day"><div class="day-d">2:40</div><div class="day-t">"1.8만 단지 공개 검진표, 다음은 병원 비급여와 학원비 — 정부가 연 데이터를 국민이 쓰는 형태로."</div><div class="day-c">확장</div></div>
+    </div>
+  </section>
+
+  <footer>
+    <div>설계 원본 <code class="mono">docs/40-DESIGN.md</code> · 루프 기록 <code class="mono">docs/30-DESIGN-LOOP.md</code> · 아이디어 여정 <code class="mono">docs/05-SCORING.md</code> · 아키텍처 <code class="mono">artifacts/danji-architecture.html</code></div>
+    <span class="src">
+      출처 · 국토부 공동주택 관리제도 개선방안(2026.05.21) · 정부 합동감사(한겨레) · K-apt/공공데이터포털(2026.09.15 확인) · 심평원 비급여 공개
+    </span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var root=document.documentElement;
+  document.getElementById("tb").addEventListener("click",function(){
+    var c=root.getAttribute("data-theme");
+    if(!c)c=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";
+    root.setAttribute("data-theme",c==="dark"?"light":"dark");
+  });
+  var K=9*3600*1000;
+  function dl(y,m,d){return Date.UTC(y,m-1,d,23,59,59)-K;}
+  var L=[{e:"c1",t:dl(2026,9,18)},{e:"c2",t:dl(2026,9,20)}];
+  function p(n){return n<10?"0"+n:""+n;}
+  function tick(){
+    var now=Date.now();
+    L.forEach(function(o){
+      var ms=o.t-now,el=document.getElementById(o.e);
+      if(ms<=0){el.textContent="마감";return;}
+      var s=Math.floor(ms/1000),d=Math.floor(s/86400),h=Math.floor(s%86400/3600),mi=Math.floor(s%3600/60);
+      el.textContent="D-"+(d+1)+" · "+p(h)+":"+p(mi);
+    });
+  }
+  tick();setInterval(tick,30000);
+
+  var PH=[
+    {id:"plan",n:"기획",en:"PLAN",items:[
+      ["타겟","거주자(관리비 내는 전 국민) + 이사·매수 검토자. 비타겟: <span class='skip'>관리사무소</span> — 그들을 고객으로 두는 순간 아파트아이가 된다"],
+      ["핵심 가치","비교가 아니라 미래 리스크 진단. 지금 정당한가(궤적) + 미래에도 정당할 것인가(장충금)"],
+      ["해자","이해관계 없는 유일한 '국민 쪽 감사관' — 카피가 아니라 구조의 문제라 방어됨"],
+      ["시의성","'26.05 국토부 입법 + 72% 비리 통계 + K-apt 공개 의무화 1년"]]},
+    {id:"design",n:"설계",en:"DESIGN",items:[
+      ["화면 5면","S1 검색+프리셋 3종 · S2 검진표 · S3 처방전 · S4 공유카드 · S5 랭킹. 전 화면 빈/오류 상태 정의(루프 사이클 4에서 기계 체커가 강제)"],
+      ["동선 원칙","프리셋 클릭 1회 → 검진표. 심사위원은 아파트에 안 살 수도 있다 — 검색조차 시키지 않는다"],
+      ["데이터 6테이블","danji · fee_monthly(3년 시계열) · reserve(장충금) · peer_stat(유사단지 분포) · dossier(병력) · report_cache"],
+      ["유사 단지","<span class='skip'>k-means 안 씀.</span> 같은 시도+연식±5+세대수 구간+난방 일치 규칙 필터 — 설명가능성이 곧 법적 방어"]]},
+    {id:"build",n:"개발",en:"BUILD",items:[
+      ["AI ① 조사관","haiku 게이트(3중 일치) + sonnet 요약. 통과분만 표시, 단지당 1회 ~₩30, 영구 캐시"],
+      ["AI ② 해설가","검진 수치 JSON → '왜 이 신호인가' 3문장. <b>입력 JSON 밖 인용 금지</b>로 환각 차단"],
+      ["AI ③ 대필가","질의서·안건 초안. 법 조항(공동주택관리법) 템플릿 고정, 가변부만 생성"],
+      ["계산","백분위·추세·리스크 신호는 전부 코드. <span class='skip'>LLM에 산수 금지</span>"],
+      ["스택","Next.js+Vercel ISR / Supabase / Claude API. <span class='skip'>로그인·Redux·별도 백엔드 없음</span>"]]},
+    {id:"scm",n:"소스관리",en:"SCM",items:[
+      ["브랜치","main(운영)/dev(프리뷰) 둘뿐. 5일짜리에 git-flow는 과하다"],
+      ["시크릿",".env.local만, .env.example 커밋. API 키 커밋 금지"],
+      ["AI_TOOLS.md","사용 AI 도구·활용 방식 실시간 기록 → 제출서 필수 기재란 이식 (요강 필수)"]]},
+    {id:"deploy",n:"배포",en:"DEPLOY",items:[
+      ["호스팅","Vercel main push = 배포. 인제스트는 Vercel cron 청크 분할(공공데이터 API 일일 상한 내)"],
+      ["가용성","외부 uptime 5분 핑 + Supabase 유휴 방지. 헌법: <b>가용성이 기능보다 우선</b> — 링크 다운 = 심사 제외"],
+      ["비용","LLM 역할별 단가 상한 + 영구 캐시. 유료 API 자비 부담이 요강 원칙"]]},
+    {id:"launch",n:"출시",en:"LAUNCH",items:[
+      ["형태","웹 단독. <span class='skip'>앱 안 만든다</span> — 스토어 심사가 5일 안에 불가능하고 요강도 웹 권장"],
+      ["도메인","커스텀 도메인 1개 + HTTPS(자동). OG 미리보기를 카톡에서 실물 확인"],
+      ["공개 검진표","수도권 2,000단지 정적 페이지 사전 생성, 나머지 온디맨드 ISR — 검색 유입 = 투표 유입"]]},
+    {id:"ops",n:"유지보수",en:"OPS",items:[
+      ["품질 트랙","09.21~10.17 같은 URL에서 고도화. 우선순위: ① 오귀속 검증 확대 ② 병력 커버리지 ③ 전국 확대 ④ 패밀리 2호(비급여)"],
+      ["정정 채널","푸터 메일 + 24시간 내 숨김 약속 — 법적 방어이자 신뢰 장치"],
+      ["피드백","검진표 하단 '이 진단이 맞나요?' 한 줄 — 산식 개선 근거로 축적"]]},
+    {id:"rev",n:"수익화",en:"REVENUE",items:[
+      ["광고","<span class='skip'>배제.</span> 감사관이 광고를 받으면 죽는다 — 배제가 포지셔닝"],
+      ["B2C","정기검진 알림 + 상세 리포트 구독 (유입용)"],
+      ["B2B 본진","공인중개사·매수자 실사 리포트 · 지자체 관리감독 대시보드"],
+      ["패밀리","비급여 진료비(심평원 693항목) → 학원비(교육청) — '정부가 연 데이터를 국민이 쓰는 형태로'"]]}
+  ];
+  var rail=document.getElementById("rail"),panes=document.getElementById("panes");
+  PH.forEach(function(p2,i){
+    var b=document.createElement("button");
+    b.type="button";b.className="rstep";b.setAttribute("role","tab");
+    b.setAttribute("aria-selected",i===0?"true":"false");
+    b.id="tab-"+p2.id;b.setAttribute("aria-controls","pane-"+p2.id);
+    b.innerHTML='<span class="tick"><i></i></span><span class="rstep-t"><b>'+p2.n+'</b><span>'+p2.en+'</span></span>';
+    rail.appendChild(b);
+    var pane=document.createElement("div");
+    pane.className="pane";pane.id="pane-"+p2.id;pane.hidden=(i!==0);
+    pane.setAttribute("role","tabpanel");pane.setAttribute("aria-labelledby","tab-"+p2.id);
+    var its="";
+    p2.items.forEach(function(it){its+='<div class="item"><div class="item-k"><b>'+it[0]+'</b></div><div class="item-v">'+it[1]+'</div></div>';});
+    pane.innerHTML='<div class="pane-h"><h3>'+p2.n+'</h3></div><div class="items">'+its+'</div>';
+    panes.appendChild(pane);
+    b.addEventListener("click",function(){sel(i);});
+    b.addEventListener("keydown",function(e){
+      var d=e.key==="ArrowDown"||e.key==="ArrowRight"?1:(e.key==="ArrowUp"||e.key==="ArrowLeft"?-1:0);
+      if(!d)return;e.preventDefault();
+      var nx=(i+d+PH.length)%PH.length;sel(nx);rail.querySelectorAll(".rstep")[nx].focus();
+    });
+  });
+  function sel(idx){
+    var tabs=rail.querySelectorAll(".rstep");
+    PH.forEach(function(p2,j){
+      tabs[j].setAttribute("aria-selected",j===idx?"true":"false");
+      document.getElementById("pane-"+p2.id).hidden=(j!==idx);
+    });
+  }
+})();
+</script>
