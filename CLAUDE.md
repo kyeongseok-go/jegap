@@ -34,3 +34,8 @@
 
 ## 환경 주의
 python3.14 사용 시 `SSL_CERT_FILE=/etc/ssl/cert.pem` 필수. 공공데이터포털 API 키는 .env.local (커밋 금지).
+
+## 아티팩트 (갱신 시 반드시 url 파라미터 사용 — 경로가 바뀌어 새로 발행되면 링크 유실)
+- 아이디어 보드: https://claude.ai/code/artifact/1db3d22a-495c-4ff9-8b02-3d286db9f5dc
+- 빌드 플랜: https://claude.ai/code/artifact/519d7079-12b7-4976-9d7d-8fbe057fbb5d
+- 아키텍처: https://claude.ai/code/artifact/07bcb386-6810-4a32-a3a5-a0f2289bda98
