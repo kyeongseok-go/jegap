@@ -3,11 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>제값 — 우리 단지 검진</title>
-<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<title>FAIRSHARE 제값 — 우리 단지 검진</title>
+<meta name="theme-color" content="#FAFAF8">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
 :root{
+  color-scheme:light;
   --paper:#FAFAF8; --surface:#FFFFFF; --ink:#0F1115; --slate:#5A6472; --hair:#E3E4E1; --hair-2:#C9CBC7;
   --signal:#BF2E17; --signal-wash:#FBEDEA; --ok:#1F6F4A; --ok-wash:#E8F1EC;
   --sans:"Pretendard Variable",Pretendard,system-ui,-apple-system,sans-serif;
@@ -15,18 +17,25 @@
   --ease:cubic-bezier(.16,1,.3,1);
 }
 *{box-sizing:border-box;margin:0}
-html{scroll-behavior:smooth}
-body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6;
+html{scroll-behavior:smooth;overflow-x:clip}
+body{background:var(--paper);-webkit-tap-highlight-color:rgba(15,17,21,.06);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6;
   -webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
 :focus-visible{outline:2.5px solid var(--ink);outline-offset:3px;border-radius:2px}
-.wrap{max-width:1080px;margin:0 auto;padding:0 28px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 max(28px,env(safe-area-inset-left)) 0 max(28px,env(safe-area-inset-right))}
+.wrap{padding-left:max(28px,env(safe-area-inset-left));padding-right:max(28px,env(safe-area-inset-right))}
+h1,h2,h3{scroll-margin-top:80px}
+.skip{position:fixed;top:0;left:0;z-index:60;background:var(--ink);color:var(--paper);padding:10px 16px;
+  font-weight:700;font-size:14px;border-radius:0 0 3px 0;transform:translateY(-110%);transition:transform .18s var(--ease)}
+.skip:focus-visible{transform:none}
 .num{font-family:var(--num);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
 
 /* ── 헤더 ── */
 header{position:sticky;top:0;z-index:30;background:rgba(250,250,248,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--hair)}
 header .wrap{display:flex;align-items:center;gap:22px;height:62px}
-.brand{font-weight:800;font-size:19px;letter-spacing:-.03em;flex:none}
-.brand i{font-style:normal;color:var(--signal)}
+.brand{flex:none;display:flex;flex-direction:column;gap:1px;text-decoration:none;color:inherit;line-height:1}
+.bmark{font-weight:800;font-size:17px;letter-spacing:.01em}
+.bmark i{font-style:normal;color:var(--signal)}
+.bsub{font-size:11px;color:var(--slate);letter-spacing:.24em;font-weight:600}
 .q{font-size:13.5px;color:var(--slate);flex:none}
 @media(max-width:760px){.q{display:none}}
 .find{margin-left:auto;display:flex;align-items:center;gap:0;border:1.5px solid var(--ink);border-radius:2px;background:var(--surface);
@@ -41,7 +50,7 @@ header .wrap{display:flex;align-items:center;gap:22px;height:62px}
 .pulse{width:7px;height:7px;border-radius:50%;background:var(--signal);flex:none;position:relative}
 .pulse::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--signal);animation:ring 2.4s var(--ease) infinite}
 @keyframes ring{0%{transform:scale(1);opacity:.55}70%,100%{transform:scale(3.4);opacity:0}}
-h1.head{font-size:clamp(30px,5.6vw,54px);font-weight:800;letter-spacing:-.045em;line-height:1.1;max-width:15ch}
+h1.head{font-size:clamp(30px,5.6vw,54px);font-weight:800;letter-spacing:-.045em;line-height:1.1;max-width:15ch;text-wrap:balance}
 h1.head .hl{position:relative;white-space:nowrap}
 h1.head .hl::after{content:"";position:absolute;left:-.04em;right:-.04em;bottom:.1em;height:.34em;background:var(--signal-wash);z-index:-1;
   transform:scaleX(0);transform-origin:left;animation:swipe .9s var(--ease) .35s forwards}
@@ -60,7 +69,7 @@ h1.head .hl::after{content:"";position:absolute;left:-.04em;right:-.04em;bottom:
 .cp-top{display:flex;gap:26px;align-items:flex-start;padding:26px 30px 6px;flex-wrap:wrap}
 .cp-verdict{flex:1;min-width:280px}
 .cp-verdict .lab{font-size:13px;color:var(--slate);margin-bottom:8px}
-.cp-verdict .big{font-size:clamp(26px,4.2vw,40px);font-weight:800;letter-spacing:-.04em;line-height:1.15}
+.cp-verdict .big{font-size:clamp(26px,4.2vw,40px);font-weight:800;letter-spacing:-.04em;line-height:1.15;text-wrap:balance}
 .cp-verdict .big em{font-style:normal;color:var(--signal)}
 .cp-verdict .why{margin-top:12px;font-size:14.5px;color:var(--slate);max-width:38ch}
 .cp-verdict a{color:var(--ink);text-underline-offset:3px}
@@ -142,7 +151,7 @@ details.hist .in .fine{display:block;margin-top:8px;font-size:12.5px;padding-top
 .rx p{font-size:14.5px;color:var(--slate);margin:7px 0 18px;max-width:48ch}
 .acts{display:flex;gap:10px;flex-wrap:wrap}
 .btn{border:1.5px solid var(--ink);background:var(--ink);color:var(--paper);padding:11px 20px;border-radius:2px;
-  font:inherit;font-weight:700;font-size:14px;cursor:pointer;transition:transform .16s var(--ease),box-shadow .16s var(--ease)}
+  font:inherit;font-weight:700;font-size:14px;cursor:pointer;transition:transform .16s var(--ease),box-shadow .16s var(--ease);touch-action:manipulation}
 .btn:hover{transform:translateY(-1.5px);box-shadow:0 3px 0 rgba(15,17,21,.22)}
 .btn:active{transform:translateY(0);box-shadow:none}
 .btn.g{background:transparent;color:var(--ink)}
@@ -158,7 +167,7 @@ details.hist .in .fine{display:block;margin-top:8px;font-size:12.5px;padding-top
 
 /* ── 하단 ── */
 .cta{margin:64px 0 0;padding:44px 0;border-top:1.5px solid var(--ink);border-bottom:1px solid var(--hair)}
-.cta h2{font-size:clamp(22px,3.4vw,32px);font-weight:800;letter-spacing:-.04em}
+.cta h2{font-size:clamp(22px,3.4vw,32px);font-weight:800;letter-spacing:-.04em;text-wrap:balance}
 .cta p{color:var(--slate);margin-top:8px;font-size:15.5px}
 .cta .find{margin:22px 0 0;max-width:460px}
 .why{padding:44px 0}
@@ -178,15 +187,16 @@ footer .next b{color:var(--signal)}
   h1.head .hl::after{transform:scaleX(1)}.badge{opacity:1;transform:none}}
 </style>
 </head>
-<body>
+<body id="top">
+<a class="skip" href="#main">본문으로 건너뛰기</a>
 
 <header><div class="wrap">
-  <span class="brand">제<i>값</i></span>
+  <a class="brand" href="#top" aria-label="FAIRSHARE 제값 홈"><span class="bmark">FAIR<i>SHARE</i></span><span class="bsub">제값</span></a>
   <span class="q">내가 내는 값이 정당한가</span>
-  <div class="find"><input placeholder="아파트 이름 검색" aria-label="아파트 이름 검색"><button>검진</button></div>
+  <div class="find"><input placeholder="예: 한빛마을 3단지…" autocomplete="off" spellcheck="false" name="danji" type="search" enterkeyhint="search" aria-label="아파트 이름 검색"><button type="submit">검진</button></div>
 </div></header>
 
-<main class="wrap">
+<main class="wrap" id="main">
   <section class="hero">
     <p class="eyebrow"><span class="pulse"></span>이번 주 전국에서 가장 위태로운 단지</p>
     <h1 class="head">관리비가 싼 단지가<br><span class="hl">좋은 단지는 아닙니다</span></h1>
@@ -194,7 +204,7 @@ footer .next b{color:var(--signal)}
 
     <div class="subject">
       <h2>한빛마을 3단지</h2>
-      <span class="meta">서울 ○○구 · 1998년 준공 · 812세대 · 지역난방</span>
+      <span class="meta">서울 ○○구 · 1998년 준공 · 812 세대 · 지역난방</span>
       <span class="src">국토교통부 K-apt 2026.07 공시분 · 예시 데이터</span>
     </div>
   </section>
@@ -203,7 +213,7 @@ footer .next b{color:var(--signal)}
     <div class="cp-top">
       <div class="cp-verdict">
         <p class="lab">미래 수리비 저금 <span style="color:var(--hair-2)">|</span> 장기수선충당금</p>
-        <p class="big">비슷한 단지 <em class="num" id="pct">0</em><em>%</em> 아래에<br>있습니다</p>
+        <p class="big">비슷한 단지 <em class="num" id="pct" aria-live="polite">0</em><em>%</em> 아래에<br>있습니다</p>
         <p class="why">28년차 단지가 이 정도만 쌓고 있다면, 배관·승강기 교체가 시작될 때 세대마다 목돈을 내야 할 수 있습니다. <a href="#">어떻게 계산했나</a></p>
       </div>
       <span class="badge" id="badge"><span class="dot"></span>주의</span>
@@ -275,7 +285,7 @@ footer .next b{color:var(--signal)}
       <button class="btn" id="go">관리사무소 질의서 만들기</button>
       <button class="btn g">입주자대표회의 안건 초안</button>
     </div>
-    <div class="paper" id="paper"></div>
+    <div class="paper" id="paper" aria-live="polite"></div>
   </section>
 
   <div class="share reveal">
@@ -285,8 +295,8 @@ footer .next b{color:var(--signal)}
 
   <section class="cta reveal">
     <h2>우리 단지는 어떨까요</h2>
-    <p>전국 의무관리 아파트 1만 8천 단지. 이름만 넣으면 바로 검진합니다. 로그인 없습니다.</p>
-    <div class="find"><input placeholder="우리 아파트 이름" aria-label="우리 아파트 이름"><button>검진</button></div>
+    <p>전국 의무관리 아파트 1만 8천 단지. 이름만 넣으면 바로 검진합니다. 로그인 없습니다.</p>
+    <div class="find"><input placeholder="예: 한빛마을 3단지…" autocomplete="off" spellcheck="false" name="danji2" type="search" enterkeyhint="search" aria-label="우리 아파트 이름"><button type="submit">검진</button></div>
   </section>
 
   <section class="why">
@@ -296,7 +306,7 @@ footer .next b{color:var(--signal)}
       <div><b>판정하지 않습니다</b><span>신호는 의견이 아니라 데이터에서의 위치입니다. 계산식을 전부 공개합니다.</span></div>
       <div><b>광고를 받지 않습니다</b><span>검진하는 곳이 광고를 받으면, 그건 검진이 아닙니다.</span></div>
     </div>
-    <p class="ctx">2026년 정부 합동감사에서 표본 단지의 72%에서 관리비 비위·부적정 사례가 확인됐고, 같은 해 5월 모든 단지의 회계감사가 의무화됐습니다. 데이터는 열렸습니다. 제값은 그것을 누구나 읽을 수 있는 형태로 바꿉니다.</p>
+    <p class="ctx">2026년 정부 합동감사에서 표본 단지의 72%에서 관리비 비위·부적정 사례가 확인됐고, 같은 해 5월 모든 단지의 회계감사가 의무화됐습니다. 데이터는 열렸습니다. FAIRSHARE는 그것을 누구나 읽을 수 있는 형태로 바꿉니다.</p>
   </section>
 
   <footer>
@@ -331,11 +341,14 @@ footer .next b{color:var(--signal)}
   if(RM) document.querySelectorAll(".spark").forEach(function(s){s.classList.add("drawn");});
 
   var TXT="수신  한빛마을 3단지 관리사무소\n제목  장기수선충당금 적립 현황 열람 요청\n\n공동주택관리법 제30조에 따라 아래 사항의 열람을 요청드립니다.\n\n1. 최근 3개년 장기수선충당금 적립 및 사용 내역\n2. 현행 장기수선계획상 향후 5년 내 예정 공사와 소요 예상액\n3. 최근 3개년 난방비 상승 사유에 대한 설명 자료\n\n회신 희망일  요청일로부터 14일 이내";
+  var typing=null;
   document.getElementById("go").addEventListener("click",function(){
-    var p=document.getElementById("paper");p.classList.add("on");p.innerHTML="";
+    var p=document.getElementById("paper");p.classList.add("on");
+    if(typing){clearInterval(typing);typing=null;p.textContent=TXT;return;}  /* 진행 중 재클릭 = 즉시 완성 */
+    p.innerHTML="";
     if(RM){p.textContent=TXT;return;}
     var i=0,c=document.createElement("span");c.className="car";p.appendChild(c);
-    var t=setInterval(function(){ if(i>=TXT.length){clearInterval(t);c.remove();return;} c.insertAdjacentText("beforebegin",TXT[i++]); },14);
+    typing=setInterval(function(){ if(i>=TXT.length){clearInterval(typing);typing=null;c.remove();return;} c.insertAdjacentText("beforebegin",TXT[i++]); },14);
   });
 })();
 </script>
