@@ -204,3 +204,29 @@ footer .next b{color:var(--signal)}
 .hero-cta .find input{font-size:17px;min-height:52px}
 .hero-cta .find button{min-height:52px;font-size:15.5px;padding:0 22px}
 .cta-note{margin-top:8px;font-size:12.5px;color:var(--slate);letter-spacing:.02em}
+
+/* 도메인 탭 */
+.domains{display:flex;gap:2px;margin-left:18px;border:1px solid var(--hair);padding:3px;background:var(--surface)}
+.domains a{padding:6px 14px;font-size:13.5px;font-weight:600;color:var(--slate);text-decoration:none;min-height:0}
+.domains a.on{background:var(--ink);color:var(--paper)}
+@media(max-width:720px){.domains{margin-left:8px}.domains a{padding:6px 10px}}
+
+/* 병원비편 대기 상태 */
+.pending{margin-top:26px;max-width:520px;padding:16px 18px;border:1px dashed var(--hair-2);background:var(--surface)}
+.pending-t{font-weight:700;margin-bottom:6px}
+.pending p{font-size:13.5px;color:var(--slate);line-height:1.65}
+.pending a{color:var(--ink)}
+
+/* 병원 상세 표 */
+.hexams{margin-top:44px}
+.hexams h3{font-size:19px;font-weight:700;margin-bottom:16px}
+.hnote{font-size:13px;font-weight:500;color:var(--slate)}
+.htable{border-top:2px solid var(--ink)}
+.hrow{display:grid;grid-template-columns:1.6fr .8fr 1fr 1.1fr;gap:12px;padding:12px 4px;border-bottom:1px solid var(--hair);font-size:14px;align-items:baseline}
+.hrow.hhead{font-size:12.5px;color:var(--slate);font-weight:600;border-bottom:1px solid var(--hair-2)}
+.hname{font-weight:600}
+.hrow .slate{color:var(--slate)}
+.hrow .slate i{font-style:normal;font-size:12px}
+.hrow .hot{color:var(--signal);font-weight:700}
+.hfoot{margin-top:14px;font-size:12.5px;color:var(--slate);line-height:1.65;max-width:70ch}
+@media(max-width:720px){.hrow{grid-template-columns:1.3fr .9fr 1.1fr;font-size:13px}.hrow span:nth-child(3){display:none}.hrow.hhead span:nth-child(3){display:none}}

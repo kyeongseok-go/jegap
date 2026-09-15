@@ -5,6 +5,7 @@ import Spark from "./Spark";
 import RxBox from "./RxBox";
 import Search from "./Search";
 import Reveal from "./Reveal";
+import DomainTabs from "./DomainTabs";
 
 const SIG_LABEL = { good: "양호", watch: "관찰", warn: "주의" } as const;
 const SIG_CLASS = { good: "ok", watch: "watch", warn: "warn" } as const;
@@ -84,6 +85,7 @@ export default function CheckupView({
             <span className="bmark">JE<i>GAP</i></span>
             <span className="bsub">제값</span>
           </a>
+          <DomainTabs active="apt" />
           <span className="q">내가 내는 값이 정당한가</span>
           <Search />
         </div>
@@ -261,14 +263,14 @@ export default function CheckupView({
             <div><b>광고를 받지 않습니다</b><span>검진하는 곳이 광고를 받으면, 그건 검진이 아닙니다.</span></div>
           </div>
           <p className="ctx">
-            2026년 정부 합동감사에서 표본 단지의 72%에서 관리비 비위·부적정 사례가 확인됐고,
-            같은 해 5월 모든 단지의 회계감사가 의무화됐습니다. 데이터는 열렸습니다.
-            JEGAP은 그것을 누구나 읽을 수 있는 형태로 바꿉니다.
+            정부 합동 첫 외부 회계감사에서 전국 아파트 다섯 곳 중 한 곳이 회계 부적합
+            판정을 받았습니다(국무조정실, 2016). 2026년에는 회계감사 면제 조항 폐지가
+            추진되고 있습니다. 데이터는 열렸습니다. JEGAP은 그것을 누구나 읽을 수 있는 형태로 바꿉니다.
           </p>
         </section>
 
         <footer>
-          <p className="next">다음 검진 — <b>병원비편</b> 준비 중. 같은 진료가 병원마다 10만 원과 25만 원입니다.</p>
+          <p className="next">다음 검진 — <a href="/h"><b>병원비편</b></a>. 같은 진료인데, 가격은 병원이 정합니다.</p>
           <p>계산식 공개 · 데이터 출처 · 정정 요청은 24시간 안에 처리합니다</p>
         </footer>
       </main>
