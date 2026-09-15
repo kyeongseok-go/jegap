@@ -7,9 +7,17 @@ export function percentileBelow(value: number, peers: number[]): number | null {
   return Math.round(((below + equal / 2) / peers.length) * 100);
 }
 
-/** 시계열 총 상승률 (%). 점이 2개 미만이거나 시작값 0이면 null */
+/** 시계열 총 상승률 (%). 점이 2개 미만이거나 시작값 0이면 null.
+ * 월별 실데이터(24점 이상)는 계절성 왜곡을 막기 위해 첫 12개월 합 vs 마지막 12개월 합으로 비교.
+ * 표본이 성긴 시계열(예: 반기 샘플)은 첫/끝 점 비교. */
 export function totalRisePct(series: number[]): number | null {
   if (series.length < 2) return null;
+  if (series.length >= 24) {
+    const first = series.slice(0, 12).reduce((a, b) => a + b, 0);
+    const last = series.slice(-12).reduce((a, b) => a + b, 0);
+    if (first <= 0) return null;
+    return Math.round(((last - first) / first) * 100);
+  }
   const first = series[0], last = series[series.length - 1];
   if (first <= 0) return null;
   return Math.round(((last - first) / first) * 100);

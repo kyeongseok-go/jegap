@@ -21,17 +21,18 @@ export function runCheckup(me: DanjiData, all: DanjiData[]): Checkup {
   const mult = riseMultiple(myRise, peerAvgRise);
   const feeSig = feeRiseSignal(mult);
 
-  // 수선 이력
-  const repAvg = peerData.length
-    ? peerData.reduce((a, d) => a + d.repairs.count5y, 0) / peerData.length : null;
-  const repSig = repairSignal(me.repairs.count5y, repAvg);
+  // 수선 이력 (데이터 없으면 무소음)
+  const repPeers = peerData.filter((d) => d.repairs);
+  const repAvg = me.repairs && repPeers.length
+    ? repPeers.reduce((a, d) => a + (d.repairs?.count5y ?? 0), 0) / repPeers.length : null;
+  const repSig = me.repairs ? repairSignal(me.repairs.count5y, repAvg) : null;
 
   const exams: ExamResult[] = [];
   if (feeSig !== null && myRise !== null && mult !== null)
     exams.push({ key: "fees", signal: feeSig, facts: { risePct: myRise, multiple: mult } });
   if (resSig !== null && pct !== null)
     exams.push({ key: "reserve", signal: resSig, facts: { percentile: pct, perM2: me.reserve.perM2 } });
-  if (repSig !== null && repAvg !== null)
+  if (repSig !== null && repAvg !== null && me.repairs)
     exams.push({ key: "repairs", signal: repSig, facts: { count5y: me.repairs.count5y, peerAvg: Math.round(repAvg) } });
 
   const base = {

@@ -21,7 +21,9 @@ export function buildOpinion(c: Omit<Checkup, "opinion">): string {
 
   const age = new Date().getFullYear() - c.danji.builtYear;
   if (age >= 25 && res && res.signal !== "good")
-    parts.push(`${c.danji.builtYear}년 준공 단지는 대규모 수선 주기에 들어서는 시기입니다. 지금 적게 쌓는 만큼, 나중에 한꺼번에 내야 할 가능성이 커집니다.`);
+    parts.push(age >= 28
+      ? `${c.danji.builtYear}년 준공 단지는 이미 대규모 수선 주기 안에 있습니다. 지금 적게 쌓는 만큼, 큰 공사가 시작될 때 한꺼번에 내야 할 가능성이 커집니다.`
+      : `${c.danji.builtYear}년 준공 단지는 대규모 수선 주기에 들어서는 시기입니다. 지금 적게 쌓는 만큼, 나중에 한꺼번에 내야 할 가능성이 커집니다.`);
 
   return parts.join(" ");
 }

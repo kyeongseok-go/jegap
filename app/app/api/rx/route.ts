@@ -1,17 +1,17 @@
 import { NextRequest } from "next/server";
 import { getSource } from "../../../lib/data/kapt";
 import { runCheckup } from "../../../lib/engine/checkup";
-import { buildInquiry, buildAgenda } from "../../../lib/engine/rx";
+import { buildInquiry, buildAgenda, buildRefund } from "../../../lib/engine/rx";
 
 export const runtime = "nodejs";
 
 export async function POST(req: NextRequest) {
-  const { code, kind = "inquiry" } = (await req.json()) as { code: string; kind?: "inquiry" | "agenda" };
+  const { code, kind = "inquiry" } = (await req.json()) as { code: string; kind?: "inquiry" | "agenda" | "refund" };
   const src = getSource();
   const me = await src.get(code);
   if (!me) return new Response("not found", { status: 404 });
   const checkup = runCheckup(me, await src.all());
-  const template = kind === "agenda" ? buildAgenda(checkup) : buildInquiry(checkup);
+  const template = kind === "agenda" ? buildAgenda(checkup) : kind === "refund" ? buildRefund(checkup) : buildInquiry(checkup);
 
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key) {

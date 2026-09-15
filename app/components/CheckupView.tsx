@@ -49,6 +49,10 @@ export default function CheckupView({
   const feeFirst = data.fees[0], feeLast = data.fees[data.fees.length - 1];
   const y0 = feeFirst ? feeFirst.ym.slice(0, 4) : "";
   const y1 = feeLast ? feeLast.ym.slice(0, 4) : "";
+  // 표시용 총관리비: 월별 실데이터는 12개월 평균으로 계절성 보정 (엔진 stats와 동일 원칙)
+  const avg = (a: number[]) => Math.round(a.reduce((x, y) => x + y, 0) / a.length);
+  const totFrom = data.fees.length >= 24 ? avg(data.fees.slice(0, 12).map((f) => f.total)) : feeFirst?.total ?? 0;
+  const totTo = data.fees.length >= 24 ? avg(data.fees.slice(-12).map((f) => f.total)) : feeLast?.total ?? 0;
   const age = new Date().getFullYear() - c.danji.builtYear;
 
   // 분포 차트 (reserve 검사 있을 때만 — 무소음)
@@ -89,12 +93,16 @@ export default function CheckupView({
         <section className="hero">
           <p className="eyebrow">
             <span className="pulse" aria-hidden="true"></span>
-            {isHome ? "이번 주 전국에서 가장 위태로운 단지" : "단지 검진 결과"}
+            {isHome ? "이번 주 검진 사례 — 장기수선충당금 적립 하위 단지" : "단지 검진 결과"}
           </p>
           {isHome && (
             <>
               <h1 className="head">관리비가 싼 단지가<br /><span className="hl">좋은 단지는 아닙니다</span></h1>
               <p className="sub">미래를 위해 쌓아둬야 할 돈을 쌓지 않는 단지가 있습니다. 그 청구서는 <b>10년 뒤에 한꺼번에</b> 옵니다.</p>
+              <div className="hero-cta">
+                <Search wide />
+                <p className="cta-note">전국 2만 1천 단지 · 로그인 없음 · 30초</p>
+              </div>
             </>
           )}
           <div className="subject">
@@ -164,15 +172,19 @@ export default function CheckupView({
             <div className="node now">
               <span className="yr">{y0} — {y1}</span>
               <p className="txt">
-                관리비 <b>㎡당 {feeFirst.total.toLocaleString()}원 → {feeLast.total.toLocaleString()}원</b>.
+                관리비 <b>㎡당 {totFrom.toLocaleString()}원 → {totTo.toLocaleString()}원</b>{data.fees.length >= 24 ? " (연평균)" : ""}.
                 난방비가 {fee.facts.risePct}% 올랐습니다. 같은 조건 단지 평균의 <b>{fee.facts.multiple}배</b> 속도입니다.
               </p>
             </div>
           )}
           {age >= 25 && res && res.signal !== "good" && (
             <div className="node future">
-              <span className="yr">{c.danji.builtYear + 29} 무렵</span>
-              <p className="txt">28~30년차는 <b>대규모 수선 주기</b>입니다. 지금 적립 속도로는 필요한 금액에 닿지 못할 수 있습니다.</p>
+              <span className="yr">{age >= 28 ? "지금" : `${c.danji.builtYear + 29} 무렵`}</span>
+              <p className="txt">
+                {age >= 28
+                  ? <>이 단지는 이미 <b>대규모 수선 주기</b>(28~30년차) 안에 있습니다. 배관·승강기 등 큰 공사의 재원이 지금의 적립에서 나옵니다.</>
+                  : <>28~30년차는 <b>대규모 수선 주기</b>입니다. 지금 적립 속도로는 필요한 금액에 닿지 못할 수 있습니다.</>}
+              </p>
             </div>
           )}
         </Reveal>
@@ -233,11 +245,11 @@ export default function CheckupView({
           </p>
         </Reveal>
 
-        <RxBox code={c.danji.code} />
+        <RxBox code={c.danji.code} refundWon={Math.round(data.reserve.perM2 * 84 * 24 / 100) * 100} />
 
         <Reveal as="section" className="cta">
           <h2>우리 단지는 어떨까요</h2>
-          <p>전국 의무관리 아파트 1만 8천 단지. 이름만 넣으면 바로 검진합니다. 로그인 없습니다.</p>
+          <p>전국 관리비 공개 아파트 2만 1천 단지. 이름만 넣으면 바로 검진합니다. 로그인 없습니다.</p>
           <Search wide />
         </Reveal>
 

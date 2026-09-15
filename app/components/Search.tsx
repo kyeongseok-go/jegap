@@ -56,7 +56,7 @@ export default function Search({ wide = false }: { wide?: boolean }) {
       </form>
       {openList && q.trim() && (
         <div className="sugg" id="sugg-list" role="listbox" aria-label="검색 결과">
-          {items.length === 0 && <p className="none">일치하는 단지가 없습니다. 예시 데이터에서는 &lsquo;한빛&rsquo;, &lsquo;달빛&rsquo; 등으로 검색해 보세요.</p>}
+          {items.length === 0 && <p className="none">일치하는 단지가 없습니다. 공식 명칭의 두세 글자로 검색해 보세요.</p>}
           {items.map((it, i) => (
             <button key={it.code} role="option" aria-selected={i === hi} onClick={() => go(it)}>
               <span>{it.name}</span><span className="gu">{it.sigungu}</span>

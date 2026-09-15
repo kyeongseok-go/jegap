@@ -20,7 +20,11 @@ export interface Danji {
 export interface FeePoint { ym: string; total: number; heating: number; }
 
 /** 장충금 (㎡당 월 적립액, 원) */
-export interface Reserve { perM2: number; }
+export interface Reserve {
+  perM2: number;       // 월부과액 ㎡당 (원)
+  totalWon?: number;   // 총적립액 (원) — 실데이터만
+  ratePct?: number;    // 장기수선계획 대비 적립률 (%) — 실데이터만
+}
 
 /** 수선 이력 등록 건수 (최근 5년) */
 export interface RepairHistory { count5y: number; }
@@ -29,7 +33,7 @@ export interface DanjiData {
   danji: Danji;
   fees: FeePoint[];        // 오래된 것 → 최신 순
   reserve: Reserve;
-  repairs: RepairHistory;
+  repairs?: RepairHistory;   // 실데이터에 없으면 미표시(무소음)
 }
 
 export interface ExamResult {
