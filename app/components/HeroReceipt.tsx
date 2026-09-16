@@ -1,7 +1,10 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 
-/** 히어로 영수증 — 3D 틸트 + 항목 취소선 스태거 + 도장 모션. 금액은 "?" (수치를 지어내지 않기 위한 의도된 공백) */
+/**
+ * 히어로 영수증 더미 — 뒤로 구겨진 영수증이 쌓이고, 맨 앞 장에 3D 틸트·취소선·도장.
+ * 금액은 전부 "?" (수치를 지어내지 않는다는 원칙. 답은 검진표에 있다는 훅)
+ */
 const RECEIPTS = {
   apt: { title: "관리비 영수증", src: "K-apt · 매월 공시", foot: "얼마가 제값인지는 검진표가 압니다",
     items: ["일반관리비", "청소비", "승강기유지비", "난방비", "장기수선충당금"] },
@@ -17,29 +20,42 @@ const RECEIPTS = {
 
 export default function HeroReceipt({ domain }: { domain: keyof typeof RECEIPTS }) {
   const r = RECEIPTS[domain];
-  const ref = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const [play, setPlay] = useState(false);
 
   useEffect(() => {
-    const t = setTimeout(() => setPlay(true), 600);
+    const t = setTimeout(() => setPlay(true), 550);
     return () => clearTimeout(t);
   }, []);
 
-  // 3D 틸트 — 커서를 따라 종이가 기울어진다
+  // 더미 전체가 커서를 따라 기운다 (뒷장은 더 적게 → 깊이감)
   const onMove = (e: React.PointerEvent) => {
-    const el = ref.current;
+    const el = stageRef.current;
     if (!el || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const b = el.getBoundingClientRect();
     const px = (e.clientX - b.left) / b.width - 0.5;
     const py = (e.clientY - b.top) / b.height - 0.5;
-    el.style.transform = `rotate(.4deg) rotateY(${px * 14}deg) rotateX(${-py * 12}deg) translateY(-4px)`;
+    el.style.setProperty("--ry", `${px * 15}deg`);
+    el.style.setProperty("--rx", `${-py * 11}deg`);
   };
-  const onLeave = () => { if (ref.current) ref.current.style.transform = ""; };
+  const onLeave = () => {
+    const el = stageRef.current;
+    if (!el) return;
+    el.style.setProperty("--ry", "0deg");
+    el.style.setProperty("--rx", "0deg");
+  };
 
   return (
-    <div className="receipt-persp" aria-hidden="true">
-      <div ref={ref} className={`receipt${play ? " play" : ""}`}
-        onPointerMove={onMove} onPointerLeave={onLeave}>
+    <div className="rstage" aria-hidden="true" ref={stageRef}
+      onPointerMove={onMove} onPointerLeave={onLeave}>
+      {/* 뒤로 쌓인 구겨진 영수증들 */}
+      <span className="rcrumple c3" />
+      <span className="rcrumple c2" />
+      <span className="rslip s3" />
+      <span className="rslip s2" />
+      <span className="rslip s1" />
+
+      <div className={`receipt${play ? " play" : ""}`}>
         <p className="r-head">{r.title}</p>
         <p className="r-src">{r.src}</p>
         <ul className="r-items">

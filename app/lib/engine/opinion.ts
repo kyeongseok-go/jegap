@@ -12,7 +12,7 @@ export function buildOpinion(c: Omit<Checkup, "opinion">): string {
   if (fee && fee.signal !== "good" && fee.facts.risePct !== undefined)
     parts.push(`난방비가 최근 공시 기간에 ${fee.facts.risePct}% 올라, 비슷한 단지들보다 ${fee.facts.multiple}배 빠르게 오르고 있습니다.`);
   if (res && res.signal !== "good")
-    parts.push(`미래 수리비 저금(장기수선충당금)이 비슷한 단지 ${c.peerCount}곳 가운데 하위 ${Math.max(1, c.reservePercentile)}% 수준입니다.`);
+    parts.push(`나중에 쓸 수리비(장기수선충당금)를 비슷한 단지 ${c.peerCount}곳 중에서 적게 쌓는 편입니다(아래에서 ${Math.max(1, c.reservePercentile)}% 지점).`);
   if (rep && rep.signal !== "good")
     parts.push(`수선 이력 등록이 같은 연차 단지 평균보다 적습니다. 고치지 않았거나 기록하지 않았다는 뜻이므로, 둘 다 확인이 필요합니다.`);
 

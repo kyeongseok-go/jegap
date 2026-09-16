@@ -49,6 +49,8 @@ export default function CheckupView({
   const res = c.exams.find((e) => e.key === "reserve");
   const rep = c.exams.find((e) => e.key === "repairs");
   const displayPct = Math.max(1, c.reservePercentile);
+  // 100곳 중 몇 곳이 더 많이 쌓는가 (백분위의 쉬운 번역)
+  const aheadCount = Math.min(99, Math.max(1, 100 - displayPct));
 
   const feeFirst = data.fees[0], feeLast = data.fees[data.fees.length - 1];
   const y0 = feeFirst ? feeFirst.ym.slice(0, 4) : "";
@@ -105,7 +107,7 @@ export default function CheckupView({
           {isHome && (
             <>
               <h1 className="head">우리 아파트 관리비,<br /><span className="hl">나만 많이 내는 걸까?</span></h1>
-              <p className="sub">단지 이름만 넣으면 <b>비슷한 단지와 비교한 검진표</b>가 바로 나옵니다. 관리비가 새는지, 미래 수리비는 쌓이고 있는지. 아래는 이번 주에 찾은 실제 사례입니다.</p>
+              <p className="sub">우리 단지 이름만 검색하면 됩니다. 비슷한 조건의 단지들과 <b>나란히 놓고</b> 보여드려요. 관리비는 어느 쪽인지, 나중에 쓸 수리비는 잘 쌓이고 있는지. 아래는 이번 주에 눈에 띈 단지 하나입니다.</p>
               <div className="hero-cta">
                 <Search wide />
                 <p className="cta-note">전국 2만 1천 단지 · 로그인 없음 · 30초</p>
@@ -127,7 +129,7 @@ export default function CheckupView({
         {res && dist && (
           <section className="centerpiece">
             <HeroCount
-              percentile={Math.max(1, c.reservePercentile)}
+              percentile={res.signal === "good" ? 1 : aheadCount}
               signal={res.signal}
               signalLabel={SIG_LABEL[res.signal]}
               meX={meX}
@@ -136,19 +138,19 @@ export default function CheckupView({
                 <p className="lab">미래 수리비 저금 <span style={{ color: "var(--hair-2)" }}>|</span> 장기수선충당금</p>
                 <p className="big">
                   {res.signal === "good"
-                    ? <>비슷한 단지들의 <em>일반적인 범위</em> 안에 있습니다</>
-                    : <>비슷한 단지 <em className="num" data-count>{displayPct}</em><em>%</em> 아래에 있습니다</>}
+                    ? <>비슷한 단지들과 <em>비슷한 만큼</em> 쌓고 있어요</>
+                    : <>비슷한 단지 100곳 중 <em className="num" data-count>{aheadCount}</em><em>곳</em>이 더 많이 쌓고 있어요</>}
                 </p>
                 <p className="why">
                   {age >= 25 && res.signal !== "good"
-                    ? <>{age}년차 단지가 이 정도만 쌓고 있다면, 배관·승강기 교체가 시작될 때 세대마다 목돈을 내야 할 수 있습니다. </>
-                    : <>지금의 적립 속도가 미래 수선 비용을 감당할 수 있는지 확인해 보세요. </>}
+                    ? <>지은 지 {age}년이면 배관과 승강기를 갈아야 할 때가 가까워집니다. 그때 쓸 돈을 지금 적게 쌓고 있다면, 공사가 시작될 때 세대마다 목돈을 걷게 될 수 있어요. </>
+                    : <>지금 쌓는 속도로 나중에 필요한 공사비를 감당할 수 있는지 함께 보시죠. </>}
                   <a href="/method">어떻게 계산했나</a>
                 </p>
               </div>
             </HeroCount>
             <div className="chartbox">
-              <svg className="dist" viewBox="0 0 900 190" preserveAspectRatio="none" role="img"
+              <svg className="dist" viewBox="0 -14 900 210" preserveAspectRatio="xMidYMid meet" role="img"
                 aria-label={`유사 단지 ${c.peerCount}곳의 장기수선충당금 적립 분포에서 ${c.danji.name}의 위치`}>
                 <path className="curve" d={dist.curve} />
                 <line className="axis" x1="40" y1="150" x2="860" y2="150" />
@@ -160,8 +162,8 @@ export default function CheckupView({
                 <line className="me-line" data-me-line x1={meX} y1="150" x2={meX} y2="60" />
                 <circle className="me-dot" data-me-dot cx={meX} cy="150" r="5.5" />
                 <text className="me-lab" data-me-lab
-                  x={meX > 700 ? meX - 10 : meX + 10}
-                  textAnchor={meX > 700 ? "end" : "start"} y="54" opacity="0">
+                  x={Math.min(854, Math.max(46, meX > 700 ? meX - 10 : meX + 10))}
+                  textAnchor={meX > 700 ? "end" : "start"} y="46" opacity="0">
                   {c.danji.name}
                 </text>
               </svg>
@@ -170,7 +172,7 @@ export default function CheckupView({
         )}
 
         <Reveal as="section" className="rail">
-          <h3>준공부터 다가올 대규모 수선까지</h3>
+          <h3>이 단지가 지나온 길, 그리고 앞으로 쓸 돈</h3>
           <div className="node">
             <span className="yr">{c.danji.builtYear}</span>
             <p className="txt">준공. 배관·승강기의 설계 수명이 여기서 시작됩니다.</p>
@@ -217,8 +219,8 @@ export default function CheckupView({
             <Reveal className="row">
               <div className="name">미래 수리비 저금<span>장기수선충당금</span></div>
               <div className="body">
-                비슷한 단지 {c.peerCount}곳 가운데 <b>하위 {displayPct}%</b>입니다.
-                {age >= 25 && res.signal !== "good" && <> 준공 {age}년차 기준으로는 낮은 수준입니다.</>}
+                비슷한 단지 {c.peerCount}곳 중에서 <b>적게 쌓는 편</b>입니다(아래에서 {displayPct}% 지점).
+                {age >= 25 && res.signal !== "good" && <> 지은 지 {age}년 된 단지 기준으로는 낮습니다.</>}
               </div>
               <div className="metric">
                 <span className="v">{data.reserve.perM2}<span style={{ fontSize: 15, fontWeight: 600 }}>원</span></span>
