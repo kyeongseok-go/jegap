@@ -1,36 +1,73 @@
 #!/usr/bin/env python3
-"""심평원 비급여 공개가격 → app/data/hira.json.gz
+"""심평원 비급여 공개가격 전량 인제스트 → app/data/hira.json.gz
 
-전제(활성화 절차):
-1. 공공데이터포털에서 "건강보험심사평가원_비급여진료비정보조회서비스"(15001700)
-   + "건강보험심사평가원_병원정보서비스"(15001698) 활용신청 (자동승인)
-2. 같은 인증키 사용 (.env.local의 DATA_GO_KR_KEY)
-
-⚠️ 필드 확정 게이트: 아래 FIELD_MAP은 첫 실행 때 --probe 로 실호출 응답을 보고 확정할 것.
-   추측으로 채우지 않는다 (프로젝트 원칙 PC1). --probe가 샘플 응답을 출력한다.
-
-용법:
-  python3 ingest_hira.py --probe            # 1회: 응답 구조 확인
-  python3 ingest_hira.py <출력.json.gz>     # 본 인제스트 (다빈도 항목 위주)
+필드 확정: 2026-09-16 실호출 검증 완료 (getNonPaymentItemHospDtlList).
+  ykiho(암호화 요양기호) yadmNm(기관명) clCdNm(종별) sidoCdNm sgguCdNm
+  npayCd(항목코드) npayKorNm(표준 항목명) curAmt(현재 금액) adtFrDd(적용시작일)
+용법: DATA_GO_KR_KEY=... python3 ingest_hira.py <출력.json.gz>
 """
 import sys, os, json, gzip, time, urllib.request, urllib.parse
+from collections import defaultdict
+from statistics import median
 
-KEY = os.environ.get("DATA_GO_KR_KEY") or sys.exit("DATA_GO_KR_KEY 필요 (.env.local 참조)")
-BASE = "https://apis.data.go.kr/B551182/nonPaymentDamtInfoService"
+KEY = os.environ.get("DATA_GO_KR_KEY") or sys.exit("DATA_GO_KR_KEY 필요")
+OUT = sys.argv[1] if len(sys.argv) > 1 else "hira.json.gz"
+B = "https://apis.data.go.kr/B551182/nonPaymentDamtInfoService/getNonPaymentItemHospDtlList"
+ROWS = 1000
 
-# 다빈도·체감 큰 항목부터 (심평원 다빈도 조회 항목 + 국민 체감 항목)
-# 코드가 확정되면 여기 채운다 — --probe 로 getNonPaymentItemCodeList(항목코드 op)를 먼저 확인.
-TARGET_ITEM_KEYWORDS = ["도수치료", "체외충격파", "MRI", "초음파", "임플란트", "크라운", "대상포진", "독감", "추나요법", "제증명"]
+def fetch(page, tries=4):
+    q = urllib.parse.urlencode({"serviceKey": KEY, "numOfRows": ROWS, "pageNo": page, "_type": "json"})
+    for t in range(tries):
+        try:
+            with urllib.request.urlopen(f"{B}?{q}", timeout=90) as r:
+                d = json.loads(r.read().decode("utf-8"))
+            body = d["response"]["body"]
+            return body["totalCount"], body["items"]["item"] if body["items"] else []
+        except Exception as e:
+            if t == tries - 1: raise
+            time.sleep(3 * (t + 1))
 
-def call(op, **params):
-    q = urllib.parse.urlencode({"serviceKey": KEY, "numOfRows": 1000, "_type": "json", **params})
-    with urllib.request.urlopen(f"{BASE}/{op}?{q}", timeout=60) as r:
-        return r.read().decode("utf-8")
+t0 = time.time()
+total, first = fetch(1)
+pages = -(-total // ROWS)
+print(f"total {total} rows, {pages} pages", flush=True)
 
-if "--probe" in sys.argv:
-    for op in ("getNonPaymentItemHospDtlList",):
-        print(f"=== {op} (pageNo=1) ===")
-        print(call(op, pageNo=1)[:2000])
-    sys.exit(0)
+hosp = {}                                  # ykiho → meta
+prices = defaultdict(lambda: defaultdict(list))   # ykiho → npayCd → [amt]
+names = {}                                 # npayCd → 표준 항목명
 
-sys.exit("본 인제스트는 --probe 로 필드 확정 후 구현을 완성한다 (FIELD_MAP 미확정).")
+def take(items):
+    for it in items:
+        y = it.get("ykiho"); amt = it.get("curAmt")
+        if not y or not isinstance(amt, (int, float)) or amt <= 0: continue
+        if y not in hosp:
+            hosp[y] = {
+                "name": str(it.get("yadmNm") or "").strip(),
+                "sido": str(it.get("sidoCdNm") or "").strip(),
+                "sigungu": str(it.get("sgguCdNm") or "").strip(),
+                "kind": str(it.get("clCdNm") or "").strip(),
+            }
+        cd = str(it.get("npayCd") or "")
+        if not cd: continue
+        names.setdefault(cd, str(it.get("npayKorNm") or "").strip())
+        prices[y][cd].append(int(amt))
+
+take(first)
+for p in range(2, pages + 1):
+    _, items = fetch(p)
+    take(items)
+    if p % 25 == 0: print(f"page {p}/{pages} {time.time()-t0:.0f}s", flush=True)
+
+out = []
+for y, m in hosp.items():
+    items = []
+    for cd, arr in prices[y].items():
+        # 같은 코드의 세부 변형(예: 1인실 일반/특실)은 중앙값으로 대표 — 산식은 /method에 공개
+        items.append([cd, names.get(cd, cd), int(median(arr))])
+    if items:
+        out.append({"id": y, **m, "items": items})
+
+print(f"hospitals {len(out)}, items {sum(len(o['items']) for o in out)} {time.time()-t0:.0f}s", flush=True)
+with gzip.open(OUT, "wt", encoding="utf-8") as f:
+    json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
+print(f"wrote {OUT}: {os.path.getsize(OUT)/1e6:.1f}MB", flush=True)
