@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import PriceHome from "../../components/PriceHome";
+import PriceSearch from "../../components/PriceSearch";
+import { funeralReady } from "../../lib/funeral";
 
 export const metadata: Metadata = {
   title: "JEGAP 제값 — 장례비 검진",
@@ -18,9 +20,10 @@ export default function FuneralHome() {
         장례식장은 <b>임대료·수수료 등 가격표 게시 의무</b>가 있고(장사법), 보건복지부 e하늘에
         시설별 가격이 공개되어 있습니다. 미리 알고 가는 것이 유일한 방어입니다.
       </>}
-      ready={false}
-      search={null}
-      ctaNote="e하늘 공개 가격 기준 · 로그인 없음 · 30초"
+      ready={funeralReady()}
+      search={<PriceSearch endpoint="/api/fsearch" hrefBase="/f" wide
+        placeholder="장례식장 이름 검색  예: ○○병원장례식장" label="장례식장 이름 검색" />}
+      ctaNote="e하늘 공시 가격(2023.6) 기준 · 로그인 없음 · 30초"
       pendingNote={<>보건복지부 e하늘 장사정보의 시설별 가격 데이터를 연동하는 중입니다.
         빈소 사용료·안치료·염습비 등 항목별 위치를 보여드릴 예정입니다.</>}
       principles={[
