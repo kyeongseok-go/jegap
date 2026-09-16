@@ -24,6 +24,8 @@ export default function AcademyHome() {
       search={<PriceSearch endpoint="/api/asearch" hrefBase="/a" wide
         placeholder="학원 이름 검색  예: ○○영어학원" label="학원 이름 검색" />}
       ctaNote="교육청(NEIS) 공시 교습비 기준 · 로그인 없음 · 30초"
+      actionNote={<>학원은 신고한 교습비를 게시해야 하고, 그보다 더 받으면 위법입니다(학원법 제15조).
+        검진표 아래에서 <b>교습비 확인 요청문</b>을 만들어 드립니다. 그대로 복사해 학원에 보내시면 됩니다.</>}
       pendingNote={<>교육청 학원·교습소 공시 데이터(전국)를 연동하는 중입니다.
         데이터 출처: 나이스 교육정보 개방 포털.</>}
       principles={[

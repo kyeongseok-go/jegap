@@ -72,6 +72,11 @@ export default function LivingHome() {
           </div>
         )}
 
+        <section className="act-hint">
+          <p className="ah-lab">검진 다음에 할 수 있는 일</p>
+          <p className="ah-body">생활물가는 가게마다 물어볼 대상이 아니라 <b>고를 수 있는</b> 값입니다.
+            지역을 고르면 정부·지자체가 지정한 <b>착한가격업소</b>를 함께 보여드립니다. 같은 품목을 주변보다 싸게 파는 곳입니다.</p>
+        </section>
         <section className="why">
           <h2>다른 편과 같은 원칙으로 검진합니다</h2>
           <div className="grid">

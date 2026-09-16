@@ -24,6 +24,8 @@ export default function FuneralHome() {
       search={<PriceSearch endpoint="/api/fsearch" hrefBase="/f" wide
         placeholder="장례식장 이름 검색  예: ○○병원장례식장" label="장례식장 이름 검색" />}
       ctaNote="e하늘 공시 가격(2023.6) 기준 · 로그인 없음 · 30초"
+      actionNote={<>장례식장은 항목별 가격을 게시할 의무가 있습니다. 검진표 아래에서
+        <b> 항목별 가격 목록 요청문</b>을 만들어 드립니다. 상담 전에 미리 받아 두면 비교할 시간이 생깁니다.</>}
       pendingNote={<>보건복지부 e하늘 장사정보의 시설별 가격 데이터를 연동하는 중입니다.
         빈소 사용료·안치료·염습비 등 항목별 위치를 보여드릴 예정입니다.</>}
       principles={[

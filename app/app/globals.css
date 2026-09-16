@@ -362,3 +362,18 @@ footer .next b{color:var(--signal)}
   .r-items li .strike{transform:scaleX(1) rotate(-1.2deg)}
   .r-stamp{opacity:.85;transform:rotate(-14deg) scale(1) translateZ(56px)}
   .rslip,.rcrumple,.receipt{transition:none}}
+
+/* ── 도메인 소품: 분야를 알리는 선화 삽화 ── */
+.rprop{position:absolute;left:-58px;bottom:-6px;width:156px;height:156px;
+  color:rgba(92,89,78,.42);pointer-events:none;
+  transform:rotate(-3deg) translateZ(-120px) rotateY(calc(var(--ry) * .2)) rotateX(calc(var(--rx) * .2));
+  transition:transform .45s var(--ease),color .45s var(--ease)}
+.rstage:hover .rprop{color:rgba(196,30,30,.4)}
+@media(prefers-reduced-motion:reduce){.rprop{transition:none}}
+
+/* ── 검진 다음 행동 안내 ── */
+.act-hint{margin:44px 0 0;padding:20px 24px;background:var(--surface);
+  border:1.5px dashed var(--hair-2);border-left:3px solid var(--signal)}
+.ah-lab{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;color:var(--signal);font-weight:700;margin-bottom:8px}
+.ah-body{font-size:15px;line-height:1.72;color:var(--ink);max-width:68ch}
+.ah-body b{font-weight:700}

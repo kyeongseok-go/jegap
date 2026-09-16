@@ -48,6 +48,11 @@ export default function HospitalHome() {
             </div>
           )}
         </section>
+        <section className="act-hint">
+          <p className="ah-lab">검진 다음에 할 수 있는 일</p>
+          <p className="ah-body">병원은 비급여 진료비를 미리 알려줄 의무가 있습니다(의료법 제45조).
+            검진표 아래에서 <b>진료 전 확인 메모</b>를 만들어 드립니다. 예약 전화할 때 그대로 읽으시면 됩니다.</p>
+        </section>
         <section className="why">
           <h2>관리비편과 같은 원칙으로 검진합니다</h2>
           <div className="grid">

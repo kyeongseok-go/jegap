@@ -4,10 +4,11 @@ import { CONTACT } from "../lib/site";
 
 /** 가격 도메인 공용 홈 — 활성 시 검색, 비활성 시 연동 안내 */
 export default function PriceHome({
-  active, eyebrow, headline, hl, sub, ready, search, pendingNote, principles, ctaNote,
+  active, eyebrow, headline, hl, sub, ready, search, pendingNote, principles, ctaNote, actionNote,
 }: {
   active: DomainKey; eyebrow: string; headline: string; hl: string;
   sub: React.ReactNode; ready: boolean; search: React.ReactNode;
+  actionNote?: React.ReactNode;
   pendingNote: React.ReactNode; ctaNote: string;
   principles: Array<{ t: string; d: string }>;
 }) {
@@ -41,6 +42,12 @@ export default function PriceHome({
             </div>
           )}
         </section>
+        {actionNote && (
+          <section className="act-hint">
+            <p className="ah-lab">검진 다음에 할 수 있는 일</p>
+            <p className="ah-body">{actionNote}</p>
+          </section>
+        )}
         <section className="why">
           <h2>관리비편과 같은 원칙으로 검진합니다</h2>
           <div className="grid">
