@@ -29,7 +29,7 @@ export default function LivingHome() {
           <p className="eyebrow"><span className="pulse" aria-hidden="true"></span>생활물가편 — 우리 동네 검진</p>
           <h1 className="head">같은 냉면 한 그릇도<br /><span className="hl">지역마다 값이 다릅니다</span></h1>
           <p className="sub">
-            행정안전부가 매월 조사하는 <b>서민밀접 35개 품목</b> — 냉면·삼겹살·이발료·목욕료·택시료.
+            행정안전부가 매월 조사하는 <b>서민밀접 30여 개 품목</b> — 냉면·삼겹살·이발료·목욕료·택시료.
             내가 사는 지역의 값이 전국 어디쯤인지, 3년간 얼마나 올랐는지 보여드립니다.
           </p>
         </section>
@@ -60,6 +60,7 @@ export default function LivingHome() {
                 <Link key={s.key} href={`/p/${encodeURIComponent(s.key)}`} className="sido">{s.label}</Link>
               ))}
             </div>
+            <p className="hfoot">세종의 가격은 충남에 포함되어 조사됩니다 (행정안전부 조사 기준).</p>
           </section>
         ) : (
           <div className="pending">

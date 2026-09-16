@@ -26,7 +26,6 @@ export const SIDOS: Array<{ key: string; label: string; shopPrefix: string }> = 
   { key: "전남광주(광주)", label: "광주광역시", shopPrefix: "광주" },
   { key: "대전", label: "대전광역시", shopPrefix: "대전" },
   { key: "울산", label: "울산광역시", shopPrefix: "울산" },
-  { key: "세종", label: "세종특별자치시", shopPrefix: "세종" },
   { key: "경기", label: "경기도", shopPrefix: "경기" },
   { key: "강원", label: "강원특별자치도", shopPrefix: "강원" },
   { key: "충북", label: "충청북도", shopPrefix: "충청북" },
@@ -52,6 +51,15 @@ export function livingReady(): boolean { return existsSync(LIVING); }
 
 /** 표에서 제외 — 중복 품목(삼겹살 환산 전은 환산 후와 중복) */
 const EXCLUDE = new Set(["BD"]);
+
+/** 공식 조사 단위 — 하모니 각주 원문 기준 (근거 없는 품목은 표기하지 않음) */
+export const UNITS: Record<string, string> = {
+  BA: "1인분", BB: "1인분", BC: "1인분", BF: "1인분", BG: "1인분", BH: "1인분",
+  BI: "1줄", BE: "200g",
+  CA: "1회", CB: "1일", CC: "1회", CD: "1회", CE: "1회",
+  DA: "20kg", DB: "100g", DC: "100g", DD: "1마리", DE: "10개",
+  DF: "1포기", DG: "1개", DH: "1kg", DI: "100g", DJ: "1kg",
+};
 
 /** 원자료 용어 → 표시명 (의미 부연 없이 다듬기만) */
 const DISPLAY: Record<string, string> = {
@@ -82,7 +90,7 @@ export function latestMonth(): string {
 }
 
 export interface LivingExam {
-  code: string; name: string; cat: string;
+  code: string; name: string; cat: string; unit?: string;
   latest: number; latestYm: string;
   median: number;            // 같은 달 17개 시도 중간값
   multiple: number;
@@ -122,7 +130,7 @@ export function livingExams(sidoKey: string): LivingExam[] {
     const pastIdx = idx - 36;
     const past = pastIdx >= brk ? mine[pastIdx] : null;
     out.push({
-      code: it.code, name: DISPLAY[it.code] ?? it.name, cat: it.cat,
+      code: it.code, name: DISPLAY[it.code] ?? it.name, cat: it.cat, unit: UNITS[it.code],
       latest, latestYm: d.months[idx],
       median, multiple: Math.round((latest / median) * 100) / 100,
       rank, of: peers.length,

@@ -52,7 +52,7 @@ export default async function LivingSidoPage({ params }: { params: Promise<{ sid
           if (rows.length === 0) return null;
           return (
             <Reveal as="section" className="hexams" key={cat}>
-              <h2 className="sech">{cat} <span className="hnote">— 17개 시도 기준</span></h2>
+              <h2 className="sech">{cat} <span className="hnote">— 시도 비교 기준</span></h2>
               <div className="htable" role="table" aria-label={`${cat} 품목별 가격 위치`}>
                 <div className="hrow hhead" role="row">
                   <span role="columnheader">품목</span>
@@ -62,7 +62,7 @@ export default async function LivingSidoPage({ params }: { params: Promise<{ sid
                 </div>
                 {rows.map((e) => (
                   <div className="hrow" role="row" key={e.code}>
-                    <span role="cell" className="hname">{e.name}</span>
+                    <span role="cell" className="hname">{e.name}{e.unit && <i className="unit"> · {e.unit}</i>}</span>
                     <span role="cell" className="num">{e.latest.toLocaleString()}원</span>
                     <span role="cell" className="num slate">{e.median.toLocaleString()}원</span>
                     <span role="cell" className={`num ${e.rank <= 3 && e.multiple > 1 ? "hot" : ""}`}>
@@ -97,6 +97,11 @@ export default async function LivingSidoPage({ params }: { params: Promise<{ sid
           <p className="rx-mode">행정안전부 착한가격업소 현황(2026.6) 기준. 특정 업소의 추천이 아니라 정부 지정 제도의 안내입니다.</p>
         </Reveal>
 
+        <p className="hfoot">
+          조사 단위는 품목명 옆에 표기했습니다(행정안전부 조사 기준). 시도 간에는 조사 대상 업소와
+          상품 품질이 동일하지 않아 비교가 정확하지 않을 수 있다는 것이 조사기관의 공식 안내입니다.
+          세종의 가격은 충남에 포함되어 조사됩니다.
+        </p>
         <footer>
           <p className="next"><b>관리비편</b> — 우리 단지 검진도 열려 있습니다.</p>
           <p>계산식 공개 · 데이터 출처 · 정정 요청은 24시간 안에 처리합니다</p>
