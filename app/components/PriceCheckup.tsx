@@ -41,7 +41,7 @@ export default function PriceCheckup({
           </p></section>
         ) : (
           <Reveal as="section" className="hexams">
-            <h3>공개 항목별 가격 위치 <span className="hnote">— {exams[0].peerLabel}</span></h3>
+            <h3>공개 항목별 가격 위치  <span className="hnote">— {exams[0].peerLabel}</span></h3>
             <div className="htable" role="table" aria-label="항목별 가격 위치">
               <div className="hrow hhead" role="row">
                 <span role="columnheader">항목</span>

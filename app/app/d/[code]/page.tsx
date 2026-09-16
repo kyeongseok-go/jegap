@@ -1,6 +1,3 @@
-// 방문한 페이지는 하루 캐시 (ISR) — 데이터는 주간 갱신이라 안전
-export const revalidate = 86400;
-
 import { notFound } from "next/navigation";
 import { getSource } from "../../../lib/data/kapt";
 import { runCheckup } from "../../../lib/engine/checkup";
