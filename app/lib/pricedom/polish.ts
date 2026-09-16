@@ -20,7 +20,7 @@ export async function polishResponse(template: string): Promise<Response> {
         stream: true,
         system:
           "너는 안내문 문장을 다듬는 편집자다. 수치·법 조항·항목명은 절대 바꾸지 마라. " +
-          "추가 주장·판정·감정 표현을 넣지 마라. 정중하고 간결한 한국어로만 다듬어라.",
+          "추가 주장·판정·감정 표현을 넣지 마라. 마크다운 문법(#, *, - 등)을 쓰지 말고 일반 문서처럼 써라. 정중하고 간결한 한국어로만 다듬어라.",
         messages: [{ role: "user", content: template }],
       }),
     });
