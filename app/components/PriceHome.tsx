@@ -25,7 +25,7 @@ export default function PriceHome({
         </div>
       </header>
       <main className="wrap" id="main">
-        <section className="hero">
+        <section className="hero hero-scene" data-scene={active}>
           {(active === "aca" || active === "fun") && <HeroReceipt domain={active} />}
           <p className="eyebrow"><span className="pulse" aria-hidden="true"></span>{eyebrow}</p>
           <h1 className="head">{headline}<br /><span className="hl">{hl}</span></h1>

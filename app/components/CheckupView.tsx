@@ -98,7 +98,7 @@ export default function CheckupView({
       </header>
 
       <main className="wrap" id="main">
-        <section className="hero">
+        <section className={isHome ? "hero hero-scene" : "hero"} data-scene={isHome ? "apt" : undefined}>
           <p className="eyebrow">
             <span className="pulse" aria-hidden="true"></span>
             {isHome ? "이번 주 검진 사례 · 미래 수리비를 가장 안 쌓는 단지" : "단지 검진 결과"}

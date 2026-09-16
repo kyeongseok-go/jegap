@@ -25,7 +25,7 @@ export default function HospitalHome() {
         </div>
       </header>
       <main className="wrap" id="main">
-        <section className="hero">
+        <section className="hero hero-scene" data-scene="med">
           <HeroReceipt domain="med" />
           <p className="eyebrow"><span className="pulse" aria-hidden="true"></span>병원비편 · 비급여 진료비</p>
           <h1 className="head">같은 진료인데<br /><span className="hl">가격은 병원이 정합니다</span></h1>

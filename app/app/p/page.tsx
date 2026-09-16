@@ -27,7 +27,7 @@ export default function LivingHome() {
         </div>
       </header>
       <main className="wrap" id="main">
-        <section className="hero">
+        <section className="hero hero-scene" data-scene="liv">
           <HeroReceipt domain="liv" />
           <p className="eyebrow"><span className="pulse" aria-hidden="true"></span>생활물가편 · 우리 동네 물가</p>
           <h1 className="head">같은 냉면 한 그릇도<br /><span className="hl">지역마다 값이 다릅니다</span></h1>

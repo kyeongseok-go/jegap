@@ -78,17 +78,8 @@ export default function HeroReceipt({ domain }: { domain: keyof typeof RECEIPTS 
   return (
     <div className="rstage" aria-hidden="true" ref={stageRef}
       onPointerMove={onMove} onPointerLeave={onLeave}>
-      {/* 뒤로 쌓인 구겨진 영수증들 */}
-      <span className="rcrumple c3" />
-      <span className="rcrumple c2" />
-      <span className="rslip s3" />
-      <span className="rslip s2" />
-      <span className="rslip s1" />
       {/* 도메인 소품 — 분야를 알리는 선화 삽화 */}
       <svg className="rprop" viewBox="0 0 120 120" fill="none" aria-hidden="true">{PROPS[domain]}</svg>
-
-      {/* 맨 앞 영수증이 올라앉은 두꺼운 뭉치 (단면이 보이는 적층) */}
-      <span className="rpile" />
 
       <div className={`receipt${play ? " play" : ""}`}>
         <p className="r-head">{r.title}</p>
