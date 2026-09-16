@@ -48,7 +48,7 @@ export default function PriceHome({
         </section>
         <footer>
           <p className="next"><b>1호 검진</b> — 관리비편이 먼저 열려 있습니다. 전국 2만 1천 단지.</p>
-          <p>계산식 공개 · 데이터 출처 · 정정 요청은 24시간 안에 처리합니다</p>
+          <p><a href="/design/">설계문서</a> · <a href="/method">계산식 공개</a> · 데이터 출처 · 정정 요청은 24시간 안에 처리합니다</p>
         </footer>
       </main>
     </>

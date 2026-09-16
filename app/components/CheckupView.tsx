@@ -289,7 +289,7 @@ export default function CheckupView({
 
         <footer>
           <p className="next">검진은 다섯입니다 — <a href="/h"><b>병원비</b></a> · <a href="/a"><b>학원비</b></a> · <a href="/f"><b>장례비</b></a> · <a href="/p"><b>생활물가</b></a>. 내가 내는 값이 정당한지, 한곳에서 물으세요.</p>
-          <p>계산식 공개 · 데이터 출처 · 정정 요청은 24시간 안에 처리합니다</p>
+          <p><a href="/design/">설계문서</a> · <a href="/method">계산식 공개</a> · 데이터 출처 · 정정 요청은 24시간 안에 처리합니다</p>
         </footer>
       </main>
     </>
