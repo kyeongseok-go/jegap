@@ -6,6 +6,10 @@ import gzip, json, os
 from collections import defaultdict
 from statistics import median
 
+def med(vals):
+    from statistics import median as _m
+    return _m(vals)
+
 D = os.path.join(os.path.dirname(__file__), "..", "data")
 def load(n): return json.load(gzip.open(os.path.join(D, n), "rt", encoding="utf-8"))
 out = []
@@ -30,17 +34,17 @@ for fname, dom, href, peerkey in [
             if not core(n): continue
             arr = peers[peerkey(o, c)]
             if len(arr) < 30: continue
-            med = sorted(arr)[len(arr)//2]
-            if med < 1000: continue                  # 엔진과 동일: 저액 항목 제외
-            mult = p / med
+            med_val = round(med(arr))
+            if med_val < 1000: continue                  # 엔진과 동일: 저액 항목 제외
+            mult = p / med_val
             if mult > 30 or mult < 2: continue       # 오류 의심 상한 + 심심한 사례 하한
             if best is None or mult > best[0]:
-                best = (mult, o, c, n, p, med, len(arr))
+                best = (mult, o, c, n, p, med_val, len(arr))
     if best:
-        mult, o, c, n, p, med, cnt = best
+        mult, o, c, n, p, medv, cnt = best
         out.append({
             "dom": dom, "href": f"{href}/{o['id']}",
-            "fact": f"{o['name']}의 {n} {p:,}원 — 유사 기관 {cnt}곳 중간값({med:,}원)의 {mult:.1f}배",
+            "fact": f"{o['name']}의 {n} {p:,}원 — 유사 기관 {cnt}곳 중간값({medv:,}원)의 {mult:.1f}배",
         })
 
 # 생활물가: 최근 3년 동월 대비 최다 상승 품목(전국 중간값 기준, 단절 제외)
@@ -53,7 +57,7 @@ def nat_median(code):
     for i in range(len(months)):
         vs = [lv["series"].get(f"{code}|{s}", [None]*len(months))[i] for s in SIDO]
         vs = [v for v in vs if v]
-        res.append(sorted(vs)[len(vs)//2] if len(vs) >= 10 else None)
+        res.append(med(vs) if len(vs) >= 10 else None)
     return res
 
 best = None
@@ -72,7 +76,7 @@ if best:
     rise, code, a, b, ym = best
     out.append({
         "dom": "생활물가", "href": "/p",
-        "fact": f"전국 {names[code]} 3년 새 {a:,}원 → {b:,}원 (+{rise:.0f}%, 동월 대비 · {ym[:4]}.{ym[4:]} 조사)",
+        "fact": f"전국 {names[code]} 3년 새 {round(a):,}원 → {round(b):,}원 (+{rise:.0f}%, 동월 대비 · {ym[:4]}.{ym[4:]} 조사)",
     })
 
 with open(os.path.join(D, "highlights.json"), "w", encoding="utf-8") as f:

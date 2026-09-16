@@ -11,7 +11,7 @@ export function percentileBelow(value: number, peers: number[]): number | null {
  * 월별 실데이터(24점 이상): ym 기준으로 "가장 이른 연속 12개월 합"과 "가장 늦은 연속 12개월 합"을
  * 비교한다. 어느 한쪽이라도 달력상 연속 12개월을 확보하지 못하거나 두 창이 겹치면 null(무소음) —
  * 누락 월을 무시하고 관측치 개수로만 자르면 기간이 다른 값을 비교하게 되기 때문이다.
- * 표본이 성긴 시계열(24점 미만, 예: 반기 샘플)은 첫/끝 점 비교. */
+ * 24점 미만(신축·짧은 공시)은 비교 자체를 하지 않는다(무소음). */
 export function totalRisePct(points: Array<{ ym: string; v: number }>): number | null {
   if (points.length < 2) return null;
   const sorted = [...points].sort((a, b) => a.ym.localeCompare(b.ym));
@@ -43,9 +43,8 @@ export function totalRisePct(points: Array<{ ym: string; v: number }>): number |
     if (first <= 0) return null;
     return Math.round(((last - first) / first) * 100);
   }
-  const first = sorted[0].v, last = sorted[sorted.length - 1].v;
-  if (first <= 0) return null;
-  return Math.round(((last - first) / first) * 100);
+  // 24점 미만(신축·짧은 공시)은 첫/끝 단일점 비교가 무의미 — 표시하지 않는다.
+  return null;
 }
 
 /** 우리 상승률이 peer 평균 상승률의 몇 배인지. 분모 0/음수·null 입력 방어 */

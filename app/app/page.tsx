@@ -14,9 +14,7 @@ export default async function Home() {
   const src = getSource();
   const [me, all] = await Promise.all([src.worst(), src.all()]);
   const checkup = runCheckup(me, all);
-  const peerReserves = all
-    .filter((d) => d.danji.code !== me.danji.code)
-    .map((d) => d.reserve.perM2);
+  const peerReserves = checkup.peerReserves;
   return (
     <CheckupView
       checkup={checkup}

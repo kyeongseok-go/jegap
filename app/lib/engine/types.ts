@@ -48,6 +48,7 @@ export interface Checkup {
   peerCount: number;
   peerRelaxed: number;     // 유사군 완화 단계 (0=기본)
   reservePercentile: number; // 하위 N% (0~100, 낮을수록 적게 쌓음)
+  peerReserves: number[];   // 실제 유사군의 적립액(0원 제외) — 분포 차트 모집단
   overall: Signal;
   exams: ExamResult[];
   opinion: string;         // 결정론 생성 소견 (LLM은 선택적 다듬기만)

@@ -1,8 +1,11 @@
 import { hiraReady, getHospital, priceExams } from "../../../lib/medical/hira";
 import { buildHospitalMemo } from "../../../lib/pricedom/rx_price";
 import { polishResponse, readJsonBody, safeDecode } from "../../../lib/pricedom/polish";
+import { rateLimit } from "../../../lib/pricedom/ratelimit";
 
 export async function POST(req: Request) {
+  const limited = rateLimit(req);
+  if (limited) return limited;
   const body = await readJsonBody(req);
   const id = safeDecode(body?.id);
   if (!id) return new Response("잘못된 요청입니다.", { status: 400 });

@@ -36,7 +36,7 @@ export default function LivingHome() {
 
         {ready && pairs.length > 0 && (
           <section className="pairband">
-            <h2 className="sech">재료값과 밥상값은 같이 움직이지 않습니다 <span className="hnote">— 전국 중간값 기준</span></h2>
+            <h2 className="sech">재료값과 밥상값은 같이 움직이지 않습니다 <span className="hnote">— 시도 중간값 기준</span></h2>
             <div className="pairs">
               {pairs.map((p) => (
                 <div className="pair" key={p.label}>
@@ -60,7 +60,7 @@ export default function LivingHome() {
                 <Link key={s.key} href={`/p/${encodeURIComponent(s.key)}`} className="sido">{s.label}</Link>
               ))}
             </div>
-            <p className="hfoot">세종의 가격은 충남에 포함되어 조사됩니다 (행정안전부 조사 기준).</p>
+            <p className="hfoot">세종은 외식·개인서비스·농축산물 조사에서 충남에 포함됩니다 — 공공요금은 별도 조사 (행정안전부 기준).</p>
           </section>
         ) : (
           <div className="pending">

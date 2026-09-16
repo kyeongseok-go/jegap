@@ -48,7 +48,7 @@ export default function RxBox({ code, refundWon }: { code: string; refundWon?: n
         <p className="rx-hint">
           전세·월세로 살다 이사하셨나요? 세입자가 대신 낸 장기수선충당금은 집주인에게 돌려받는 돈입니다
           (공동주택관리법 시행령 제31조).
-          {refundWon >= 30000 && <> 이 단지 기준, 전용 84㎡ · 2년 거주면 약 <b>{refundWon.toLocaleString()}원</b>입니다.</>}
+          {refundWon >= 30000 && <> 이 단지 기준, 관리비 부과면적 100㎡ · 2년 거주면 약 <b>{refundWon.toLocaleString()}원</b>입니다.</>}
         </p>
       )}
       <div className="acts">

@@ -2,6 +2,7 @@ import { getSource } from "../../../lib/data/kapt";
 import { runCheckup } from "../../../lib/engine/checkup";
 import { buildInquiry, buildAgenda, buildRefund } from "../../../lib/engine/rx";
 import { polishResponse, readJsonBody } from "../../../lib/pricedom/polish";
+import { rateLimit } from "../../../lib/pricedom/ratelimit";
 
 const KINDS = new Set(["inquiry", "agenda", "refund"]);
 const SYSTEM =
@@ -10,6 +11,8 @@ const SYSTEM =
   "마크다운 문법(#, *, - 등) 금지. 결과는 문서 본문만.";
 
 export async function POST(req: Request) {
+  const limited = rateLimit(req);
+  if (limited) return limited;
   const body = await readJsonBody(req);
   const code = body?.code;
   const kind = typeof body?.kind === "string" ? body.kind : "inquiry";

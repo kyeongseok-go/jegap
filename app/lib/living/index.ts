@@ -24,6 +24,7 @@ export const SIDOS: Array<{ key: string; label: string; shopPrefix: string }> = 
   { key: "부산", label: "부산광역시", shopPrefix: "부산" },
   { key: "대구", label: "대구광역시", shopPrefix: "대구" },
   { key: "인천", label: "인천광역시", shopPrefix: "인천" },
+  { key: "세종", label: "세종특별자치시", shopPrefix: "세종" },
   { key: "전남광주(광주)", label: "광주광역시", shopPrefix: "광주" },
   { key: "대전", label: "대전광역시", shopPrefix: "대전" },
   { key: "울산", label: "울산광역시", shopPrefix: "울산" },

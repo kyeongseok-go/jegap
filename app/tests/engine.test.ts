@@ -37,7 +37,7 @@ const pts = (vals: number[], startYm = 202301) =>
 describe("totalRisePct / riseMultiple", () => {
   it("점 1개 → null", () => expect(totalRisePct(pts([100]))).toBeNull());
   it("시작 0 → null (0나눗셈 방어)", () => expect(totalRisePct(pts([0, 100]))).toBeNull());
-  it("100→142는 +42%", () => expect(totalRisePct(pts([100, 120, 142]))).toBe(42));
+  it("24점 미만은 무소음 — 신축 1원 분모 오탐 방지", () => expect(totalRisePct(pts([100, 120, 142]))).toBeNull());
   it("월별 24점: 연속 12개월 합끼리 비교", () => {
     const vals = [...Array(12).fill(100), ...Array(12).fill(120)];
     expect(totalRisePct(pts(vals))).toBe(20);
@@ -48,11 +48,9 @@ describe("totalRisePct / riseMultiple", () => {
       .filter((_, i) => i !== 5 && i !== 20);
     expect(totalRisePct(p2)).toBeNull();
   });
-  it("창 24점이지만 겹치면 → null", () => {
-    // 13개월치 관측을 24점처럼 늘릴 수 없음 — 18개월 연속 24점? 불가하므로 갭 시나리오로 대체:
-    // 연속 18개월(18점)은 24점 미만 → 첫/끝 비교 경로
+  it("18점(24 미만)도 무소음", () => {
     const p3 = pts(Array.from({ length: 18 }, (_, i) => 100 + i));
-    expect(totalRisePct(p3)).toBe(17);
+    expect(totalRisePct(p3)).toBeNull();
   });
   it("peer 평균 0 이하 → null", () => expect(riseMultiple(42, 0)).toBeNull());
   it("42% vs 20% → 2.1배", () => expect(riseMultiple(42, 20)).toBe(2.1));
@@ -133,10 +131,13 @@ describe("신호 경계값", () => {
 function fixture(): { me: DanjiData; all: DanjiData[] } {
   const mkData = (d: Danji, reserve: number, rise: [number, number], repairs: number): DanjiData => ({
     danji: d, reserve: { perM2: reserve },
-    fees: [
-      { ym: "202309", total: 1240, heating: rise[0] },
-      { ym: "202609", total: 1610, heating: rise[1] },
-    ],
+    // 36개월: 첫 12개월 rise[0], 마지막 12개월 rise[1] — 연속 12개월 합 비교로 상승률 정확 제어
+    fees: Array.from({ length: 36 }, (_, i) => {
+      const y = 2023 + Math.floor((8 + i) / 12);
+      const m = ((8 + i) % 12) + 1;
+      const heating = i < 12 ? rise[0] : i >= 24 ? rise[1] : Math.round((rise[0] + rise[1]) / 2);
+      return { ym: `${y}${String(m).padStart(2, "0")}`, total: 1240 + i * 10, heating };
+    }),
     repairs: { count5y: repairs },
   });
   const me = mkData(mk({ code: "ME", name: "한빛마을 3단지" }), 92, [400, 568], 3); // +42%
@@ -167,7 +168,7 @@ describe("runCheckup 통합", () => {
   });
   it("질의서: 법 조항 + 조건부 항목", () => {
     const rx = buildInquiry(c);
-    expect(rx).toContain("공동주택관리법 제30조");
+    expect(rx).toContain("제27조제3항");
     expect(rx).toContain("난방비 상승 사유");     // fees가 good 아니므로 포함
     expect(rx).toContain("한빛마을 3단지");
   });

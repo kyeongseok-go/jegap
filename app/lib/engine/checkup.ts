@@ -8,8 +8,9 @@ export function runCheckup(me: DanjiData, all: DanjiData[]): Checkup {
   const { peers, relaxed } = findPeers(me.danji, all.map((d) => d.danji));
   const peerData = all.filter((d) => peers.some((p) => p.code === d.danji.code));
 
-  // 장충금 백분위
-  const pct = percentileBelow(me.reserve.perM2, peerData.map((d) => d.reserve.perM2));
+  // 장충금 백분위 — 부과액 0원(미부과·미보고 가능)은 데이터 부재로 보고 검사·표본 모두 제외(무소음)
+  const peerReserves = peerData.map((d) => d.reserve.perM2).filter((v) => v > 0);
+  const pct = me.reserve.perM2 > 0 ? percentileBelow(me.reserve.perM2, peerReserves) : null;
   const resSig = reserveSignal(pct);
 
   // 관리비(난방) 상승 배수
@@ -19,7 +20,7 @@ export function runCheckup(me: DanjiData, all: DanjiData[]): Checkup {
     .filter((r): r is number => r !== null);
   const peerAvgRise = peerRises.length ? peerRises.reduce((a, b) => a + b, 0) / peerRises.length : null;
   const mult = riseMultiple(myRise, peerAvgRise);
-  const feeSig = feeRiseSignal(mult);
+  const feeSig = feeRiseSignal(mult, myRise);
 
   // 수선 이력 (데이터 없으면 무소음)
   const repPeers = peerData.filter((d) => d.repairs);
@@ -38,6 +39,7 @@ export function runCheckup(me: DanjiData, all: DanjiData[]): Checkup {
   const base = {
     danji: me.danji,
     peerCount: peerData.length,
+    peerReserves,
     peerRelaxed: relaxed,
     reservePercentile: pct ?? -1,
     overall: overallSignal(exams.map((e) => e.signal)),

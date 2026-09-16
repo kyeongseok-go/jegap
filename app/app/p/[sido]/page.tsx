@@ -57,7 +57,7 @@ export default async function LivingSidoPage({ params }: { params: Promise<{ sid
                 <div className="hrow hhead" role="row">
                   <span role="columnheader">품목</span>
                   <span role="columnheader">{s.label.slice(0, 2)}</span>
-                  <span role="columnheader">전국 중간값</span>
+                  <span role="columnheader">시도 중간값</span>
                   <span role="columnheader">위치 · 3년 변화</span>
                 </div>
                 {rows.map((e) => (
@@ -106,7 +106,7 @@ export default async function LivingSidoPage({ params }: { params: Promise<{ sid
         <p className="hfoot">
           조사 단위는 품목명 옆에 표기했습니다(행정안전부 조사 기준). 시도 간에는 조사 대상 업소와
           상품 품질이 동일하지 않아 비교가 정확하지 않을 수 있다는 것이 조사기관의 공식 안내입니다.
-          세종의 가격은 충남에 포함되어 조사됩니다.
+          세종은 외식·개인서비스·농축산물 조사에서 충남에 포함되며, 지방 공공요금은 별도로 조사됩니다.
         </p>
         <footer>
           <p className="next"><b>관리비편</b> — 우리 단지 검진도 열려 있습니다.</p>

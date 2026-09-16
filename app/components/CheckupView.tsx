@@ -264,7 +264,7 @@ export default function CheckupView({
             <p className="fine-note">공개 데이터에서 규칙으로 찾아낸 사실입니다. 기관·지역에 대한 평가가 아닙니다.</p>
           </Reveal>
         )}
-        <RxBox code={c.danji.code} refundWon={Math.round(data.reserve.perM2 * 84 * 24 / 100) * 100} />
+        <RxBox code={c.danji.code} refundWon={Math.round(data.reserve.perM2 * 100 * 24 / 100) * 100} />
 
         <Reveal as="section" className="cta">
           <h2>우리 단지는 어떨까요</h2>

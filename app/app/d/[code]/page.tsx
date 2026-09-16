@@ -10,8 +10,6 @@ export default async function DanjiPage({ params }: { params: Promise<{ code: st
   if (!me) notFound();
   const all = await src.all();
   const checkup = runCheckup(me, all);
-  const peerReserves = all
-    .filter((d) => d.danji.code !== me.danji.code)
-    .map((d) => d.reserve.perM2);
+  const peerReserves = checkup.peerReserves;
   return <CheckupView checkup={checkup} data={me} peerReserves={peerReserves} />;
 }

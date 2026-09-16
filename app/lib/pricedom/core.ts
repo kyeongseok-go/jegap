@@ -78,9 +78,13 @@ export function makeDomain(cfg: DomainConfig) {
           if (a && a.length >= cfg.minPeers) { arr = a; label = cfg.peerKeys[i].label(d.h); break; }
         }
         if (!arr) continue;                                  // 무소음
-        const pctBelow = percentileBelow(it.price, arr);
+        // 자기 가격 1개는 표본에서 제외 (관리비편 findPeers와 기준 통일)
+        const selfIdx = arr.indexOf(it.price);
+        const peersArr = selfIdx >= 0 ? [...arr.slice(0, selfIdx), ...arr.slice(selfIdx + 1)] : arr;
+        if (peersArr.length < cfg.minPeers) continue;
+        const pctBelow = percentileBelow(it.price, peersArr);
         if (pctBelow === null) continue;
-        const median = medianOf(arr)!;
+        const median = medianOf(peersArr)!;
         // 저액 항목(중간값 1,000원 미만)은 기관별 단위 해석이 갈려 배수가 무의미 — 미표시.
         // 중간값의 50배 초과·1/50 미만은 공시 입력 오류 가능성 — 미표시(무소음).
         if (median < 1000) continue;
@@ -88,7 +92,7 @@ export function makeDomain(cfg: DomainConfig) {
         if (m > 50 || m < 1 / 50) continue;
         out.push({
           code: it.code, name: it.name, price: it.price,
-          peerCount: arr.length, percentile: 100 - pctBelow, median: Math.round(median),
+          peerCount: peersArr.length, percentile: 100 - pctBelow, median: Math.round(median),
           multiple: Math.round((it.price / median) * 10) / 10,
           peerLabel: label,
         });

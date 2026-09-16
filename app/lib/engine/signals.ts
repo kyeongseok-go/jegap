@@ -8,11 +8,13 @@ export function reserveSignal(percentile: number | null): Signal | null {
   return "good";
 }
 
-/** 관리비 상승: peer 대비 배수 */
-export function feeRiseSignal(multiple: number | null): Signal | null {
+/** 관리비 상승: peer 대비 배수 + 절대 상승률 하한 병용 —
+ * 전반적 저상승 국면에서 배수만으로 경고가 뜨는 오독을 막는다. */
+export function feeRiseSignal(multiple: number | null, risePct: number | null = null): Signal | null {
   if (multiple === null) return null;
-  if (multiple >= 3) return "warn";
-  if (multiple >= 2) return "watch";
+  const rise = risePct ?? Infinity;
+  if (multiple >= 3 && rise >= 15) return "warn";
+  if (multiple >= 2 && rise >= 10) return "watch";
   return "good";
 }
 
