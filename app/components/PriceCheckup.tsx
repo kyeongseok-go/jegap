@@ -7,7 +7,7 @@ export default function PriceCheckup({
   d, exams, active, eyebrow, srcLine, unitNote, footNote, search, rx, maxRows = 20,
 }: {
   d: OrgData; exams: PriceExam[];
-  active: "med" | "aca" | "fun" | "nur";
+  active: "med" | "aca" | "fun" | "liv";
   eyebrow: string; srcLine: string; unitNote: string; footNote: string;
   search: React.ReactNode; rx?: React.ReactNode; maxRows?: number;
 }) {

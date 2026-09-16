@@ -270,7 +270,7 @@ export default function CheckupView({
         </section>
 
         <footer>
-          <p className="next">다음 검진 — <a href="/h"><b>병원비편</b></a>. 같은 진료인데, 가격은 병원이 정합니다.</p>
+          <p className="next">검진은 다섯입니다 — <a href="/h"><b>병원비</b></a> · <a href="/a"><b>학원비</b></a> · <a href="/f"><b>장례비</b></a> · <a href="/p"><b>생활물가</b></a>. 내가 내는 값이 정당한지, 한곳에서 물으세요.</p>
           <p>계산식 공개 · 데이터 출처 · 정정 요청은 24시간 안에 처리합니다</p>
         </footer>
       </main>

@@ -1,13 +1,13 @@
 import Link from "next/link";
 
-export type DomainKey = "apt" | "med" | "aca" | "fun" | "nur";
+export type DomainKey = "apt" | "med" | "aca" | "fun" | "liv";
 
 const TABS: Array<{ key: DomainKey; href: string; label: string }> = [
   { key: "apt", href: "/", label: "관리비" },
   { key: "med", href: "/h", label: "병원비" },
   { key: "aca", href: "/a", label: "학원비" },
   { key: "fun", href: "/f", label: "장례비" },
-  { key: "nur", href: "/n", label: "원비" },
+  { key: "liv", href: "/p", label: "생활물가" },
 ];
 
 /** 제품 패밀리 탭 — 확장 계약의 얼굴 */
