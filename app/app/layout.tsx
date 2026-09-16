@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     "관리비, 제값 내고 계십니까? 정부 공개 데이터로 우리 단지의 관리비 흐름과 미래 수리비 저금을 30초 만에 검진합니다.",
 };
-export const viewport: Viewport = { themeColor: "#FAFAF8" };
+export const viewport: Viewport = { themeColor: "#F7F4EC" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -16,6 +16,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+        />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap"
         />
       </head>
       <body id="top">
