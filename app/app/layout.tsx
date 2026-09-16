@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     "관리비, 제값 내고 계십니까? 정부 공개 데이터로 우리 단지의 관리비 흐름과 미래 수리비 저금을 30초 만에 검진합니다.",
 };
-export const viewport: Viewport = { themeColor: "#FAFAF8" };
+export const viewport: Viewport = { themeColor: "#FCFDFD" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
