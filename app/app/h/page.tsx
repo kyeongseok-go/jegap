@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import DomainTabs from "../../components/DomainTabs";
 import PriceSearch from "../../components/PriceSearch";
+import HeroReceipt from "../../components/HeroReceipt";
 import { hiraReady } from "../../lib/medical/hira";
 
 export const metadata: Metadata = {
@@ -24,6 +25,7 @@ export default function HospitalHome() {
       </header>
       <main className="wrap" id="main">
         <section className="hero">
+          <HeroReceipt domain="med" />
           <p className="eyebrow"><span className="pulse" aria-hidden="true"></span>병원비편 · 비급여 진료비</p>
           <h1 className="head">같은 진료인데<br /><span className="hl">가격은 병원이 정합니다</span></h1>
           <p className="sub">

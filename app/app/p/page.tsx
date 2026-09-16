@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import DomainTabs from "../../components/DomainTabs";
+import HeroReceipt from "../../components/HeroReceipt";
 import { livingReady, SIDOS, pairTrends, latestMonth } from "../../lib/living";
 
 export const metadata: Metadata = {
@@ -26,6 +27,7 @@ export default function LivingHome() {
       </header>
       <main className="wrap" id="main">
         <section className="hero">
+          <HeroReceipt domain="liv" />
           <p className="eyebrow"><span className="pulse" aria-hidden="true"></span>생활물가편 · 우리 동네 물가</p>
           <h1 className="head">같은 냉면 한 그릇도<br /><span className="hl">지역마다 값이 다릅니다</span></h1>
           <p className="sub">

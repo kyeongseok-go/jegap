@@ -1,4 +1,5 @@
 import DomainTabs, { type DomainKey } from "./DomainTabs";
+import HeroReceipt from "./HeroReceipt";
 
 /** 가격 도메인 공용 홈 — 활성 시 검색, 비활성 시 연동 안내 */
 export default function PriceHome({
@@ -23,6 +24,7 @@ export default function PriceHome({
       </header>
       <main className="wrap" id="main">
         <section className="hero">
+          {(active === "aca" || active === "fun") && <HeroReceipt domain={active} />}
           <p className="eyebrow"><span className="pulse" aria-hidden="true"></span>{eyebrow}</p>
           <h1 className="head">{headline}<br /><span className="hl">{hl}</span></h1>
           <p className="sub">{sub}</p>

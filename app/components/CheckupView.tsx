@@ -6,6 +6,7 @@ import RxBox from "./RxBox";
 import Search from "./Search";
 import Reveal from "./Reveal";
 import DomainTabs from "./DomainTabs";
+import HeroReceipt from "./HeroReceipt";
 
 const SIG_LABEL = { good: "양호", watch: "관찰", warn: "주의" } as const;
 const SIG_CLASS = { good: "ok", watch: "watch", warn: "warn" } as const;
@@ -99,6 +100,7 @@ export default function CheckupView({
             <span className="pulse" aria-hidden="true"></span>
             {isHome ? "이번 주 검진 사례 · 미래 수리비를 가장 안 쌓는 단지" : "단지 검진 결과"}
           </p>
+          {isHome && <HeroReceipt domain="apt" />}
           {isHome && (
             <>
               <h1 className="head">우리 아파트 관리비,<br /><span className="hl">나만 많이 내는 걸까?</span></h1>

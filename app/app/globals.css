@@ -1,9 +1,10 @@
-/* JEGAP design/ledger — 영수증·원장 모노스페이스. 브리프: artifacts/design-branches/BRIEF.md §2 */
+/* JEGAP — 신문지 원장: 뉴스프린트 지면 + 세리프 헤드라인 + 영수증 장치. 원본 브리프: artifacts/design-branches/BRIEF.md §2+§3 */
 :root{
   color-scheme:light;
-  --paper:#F7F4EC; --surface:#FDFBF4; --ink:#1A1A18; --slate:#5C594E; --hair:#DED7C5; --hair-2:#B9B19B;
+  --paper:#F4F1E7; --surface:#FCFAF2; --ink:#1A1A18; --slate:#5C594E; --hair:#DED7C5; --hair-2:#B9B19B;
   --signal:#C41E1E; --signal-wash:#F4E3DB; --ok:#1E6B45; --ok-wash:#E6EDE0;
   --sans:"Pretendard Variable",Pretendard,system-ui,-apple-system,sans-serif;
+  --serif:"Hahmlet","Noto Serif KR",Batang,serif;
   --mono:"IBM Plex Mono","Pretendard Variable",Pretendard,ui-monospace,SFMono-Regular,monospace;
   --num:var(--mono);
   --ease:cubic-bezier(.16,1,.3,1);
@@ -22,7 +23,7 @@ h1,h2,h3{scroll-margin-top:80px}
 .num{font-family:var(--num);font-variant-numeric:tabular-nums;letter-spacing:0}
 
 /* ── 헤더: 영수증 상단 절취 ── */
-header{position:sticky;top:0;z-index:30;background:rgba(247,244,236,.95);backdrop-filter:blur(12px);border-bottom:1px dashed var(--hair-2)}
+header{position:sticky;top:0;z-index:30;background:rgba(244,241,231,.95);backdrop-filter:blur(12px);border-bottom:3px double var(--ink)}
 header .wrap{display:flex;align-items:center;gap:22px;height:62px}
 .brand{flex:none;display:flex;flex-direction:column;justify-content:center;gap:2px;text-decoration:none;color:inherit;line-height:1;min-height:44px;touch-action:manipulation}
 .bmark{font-family:var(--mono);font-weight:700;font-size:18px;letter-spacing:.06em}
@@ -42,7 +43,7 @@ header .wrap{display:flex;align-items:center;gap:22px;height:62px}
 .pulse{width:7px;height:7px;border-radius:0;background:var(--signal);flex:none;position:relative}
 .pulse::after{content:"";position:absolute;inset:0;background:var(--signal);animation:ring 2.4s var(--ease) infinite}
 @keyframes ring{0%{transform:scale(1);opacity:.55}70%,100%{transform:scale(3.4);opacity:0}}
-h1.head{font-size:clamp(30px,5.6vw,52px);font-weight:800;letter-spacing:-.04em;line-height:1.18;max-width:17ch;text-wrap:balance;word-break:keep-all}
+h1.head{font-family:var(--serif);font-size:clamp(30px,5.6vw,52px);font-weight:800;letter-spacing:-.02em;line-height:1.18;max-width:17ch;text-wrap:balance;word-break:keep-all}
 h1.head .hl{position:relative;white-space:nowrap}
 h1.head .hl::after{content:"";position:absolute;left:-.04em;right:-.04em;bottom:.06em;height:.14em;background:var(--signal);opacity:.5;z-index:-1;
   transform:scaleX(0);transform-origin:left;animation:swipe .9s var(--ease) .35s forwards}
@@ -52,7 +53,7 @@ h1.head .hl::after{content:"";position:absolute;left:-.04em;right:-.04em;bottom:
 
 /* 단지 식별 바 — 합계 더블 룰 */
 .subject{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-top:40px;padding-bottom:14px;border-bottom:3px double var(--ink)}
-.subject h2{font-size:22px;font-weight:700;letter-spacing:-.03em}
+.subject h2{font-family:var(--serif);font-size:22px;font-weight:700;letter-spacing:-.01em}
 .subject .meta{font-family:var(--mono);font-size:12.5px;color:var(--slate)}
 .subject .src{margin-left:auto;font-family:var(--mono);font-size:11.5px;color:var(--slate)}
 
@@ -61,7 +62,7 @@ h1.head .hl::after{content:"";position:absolute;left:-.04em;right:-.04em;bottom:
 .cp-top{display:flex;gap:26px;align-items:flex-start;padding:26px 30px 6px;flex-wrap:wrap}
 .cp-verdict{flex:1;min-width:280px}
 .cp-verdict .lab{font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--slate);margin-bottom:8px}
-.cp-verdict .big{font-size:clamp(26px,4.2vw,38px);font-weight:800;letter-spacing:-.035em;line-height:1.18;text-wrap:balance}
+.cp-verdict .big{font-family:var(--serif);font-size:clamp(26px,4.2vw,38px);font-weight:800;letter-spacing:-.015em;line-height:1.18;text-wrap:balance}
 .cp-verdict .big em{font-style:normal;color:var(--signal)}
 .cp-verdict .why{margin-top:12px;font-size:14.5px;color:var(--slate);max-width:38ch}
 .cp-verdict a{color:var(--ink);text-underline-offset:3px;display:inline-block;padding:6px 0;touch-action:manipulation}
@@ -140,7 +141,7 @@ details.hist .in .fine{display:block;margin-top:8px;font-size:12.5px;padding-top
 
 /* ── 처방전: 절취선 전표 ── */
 .rx{margin-top:26px;padding:26px 28px;background:var(--surface);border:2px dashed var(--ink);border-radius:0}
-.rx h3{font-size:19px;font-weight:800;letter-spacing:-.03em}
+.rx h3{font-family:var(--serif);font-size:19px;font-weight:800;letter-spacing:-.03em}
 .rx p{font-size:14.5px;color:var(--slate);margin:7px 0 18px;max-width:48ch}
 .acts{display:flex;gap:10px;flex-wrap:wrap}
 .btn{border:1.5px solid var(--ink);background:var(--ink);color:var(--paper);padding:11px 20px;border-radius:0;
@@ -160,7 +161,7 @@ details.hist .in .fine{display:block;margin-top:8px;font-size:12.5px;padding-top
 
 /* ── 하단: 합계 더블 룰 + 절취선 ── */
 .cta{margin:64px 0 0;padding:44px 0;border-top:3px double var(--ink);border-bottom:1px dashed var(--hair-2)}
-.cta h2{font-size:clamp(22px,3.4vw,32px);font-weight:800;letter-spacing:-.035em;text-wrap:balance}
+.cta h2{font-family:var(--serif);font-size:clamp(22px,3.4vw,32px);font-weight:800;letter-spacing:-.035em;text-wrap:balance}
 .cta p{color:var(--slate);margin-top:8px;font-size:15.5px}
 .cta .find{margin:22px 0 0;max-width:460px}
 .why{padding:44px 0}
@@ -257,7 +258,7 @@ footer .next b{color:var(--signal)}
 .shop .sn{font-weight:700;font-size:14px}
 .shop .sk{font-family:var(--mono);font-size:11.5px;color:var(--slate)}
 .shop .sm{font-size:13px;margin-top:2px}
-.sech{font-size:17px;font-weight:700;margin-bottom:14px}
+.sech{font-family:var(--serif);font-size:17px;font-weight:700;margin-bottom:14px}
 .rx .sech{font-size:19px}
 .hname .unit{font-style:normal;font-weight:500;font-size:12px;color:var(--slate)}
 
@@ -276,3 +277,49 @@ footer .next b{color:var(--signal)}
 .findcard .ff{font-size:14.5px;line-height:1.6;font-weight:600}
 .findcard .fa{font-family:var(--mono);font-size:12px;color:var(--slate);margin-top:auto}
 .fine-note{margin-top:10px;font-size:12px;color:var(--slate)}
+
+/* ── 히어로 영수증: 3D 틸트 + 취소선 스태거 + 도장 (데스크톱 전용, 장식) ── */
+.receipt-persp{display:none;position:absolute;top:48px;right:0;perspective:900px}
+@media(min-width:1060px){.receipt-persp{display:block}}
+.receipt{position:relative;width:238px;background:#FFFEF8;border:1px solid var(--hair-2);
+  padding:18px 16px 20px;transform-origin:center;transform:rotate(2.4deg);transform-style:preserve-3d;
+  box-shadow:5px 7px 0 rgba(26,26,24,.10);transition:transform .3s var(--ease),box-shadow .3s var(--ease)}
+.receipt:hover{box-shadow:9px 14px 0 rgba(26,26,24,.13)}
+.receipt::before{content:"";position:absolute;left:0;right:0;top:-7px;height:7px;
+  background:linear-gradient(45deg,transparent 33.333%,#FFFEF8 33.333%,#FFFEF8 66.667%,transparent 66.667%),
+             linear-gradient(-45deg,transparent 33.333%,#FFFEF8 33.333%,#FFFEF8 66.667%,transparent 66.667%);
+  background-size:12px 14px;background-position:0 100%;background-repeat:repeat-x}
+.receipt::after{content:"";position:absolute;left:0;right:0;bottom:-7px;height:7px;
+  background:linear-gradient(45deg,#FFFEF8 33.333%,transparent 33.333%,transparent 66.667%,#FFFEF8 66.667%),
+             linear-gradient(-45deg,#FFFEF8 33.333%,transparent 33.333%,transparent 66.667%,#FFFEF8 66.667%);
+  background-size:12px 14px;background-position:0 0;background-repeat:repeat-x}
+.r-head{font-family:var(--mono);font-weight:700;font-size:13.5px;letter-spacing:.08em;text-align:center}
+.r-src{font-family:var(--mono);font-size:10.5px;color:var(--slate);letter-spacing:.06em;text-align:center;margin-top:3px;
+  padding-bottom:10px;border-bottom:1px dashed var(--hair-2)}
+.r-items{list-style:none;padding:10px 0 0;margin:0}
+.r-items li{position:relative;display:flex;align-items:baseline;gap:7px;font-size:12.5px;color:var(--ink);padding:4.5px 0}
+.r-items li i{flex:1;border-bottom:1.5px dotted var(--hair-2);transform:translateY(-3px)}
+.r-items li b{font-family:var(--mono);font-weight:700;color:var(--slate)}
+/* 항목 취소선 — 검사 완료 표시가 차례로 그어진다 */
+.r-items li .strike{position:absolute;left:-2px;right:-2px;top:50%;height:2px;background:var(--signal);opacity:.75;
+  transform:scaleX(0) rotate(-1.2deg);transform-origin:left center}
+.receipt.play .r-items li .strike{animation:strike .32s var(--ease) forwards;animation-delay:calc(.25s + var(--i) * .38s)}
+@keyframes strike{to{transform:scaleX(1) rotate(-1.2deg)}}
+.r-total{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px;padding-top:9px;
+  border-top:3px double var(--ink);font-weight:700;font-size:13.5px}
+.r-total b{font-family:var(--mono);color:var(--signal);letter-spacing:.04em}
+.r-foot{margin-top:9px;font-size:11px;color:var(--slate);text-align:center;letter-spacing:.01em}
+/* 도장 — 취소선이 다 그어진 뒤 쾅 찍힌다 */
+.r-stamp{position:absolute;right:8px;top:42%;font-family:var(--mono);font-weight:700;font-size:16px;letter-spacing:.1em;
+  color:var(--signal);border:2.5px solid var(--signal);border-radius:0;padding:7px 11px;
+  transform:rotate(-14deg) scale(2.6) translateZ(40px);opacity:0;
+  box-shadow:inset 0 0 0 1.5px #FFFEF8,inset 0 0 0 2.5px var(--signal)}
+.receipt.play .r-stamp{animation:stamp .42s cubic-bezier(.2,1.6,.35,1) forwards;
+  animation-delay:calc(.45s + var(--n) * .38s)}
+@keyframes stamp{
+  0%{transform:rotate(-22deg) scale(2.6) translateZ(60px);opacity:0}
+  62%{transform:rotate(-13deg) scale(.94);opacity:.95}
+  100%{transform:rotate(-14deg) scale(1);opacity:.85}}
+@media(prefers-reduced-motion:reduce){
+  .r-items li .strike{transform:scaleX(1) rotate(-1.2deg)}
+  .r-stamp{opacity:.85;transform:rotate(-14deg) scale(1)}}
