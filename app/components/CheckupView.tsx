@@ -90,7 +90,7 @@ export default function CheckupView({
           </a>
           <DomainTabs active="apt" />
           <span className="q">지금 내는 돈, 제값인지 확인하세요</span>
-          <Search />
+          {!isHome && <Search />}
         </div>
       </header>
 
