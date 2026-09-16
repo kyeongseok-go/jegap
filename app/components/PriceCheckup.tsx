@@ -2,6 +2,7 @@ import type { OrgData, PriceExam } from "../lib/pricedom/core";
 import { priceOpinion } from "../lib/pricedom/opinion";
 import DomainTabs from "./DomainTabs";
 import Reveal from "./Reveal";
+import { CONTACT } from "../lib/site";
 
 /** 가격 도메인 공용 검진표 — 병원비·학원비·장례비·원비가 공유 */
 export default function PriceCheckup({
@@ -78,7 +79,7 @@ export default function PriceCheckup({
         {rx}
         <footer>
           <p className="next"><b>관리비편</b>도 같은 방식으로 검진합니다.</p>
-          <p><a href="/design/">설계문서</a> · <a href="/method">계산식 공개</a> · 데이터 출처 · 정정 요청은 24시간 안에 처리합니다</p>
+          <p><a href="/design/">설계문서</a> · <a href="/method">계산식 공개</a> · <a href="/terms">이용 안내와 개인정보</a> · 틀린 곳은 <a href={CONTACT.href}>{CONTACT.text}</a>로 알려주시면 24시간 안에 처리합니다</p>
         </footer>
       </main>
     </>

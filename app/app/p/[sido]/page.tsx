@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import DomainTabs from "../../../components/DomainTabs";
 import Reveal from "../../../components/Reveal";
 import { livingReady, livingExams, livingOpinion, SIDOS, goodShops } from "../../../lib/living";
+import { CONTACT } from "../../../lib/site";
 
 export async function generateMetadata({ params }: { params: Promise<{ sido: string }> }): Promise<Metadata> {
   const { sido } = await params;
@@ -110,7 +111,7 @@ export default async function LivingSidoPage({ params }: { params: Promise<{ sid
         </p>
         <footer>
           <p className="next"><b>관리비편</b> — 우리 단지 검진도 열려 있습니다.</p>
-          <p>계산식 공개 · 데이터 출처 · 정정 요청은 24시간 안에 처리합니다</p>
+          <p><a href="/method">계산식 공개</a> · <a href="/terms">이용 안내와 개인정보</a> · 틀린 곳은 <a href={CONTACT.href}>{CONTACT.text}</a>로 알려주시면 24시간 안에 처리합니다</p>
         </footer>
       </main>
     </>

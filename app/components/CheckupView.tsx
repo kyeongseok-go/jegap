@@ -7,6 +7,7 @@ import Search from "./Search";
 import Reveal from "./Reveal";
 import DomainTabs from "./DomainTabs";
 import HeroReceipt from "./HeroReceipt";
+import { CONTACT } from "../lib/site";
 
 const SIG_LABEL = { good: "양호", watch: "관찰", warn: "주의" } as const;
 const SIG_CLASS = { good: "ok", watch: "watch", warn: "warn" } as const;
@@ -291,7 +292,7 @@ export default function CheckupView({
 
         <footer>
           <p className="next"><a href="/h"><b>병원비</b></a> · <a href="/a"><b>학원비</b></a> · <a href="/f"><b>장례비</b></a> · <a href="/p"><b>생활물가</b></a>도 같은 방식으로 검진합니다.</p>
-          <p><a href="/design/">설계문서</a> · <a href="/method">계산식 공개</a> · 데이터 출처 · 정정 요청은 24시간 안에 처리합니다</p>
+          <p><a href="/design/">설계문서</a> · <a href="/method">계산식 공개</a> · <a href="/terms">이용 안내와 개인정보</a> · 틀린 곳은 <a href={CONTACT.href}>{CONTACT.text}</a>로 알려주시면 24시간 안에 처리합니다</p>
         </footer>
       </main>
     </>

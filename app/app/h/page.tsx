@@ -3,6 +3,7 @@ import DomainTabs from "../../components/DomainTabs";
 import PriceSearch from "../../components/PriceSearch";
 import HeroReceipt from "../../components/HeroReceipt";
 import { hiraReady } from "../../lib/medical/hira";
+import { CONTACT } from "../../lib/site";
 
 export const metadata: Metadata = {
   title: "JEGAP 제값 — 병원비 검진",
@@ -57,7 +58,7 @@ export default function HospitalHome() {
         </section>
         <footer>
           <p className="next"><b>관리비편</b>도 같은 방식으로 검진합니다. 전국 2만 1천 단지.</p>
-          <p>계산식 공개 · 데이터 출처 · 정정 요청은 24시간 안에 처리합니다</p>
+          <p><a href="/method">계산식 공개</a> · <a href="/terms">이용 안내와 개인정보</a> · 틀린 곳은 <a href={CONTACT.href}>{CONTACT.text}</a>로 알려주시면 24시간 안에 처리합니다</p>
         </footer>
       </main>
     </>

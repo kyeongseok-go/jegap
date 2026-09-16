@@ -1,5 +1,6 @@
 import Link from "next/link";
 import DomainTabs from "../components/DomainTabs";
+import { CONTACT } from "../lib/site";
 
 export default function NotFound() {
   return (
@@ -31,7 +32,7 @@ export default function NotFound() {
           </div>
         </section>
         <footer>
-          <p>계산식 공개 · 데이터 출처 · 정정 요청은 24시간 안에 처리합니다</p>
+          <p><a href="/method">계산식 공개</a> · <a href="/terms">이용 안내와 개인정보</a> · 틀린 곳은 <a href={CONTACT.href}>{CONTACT.text}</a>로 알려주시면 24시간 안에 처리합니다</p>
         </footer>
       </main>
     </>

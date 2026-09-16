@@ -1,10 +1,21 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { SITE_URL } from "../lib/site";
+
+const TITLE = "JEGAP 제값 — 우리 단지 검진";
+const DESC =
+  "우리 아파트 관리비, 나만 많이 내는 걸까? 관리비·병원비·학원비·장례비·생활물가를 정부 공개 데이터로 30초 만에 검진합니다. 로그인 없음.";
 
 export const metadata: Metadata = {
-  title: "JEGAP 제값 — 우리 단지 검진",
-  description:
-    "관리비, 제값 내고 계십니까? 정부 공개 데이터로 우리 단지의 관리비 흐름과 미래 수리비 저금을 30초 만에 검진합니다.",
+  metadataBase: new URL(SITE_URL),
+  title: TITLE,
+  description: DESC,
+  openGraph: {
+    type: "website", siteName: "JEGAP 제값", locale: "ko_KR",
+    url: SITE_URL, title: TITLE, description: DESC,
+  },
+  twitter: { card: "summary_large_image", title: TITLE, description: DESC },
+  robots: { index: true, follow: true },
 };
 export const viewport: Viewport = { themeColor: "#F4F1E7" };
 
