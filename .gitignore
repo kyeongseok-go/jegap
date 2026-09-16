@@ -6,3 +6,6 @@ node_modules/
 .DS_Store
 .claude/context-snapshots/
 *.log
+
+# 접수용 스크린샷 (재생성 가능)
+artifacts/submission/*.png
