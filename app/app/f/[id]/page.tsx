@@ -1,3 +1,6 @@
+// 방문한 페이지는 하루 캐시 (ISR) — 데이터는 주간 갱신이라 안전
+export const revalidate = 86400;
+
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PriceCheckup from "../../../components/PriceCheckup";
