@@ -4,12 +4,12 @@ import Reveal from "./Reveal";
 
 /** 가격 도메인 공용 검진표 — 병원비·학원비·장례비·원비가 공유 */
 export default function PriceCheckup({
-  d, exams, active, eyebrow, srcLine, unitNote, footNote, search, maxRows = 20,
+  d, exams, active, eyebrow, srcLine, unitNote, footNote, search, rx, maxRows = 20,
 }: {
   d: OrgData; exams: PriceExam[];
   active: "med" | "aca" | "fun" | "nur";
   eyebrow: string; srcLine: string; unitNote: string; footNote: string;
-  search: React.ReactNode; maxRows?: number;
+  search: React.ReactNode; rx?: React.ReactNode; maxRows?: number;
 }) {
   return (
     <>
@@ -65,6 +65,7 @@ export default function PriceCheckup({
             <p className="hfoot">{unitNote} {footNote}</p>
           </Reveal>
         )}
+        {rx}
         <footer>
           <p className="next"><b>관리비편</b> — 우리 단지 검진도 열려 있습니다.</p>
           <p>계산식 공개 · 데이터 출처 · 정정 요청은 24시간 안에 처리합니다</p>

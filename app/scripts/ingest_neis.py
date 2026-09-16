@@ -33,6 +33,25 @@ def fetch(office, page, tries=4):
             if t == tries - 1: raise
             time.sleep(2 * (t + 1))
 
+# 과목 표기 정규화 — "초등수학a", "초등수학2", "초등 수학 (심화)"를 같은 비교 단위로 묶는다.
+# 학년대 + 과목 키워드가 모두 잡힐 때만 표준 코드를 만들고, 아니면 비교에서 제외(무소음).
+GRADES = [("유아", ["유아", "유치"]), ("초등", ["초등", "초교", "초1", "초2", "초3", "초4", "초5", "초6"]),
+          ("중등", ["중등", "중학", "중1", "중2", "중3"]), ("고등", ["고등", "고교", "고1", "고2", "고3", "수능"]),
+          ("성인", ["성인", "일반"])]
+SUBJECTS = [("수학", ["수학", "산수", "math"]), ("영어", ["영어", "english"]), ("국어", ["국어", "문학", "독서"]),
+            ("과학", ["과학", "물리", "화학", "생물", "지구과학"]), ("사회", ["사회", "역사", "한국사", "지리"]),
+            ("논술", ["논술", "글쓰기", "작문"]), ("코딩", ["코딩", "컴퓨터", "정보", "프로그래밍"]),
+            ("미술", ["미술", "그림", "회화"]), ("음악", ["피아노", "바이올린", "음악", "기타"]),
+            ("체육", ["태권도", "축구", "수영", "체육", "무용", "발레"]), ("한자", ["한자", "한문"])]
+
+def std_subject(name):
+    t = name.lower().replace(" ", "")
+    grade = next((g for g, keys in GRADES if any(k in t for k in keys)), None)
+    subj = next((s for s, keys in SUBJECTS if any(k in t for k in keys)), None)
+    if grade and subj: return f"{grade} {subj}", f"{grade} {subj}"
+    if subj: return subj, subj
+    return None, None
+
 def parse_prices(txt):
     """'문법 영어:268000, 리스닝:192000' → [(과목, 금액)]. 금액 0/비정상 제외."""
     out = []
@@ -67,16 +86,19 @@ for off in OFFICES:
                 "_items": {},
             })
             for name, amt in prices:
-                # 같은 과목 중복 공시는 최근/최대가 아닌 중복 무시(첫 값) — 단순·결정론
-                o["_items"].setdefault(name.lower(), (name, amt))
+                code, label = std_subject(name)
+                if not code: continue            # 표준화 불가 표기는 비교 대상에서 제외(무소음)
+                # 같은 표준 과목에 여러 표기가 있으면 값들을 모아 뒤에서 중앙값 대표
+                o["_items"].setdefault(code, (label, []))[1].append(amt)
         seen += len(rows)
         if seen >= total: break
         page += 1
     print(f"{SIDO[off]}: {seen} rows, 누적 학원 {len(orgs)} {time.time()-t0:.0f}s", flush=True)
 
+from statistics import median
 out = []
 for o in orgs.values():
-    items = [[k, v[0], v[1]] for k, v in o.pop("_items").items()]
+    items = [[k, v[0], int(median(v[1]))] for k, v in o.pop("_items").items()]
     if items: out.append({**o, "items": items})
 print(f"academies {len(out)}, items {sum(len(x['items']) for x in out)}", flush=True)
 with gzip.open(OUT, "wt", encoding="utf-8") as f:

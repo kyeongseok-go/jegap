@@ -1,9 +1,10 @@
 ## 사용 AI 도구 기록 (제출서 필수 기재용)
-- Claude Code (Opus 5 / Fable 5) — 아이디어 발굴 10라운드, 설계 루프(5인 패널 4사이클), 디자인 스케치·도색·마감, 야간 자율 빌드 P1~P8 전 과정
+- Claude Code (Opus 5 / Fable 5) — 아이디어 발굴 10라운드, 설계 루프(5인 패널 4사이클), 디자인 스케치·도색·마감, 자율 빌드 전 과정, 4개 도메인 데이터 파이프라인 구현
+- Claude API (claude-sonnet-5) — 질의서·안건·반환확인서·교습비 확인 요청문 다듬기 스트리밍 (수치·법조항 불변 제약)
 - archify 스킬 — 시스템 아키텍처 다이어그램 (showcase 검증 통과)
 - last30days 스킬 — 커뮤니티 실측 리서치 (Reddit·HN)
 - superpowers 플러그인 — 브레인스토밍·TDD·완료 전 검증 워크플로
-- frontend-design / web-design-guidelines / taste-skill / impeccable — 디자인 2안 도색·최종 감사(detector 정적 0건, 렌더 오탐 2건 기록)
-- Claude Code 내장 브라우저 — 실동작 검증(검색→상세→질의서 스트리밍→모바일 375px), 픽스처 캘리브레이션 결함 3건 실검출·수정
-- Claude API (claude-sonnet-5) — /api/rx 질의서·안건 다듬기 스트리밍 (키 주입 시 활성, 수치·법조항 불변 제약)
+- frontend-design / web-design-guidelines / taste-skill / impeccable — 디자인 2안 도색·최종 감사(AI 티 검출 및 제거)
+- Claude Code 내장 브라우저 — 전 도메인 실동작 검증(검색→상세→처방전 스트리밍→모바일 375px), 픽스처 결함·과목 파편화 등 실검출
+- Firecrawl MCP — 공공데이터포털 스펙 페이지에서 엔드포인트·필드 추출(폐기된 구버전 API 식별)
 - vitest — 검진 엔진 TDD 25 tests (경계값·완화 사다리·헌법 금지어·무소음)
