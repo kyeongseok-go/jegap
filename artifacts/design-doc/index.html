@@ -1,0 +1,450 @@
+<title>JEGAP 설계문서</title>
+<style>
+:root{
+  --bg:#FFFFFF; --bg2:#F5F5F7; --ink:#1D1D1F; --sub:#6E6E73; --hair:#D2D2D7;
+  --accent:#0071E3; --ok:#1D7A3E; --warn:#B25000; --danger:#C22F1F;
+  --card:#FFFFFF; --code:#F5F5F7;
+}
+:root:not([data-theme="light"]){}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#000000; --bg2:#161617; --ink:#F5F5F7; --sub:#A1A1A6; --hair:#3A3A3C;
+    --accent:#2997FF; --ok:#5BC46A; --warn:#E8963E; --danger:#F0655A;
+    --card:#1C1C1E; --code:#1C1C1E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#000000; --bg2:#161617; --ink:#F5F5F7; --sub:#A1A1A6; --hair:#3A3A3C;
+  --accent:#2997FF; --ok:#5BC46A; --warn:#E8963E; --danger:#F0655A;
+  --card:#1C1C1E; --code:#1C1C1E;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard Variable",Pretendard,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.72; letter-spacing:-.011em;
+  -webkit-font-smoothing:antialiased; word-break:keep-all;
+}
+.shell{display:grid; grid-template-columns:236px minmax(0,760px); gap:56px; max-width:1120px; margin:0 auto; padding:0 28px}
+@media(max-width:980px){.shell{grid-template-columns:minmax(0,1fr)} nav.toc{display:none}}
+nav.toc{position:sticky; top:0; align-self:start; height:100vh; overflow-y:auto; padding:44px 0 44px; scrollbar-width:none}
+nav.toc::-webkit-scrollbar{display:none}
+nav.toc .t{font-size:12px; font-weight:600; color:var(--sub); letter-spacing:.06em; text-transform:none; margin-bottom:12px}
+nav.toc a{display:block; font-size:12.5px; color:var(--sub); text-decoration:none; padding:3.5px 10px; border-left:1.5px solid var(--hair); line-height:1.45}
+nav.toc a:hover{color:var(--ink)}
+nav.toc a.grp{margin-top:10px; font-weight:600; color:var(--ink)}
+main{padding:52px 0 120px; min-width:0}
+.eyebrow{font-size:13px; font-weight:600; color:var(--accent); margin-bottom:10px}
+h1{font-size:clamp(34px,5vw,52px); font-weight:700; letter-spacing:-.03em; line-height:1.12; text-wrap:balance}
+.lead{margin-top:16px; font-size:18px; color:var(--sub); line-height:1.6; max-width:46em}
+.meta{margin-top:28px; border-top:1px solid var(--hair); border-bottom:1px solid var(--hair); padding:14px 0; display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:8px 24px; font-size:12.5px}
+.meta b{display:block; color:var(--sub); font-weight:600; font-size:11.5px; margin-bottom:2px}
+.meta a{color:var(--accent); text-decoration:none}
+section{margin-top:64px; scroll-margin-top:24px}
+section>h2{font-size:24px; font-weight:700; letter-spacing:-.02em; margin-bottom:6px}
+section>h2 .no{color:var(--hair); font-weight:600; margin-right:10px; font-feature-settings:"tnum"}
+section>.why{font-size:13px; color:var(--sub); margin-bottom:18px}
+h3{font-size:16px; font-weight:650; margin:26px 0 8px}
+p{margin:10px 0; max-width:66ch}
+p.full{max-width:none}
+ul,ol{margin:10px 0 10px 2px; padding-left:20px; max-width:66ch}
+li{margin:5px 0}
+li::marker{color:var(--sub)}
+b,strong{font-weight:650}
+a{color:var(--accent)}
+code{font-family:"SF Mono",ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.87em; background:var(--code); border:1px solid var(--hair); border-radius:5px; padding:.1em .38em}
+.callout{background:var(--bg2); border-radius:14px; padding:16px 20px; margin:16px 0; max-width:none}
+.callout p{max-width:none}
+.callout .cl{font-size:12px; font-weight:650; color:var(--sub); margin-bottom:4px}
+table{border-collapse:collapse; width:100%; margin:14px 0; font-size:13.5px}
+th{font-size:12px; color:var(--sub); font-weight:600; text-align:left; padding:8px 14px 8px 0; border-bottom:1px solid var(--hair)}
+td{padding:9px 14px 9px 0; border-bottom:1px solid var(--hair); vertical-align:top}
+tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
+.pill{display:inline-block; font-size:11.5px; font-weight:600; border-radius:99px; padding:2px 10px; vertical-align:1px}
+.pill.ok{background:color-mix(in srgb,var(--ok) 14%,transparent); color:var(--ok)}
+.pill.warn{background:color-mix(in srgb,var(--warn) 14%,transparent); color:var(--warn)}
+.pill.info{background:color-mix(in srgb,var(--accent) 12%,transparent); color:var(--accent)}
+.gn{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; margin:16px 0}
+.gn .col{background:var(--bg2); border-radius:14px; padding:16px 18px}
+.gn .col h4{font-size:13px; font-weight:650; margin-bottom:8px}
+.gn .col.g h4{color:var(--ok)} .gn .col.n h4{color:var(--sub)}
+.gn ul{margin:0; padding-left:16px; font-size:13.5px}
+.scn{background:var(--card); border:1px solid var(--hair); border-radius:14px; padding:18px 20px; margin:12px 0}
+.scn .who{font-size:12px; font-weight:650; color:var(--accent); margin-bottom:6px}
+.scn ol{margin:4px 0 0; font-size:13.5px}
+.diagram-frame{border:1px solid var(--hair); border-radius:16px; overflow:hidden; margin:16px 0; background:#fff}
+.diagram-frame iframe{display:block; width:100%; height:640px; border:0}
+.diagram-note{font-size:12.5px; color:var(--sub)}
+dl.gloss{margin:14px 0}
+dl.gloss dt{font-weight:650; font-size:14px; margin-top:12px}
+dl.gloss dd{color:var(--sub); font-size:13.5px; margin:2px 0 0; max-width:66ch}
+.qa{margin:18px 0}
+.qa details{border-bottom:1px solid var(--hair); padding:2px 0}
+.qa summary{cursor:pointer; padding:13px 4px; font-size:15px; font-weight:600; list-style:none; display:flex; gap:10px; align-items:baseline}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary .q{color:var(--accent); font-weight:700; flex-shrink:0}
+.qa summary::after{content:"+"; margin-left:auto; color:var(--sub); font-weight:400; font-size:18px; transition:transform .18s ease}
+.qa details[open] summary::after{transform:rotate(45deg)}
+.qa .a{padding:0 4px 16px 30px; color:var(--sub); font-size:14px}
+.qa .a p{max-width:none; margin:6px 0}
+.qa .a b{color:var(--ink)}
+.issue{border:1px solid var(--hair); border-radius:14px; padding:14px 18px; margin:10px 0}
+.issue .it{font-weight:650; font-size:14px}
+.issue .row{font-size:13px; color:var(--sub); margin-top:6px}
+.issue .row b{color:var(--ink); font-weight:600}
+.alt td:first-child{font-weight:650; white-space:nowrap}
+footer{margin-top:80px; padding-top:20px; border-top:1px solid var(--hair); font-size:12.5px; color:var(--sub)}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto} .qa summary::after{transition:none}}
+</style>
+
+<div class="shell">
+<nav class="toc" aria-label="목차">
+  <p class="t">JEGAP 설계문서</p>
+  <a href="#objective" class="grp">개요</a>
+  <a href="#objective">목표 한 문장</a>
+  <a href="#background">배경</a>
+  <a href="#related">관련 문서</a>
+  <a href="#goals" class="grp">범위</a>
+  <a href="#goals">목표 / 범위 제외</a>
+  <a href="#scenarios">시나리오</a>
+  <a href="#diagram" class="grp">설계</a>
+  <a href="#diagram">다이어그램</a>
+  <a href="#glossary">용어집</a>
+  <a href="#constraints">제약사항</a>
+  <a href="#slo">SLO · 모니터링</a>
+  <a href="#timeline">타임라인</a>
+  <a href="#interfaces">인터페이스</a>
+  <a href="#deps">의존성 · 인프라</a>
+  <a href="#security" class="grp">신뢰</a>
+  <a href="#security">보안</a>
+  <a href="#privacy">개인정보</a>
+  <a href="#legal">법적 고려</a>
+  <a href="#logging">로깅</a>
+  <a href="#issues" class="grp">논의</a>
+  <a href="#issues">미해결 사항</a>
+  <a href="#resolved">해결된 사항</a>
+  <a href="#alternatives">검토된 대안</a>
+  <a href="#qa">질의와 답</a>
+</nav>
+
+<main>
+  <header>
+    <p class="eyebrow">Design Doc — 구현 후 역설계 기록</p>
+    <h1>JEGAP 제값<br>다섯 개의 가격 검진</h1>
+    <p class="lead">정부가 이미 공개한 가격 데이터를, 누구나 30초 안에 읽을 수 있는 "검진표"로 바꾼다.
+    관리비·병원비·학원비·장례비·생활물가 — 물어볼 권리가 법에 있는 가격만 다룬다.</p>
+    <div class="meta">
+      <div><b>저자</b>고경석 · kugll9606@gmail.com</div>
+      <div><b>작성</b>2026-09-16 (구현 완료 시점 역설계)</div>
+      <div><b>상태</b><span class="pill ok">구현·배포 완료</span></div>
+      <div><b>검증</b>심사 루프 3라운드 + Codex·적대 감사 28건 반영</div>
+      <div><b>배포</b><a href="https://jegap-one.vercel.app">jegap-one.vercel.app</a></div>
+      <div><b>맥락</b>원티드 AI Championship 2026 출품</div>
+    </div>
+  </header>
+
+  <section id="objective">
+    <h2><span class="no">01</span>목표 한 문장</h2>
+    <p class="why">Objective — 문서 전체를 한 줄로.</p>
+    <div class="callout"><p><b>공공데이터 5원천의 가격 공시를 하나의 웹앱에 내장하고, 검색 한 번으로
+    "내가 내는 값이 유사 집단 어디쯤인지"를 위치·배수·사실 서술로만 보여준 뒤,
+    법이 보장하는 질문(열람·확인·반환)을 AI가 문서로 대필해 준다.</b></p></div>
+  </section>
+
+  <section id="background">
+    <h2><span class="no">02</span>배경</h2>
+    <p class="why">Background — 외부 맥락 없이 이 문서만으로 이해되도록.</p>
+    <p>한국에는 개인이 <b>협상할 수 없는데 구조적으로 불투명한 가격</b>이 있다.
+    아파트 관리비는 매달 청구되지만 옆 단지와 비교할 기준이 없고, 비급여 진료비·학원 교습비·장례식장
+    요금은 법이 공시를 강제하는데도 그 공시를 읽는 사람이 거의 없다.
+    정부는 이미 데이터를 열었다 — K-apt, 심평원, 나이스, e하늘, 행안부 지방물가.
+    문제는 데이터가 아니라 <b>번역</b>이다.</p>
+    <p>이 프로젝트는 원티드 AI Championship 2026 출품작으로 시작했다. 아이디어 10라운드 루프에서
+    "앱테크 광고 자동화"(실현 불가 판정), "관리비 단순 비교"(아파트아이 등 기존 서비스 존재로 강등)를
+    거쳐, <b>"미래 리스크 판독 + 권리 기반 행동"</b>으로 피벗했다. 이후 확장 계약(도메인 추상화)을
+    전제로 설계해, 실제로 5개 도메인이 하나의 공용 엔진 위에 올라갔다.</p>
+    <p>이 문서는 구현이 끝난 뒤 결정들을 역으로 기록한 것이다. 각 섹션의 포함 기준은 원칙 하나다 —
+    <b>"이 결정이 틀렸을 때의 비용이 큰가?"</b> 되돌리기 쉬운 결정은 싣지 않았다.</p>
+  </section>
+
+  <section id="related">
+    <h2><span class="no">03</span>관련 문서</h2>
+    <p class="why">Related documents</p>
+    <ul>
+      <li><a href="https://jegap-one.vercel.app/method">/method</a> — 산식 전문 공개 페이지 (법적 방어의 1차 문서)</li>
+      <li>저장소 <code>docs/40-DESIGN.md</code> — 구현 전 원 설계 v4 (5인 패널 4사이클) · <code>docs/50-ADR.md</code> — 결정 기록 11건</li>
+      <li><code>AI_TOOLS.md</code> — 사용 AI 도구 전체 기록 (대회 제출 필수 기재)</li>
+      <li>이 문서의 <a href="diagram.html" target="_blank">아키텍처 다이어그램 (전체 화면)</a> — archify 소스: <code>artifacts/jegap5.architecture.json</code></li>
+    </ul>
+  </section>
+
+  <section id="goals">
+    <h2><span class="no">04</span>목표와 범위 제외</h2>
+    <p class="why">Goals / Non-goals — 목표는 구현이 아니라 영향으로 쓴다.</p>
+    <div class="gn">
+      <div class="col g"><h4>목표 (영향 중심)</h4>
+        <ul>
+          <li>로그인 없이 <b>클릭 1회 안에 첫 가치</b> — 심사위원이 30초 안에 판단을 끝낸다</li>
+          <li>검진 결과가 <b>공유 가능한 사실</b>이 된다 (OG 카드 → 대중 투표 유입)</li>
+          <li>조회에서 끝나지 않고 <b>행동으로 연결</b> — 법 조항이 붙은 문서를 그대로 보낼 수 있다</li>
+          <li>심사기간 한 달 내내 <b>죽지 않는다</b> (가용성 &gt; 기능)</li>
+          <li>새 가격 도메인이 <b>구조 변경 없이</b> 꽂힌다</li>
+        </ul>
+      </div>
+      <div class="col n"><h4>범위 제외 (Non-goals)</h4>
+        <ul>
+          <li>판정·등급·추천을 하지 않는다 — 위치와 배수라는 사실만</li>
+          <li>실시간 가격이 아니다 — 공시 주기(월·주간)의 재구성이며 기준 시점을 화면에 명시</li>
+          <li>예약·결제·중개 기능 없음 — 정보와 문서까지가 범위</li>
+          <li>세대·개인 맞춤 계산 아님 (반환 추정은 기준 면적 명시 후 예시로만)</li>
+          <li>유치원·어린이집 원비 — 전국 데이터 부재 확인으로 탈락 (해결된 사항 #7)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="scenarios">
+    <h2><span class="no">05</span>시나리오</h2>
+    <p class="why">Scenarios — 실제 사용 상황을 단계로.</p>
+    <div class="scn"><p class="who">심사위원 — 하루 50개 심사, 30초 판단</p>
+      <ol><li>링크를 연다 → 로그인 없이 실단지 검진표가 이미 펼쳐져 있다 (송파 삼환가락 · 하위 1% · 주의)</li>
+      <li>자기 아파트 이름을 친다 → 진짜 나온다 (전국 21,165단지)</li>
+      <li>"AI 질의서 만들기"를 누른다 → 법 조항·수치가 박힌 문서가 스트리밍으로 타이핑된다</li></ol></div>
+    <div class="scn"><p class="who">이사 검토자 — "은마 살까?"</p>
+      <ol><li>은마 검색 → 47년차 · 장충금 하위 16% 관찰 · 난방비 평균 1.5배 속도</li>
+      <li>분포 곡선에서 내 위치 점을 본다 → /method에서 계산식을 확인한다</li>
+      <li>OG 카드로 배우자에게 공유한다</li></ol></div>
+    <div class="scn"><p class="who">이사 나가는 세입자 — 몰랐던 돈</p>
+      <ol><li>검진표 하단 "전세·월세로 살다 이사하셨나요?" 훅을 본다</li>
+      <li>대신 낸 장기수선충당금이 돌려받는 돈임을 알게 된다 (시행령 §31⑧)</li>
+      <li>"반환 확인서 요청문"을 만들어 관리사무소에 보낸다</li></ol></div>
+  </section>
+
+  <section id="diagram">
+    <h2><span class="no">06</span>다이어그램</h2>
+    <p class="why">Diagrams — 작성자는 직관으로 알지만, 검토자에게는 그림이 필요하다. 편집 가능한 소스 포함.</p>
+    <div class="diagram-frame"><iframe src="diagram.html" title="JEGAP 5편 검진 아키텍처" loading="lazy"></iframe></div>
+    <p class="diagram-note">인터랙티브 뷰어 — 상단 뷰 탭(검진 경로 · 데이터 계보 · AI 경계 · 무결성 게이트)으로 관심 경로만 분리해 볼 수 있다.
+    <a href="diagram.html" target="_blank">전체 화면으로 열기</a> · 소스는 archify JSON(<code>jegap5.architecture.json</code>)으로 재현·수정 가능.</p>
+    <p>읽는 순서: 아래 행이 <b>요청 경로</b>(사용자 → UI → API → 엔진, 강조선), 위 행이 <b>데이터 계보</b>(5원천 → 인제스트 → 무결성 게이트 → 번들, 점선 = 주간 배치).
+    두 행이 만나는 지점은 단 하나 — 엔진이 번들을 모듈 캐시로 읽는 세로선이다. 런타임에 외부로 나가는 호출은 Claude 문장 다듬기(SSE) 하나뿐이다.</p>
+  </section>
+
+  <section id="glossary">
+    <h2><span class="no">07</span>용어집</h2>
+    <p class="why">Glossary — 이 문서와 제품이 쓰는 내부 용어.</p>
+    <dl class="gloss">
+      <dt>장충금 (장기수선충당금)</dt><dd>배관·승강기 등 미래 대규모 수선을 위해 매달 적립하는 돈. 제품에서는 "미래 수리비 저금"으로 병기한다.</dd>
+      <dt>유사군</dt><dd>비교 대상 집단. 도메인마다 규칙이 다르다 — 관리비: 같은 시도×연식±5년×세대수 구간×난방 / 병원: 시도×종별 / 학원: 시군구×표준 과목.</dd>
+      <dt>완화 사다리</dt><dd>유사군 표본이 30개 미만이면 조건을 한 단계씩 넓히고, 넓혔다는 사실을 화면에 표기하는 규칙.</dd>
+      <dt>무소음 원칙</dt><dd>불확실하면 표시하지 않는다. 표본 부족·시계열 단절·공시 오류 의심 값은 결과 자체를 내리지 않는다.</dd>
+      <dt>검진표</dt><dd>결과 화면의 은유. 신호(양호·관찰·주의) + 백분위 + 종합 소견으로 구성 — 등급·판정이라는 말은 금지어다.</dd>
+      <dt>대필 (처방전)</dt><dd>검진 결과를 근거 법 조항이 붙은 실행 문서(질의서·확인 요청문 등)로 바꿔 주는 기능. 총 6종.</dd>
+    </dl>
+  </section>
+
+  <section id="constraints">
+    <h2><span class="no">08</span>제약사항</h2>
+    <p class="why">Constraints — 설계가 그 안에서 움직인 벽.</p>
+    <ul>
+      <li><b>1인 개발</b>, 접수 마감 09-18 · 제출 09-20 — 사람 기준이 아닌 AI 협업 전제의 일정</li>
+      <li>공공데이터포털 개발계정 <b>일 1,000콜</b> — API 초기적재 불가 → 벌크 파일 경로가 강제됨</li>
+      <li>심평원 공개자료 이용조건: <b>영리 목적 환자 유인·알선 금지</b> → 무광고·무추천이 기능이 아니라 제약</li>
+      <li>Vercel Hobby: cron 일 1회 제한, 서버리스 번들 크기 — 데이터 8.5MB 내장이 상한 안에 있어야 함</li>
+      <li>개발 장비 macOS 13.4 — Node 22 상한, python3.14는 <code>SSL_CERT_FILE</code> 수동 지정 필요</li>
+    </ul>
+  </section>
+
+  <section id="slo">
+    <h2><span class="no">09</span>SLO와 모니터링</h2>
+    <p class="why">Service Level Objectives / Monitoring — "빠르다"가 아니라 숫자로.</p>
+    <div class="tblwrap"><table>
+      <tr><th>항목</th><th>목표</th><th>실측·검증</th></tr>
+      <tr><td>가용성</td><td>심사기간(09-21~10-17) 다운 0회 — 다운은 심사 제외와 같다</td><td>정적 프리렌더 + 서버리스 + 외부 DB 0 (단일 장애점 제거)</td></tr>
+      <tr><td>정적 페이지 응답</td><td>&lt; 1s</td><td>0.5~1.0s (프로덕션 curl 실측)</td></tr>
+      <tr><td>상세 페이지 (콜드)</td><td>&lt; 3s</td><td>~2s — 미해결 사항 #4</td></tr>
+      <tr><td>규모</td><td>단지 21,165 · 병원급 3,944 · 학원 21,038 · 장례 1,060 · 물가 35품목×17시도×6년</td><td>번들 8.5MB(gz), 검색은 인메모리</td></tr>
+      <tr><td>LLM 남용 상한</td><td>IP당 분당 5회</td><td>6번째 요청부터 429 (실측)</td></tr>
+    </table></div>
+    <p><b>모니터링</b> — Vercel 함수 로그(오류·지연), 429 발생 빈도. 심사기간 보험으로 외부 5분 핑(cron-job.org)은
+    선택 항목으로 남겨 두었다. 알림 임계 초과 시 대응 순서: 재배포 → 레이트리밋 강화 → 템플릿 모드 강제(키 제거).</p>
+  </section>
+
+  <section id="timeline">
+    <h2><span class="no">10</span>타임라인</h2>
+    <p class="why">Timeline — 산출물 기반 마일스톤 (실제 진행 기록).</p>
+    <div class="tblwrap"><table>
+      <tr><th>완료일</th><th>마일스톤</th><th>산출물</th></tr>
+      <tr><td>09-15</td><td>야간 자율 빌드 (설계 → v1)</td><td>검진 엔진 TDD·검진표 UI·대필 스트리밍·OG — fixture 데이터로 전 기능 완동</td></tr>
+      <tr><td>09-16 오전</td><td>실데이터 전환</td><td>관리비 21,165단지 → 병원 → 장례 → 학원 → 생활물가 (5원천 인제스트 파이프라인)</td></tr>
+      <tr><td>09-16 오후</td><td>프로덕션 배포</td><td>jegap-one.vercel.app · 환경변수 · 도메인</td></tr>
+      <tr><td>09-16 저녁</td><td>품질 루프</td><td>심사 페르소나 3라운드(47→54점) + Codex 14건 + 적대 감사 14건 반영(→56점)</td></tr>
+      <tr><td>09-18</td><td><span class="pill info">다음</span> 대회 접수</td><td>배포 링크 + AI_TOOLS 기재 + 소개문</td></tr>
+    </table></div>
+  </section>
+
+  <section id="interfaces">
+    <h2><span class="no">11</span>인터페이스</h2>
+    <p class="why">Interfaces — 경계의 계약. 여기가 바뀌면 비싸다.</p>
+    <h3>도메인 어댑터 계약</h3>
+    <p>모든 가격 도메인은 두 계약 중 하나를 구현한다. 새 도메인 추가 = 인제스트 스크립트 + 설정 몇 줄.</p>
+    <ul>
+      <li><code>DataSource</code> (관리비) — <code>search / get / all / worst / isSample</code>. fixture와 실데이터가 같은 계약이라 데이터 없이도 앱이 완동한다.</li>
+      <li><code>makeDomain(config)</code> (병원·학원·장례) — <code>file, minPeers, peerKeys[]</code>(완화 사다리를 키 함수 배열로 선언) → <code>ready / search / get / exams</code>.</li>
+    </ul>
+    <h3>대필 API 계약</h3>
+    <ul>
+      <li><code>POST /api/{rx|arx|hrx|frx}</code> → <code>text/plain</code> 스트리밍. 헤더 <code>x-rx-mode: llm | template</code>이 생성 방식을 정직하게 알린다.</li>
+      <li>실패 계약: 첫 문장 전 실패 = 템플릿 폴백(200) / 도중 실패 = 부분 출력 + 중단 안내 / 잘못된 입력 = 400 / 남용 = 429.</li>
+    </ul>
+    <h3>URL 구조</h3>
+    <p class="full"><code>/</code> 관리비 홈(워스트 사례) · <code>/d/[code]</code> 단지 · <code>/h|/a|/f/[id]</code> 병원·학원·장례 · <code>/p/[시도]</code> 지역 물가 · <code>/method</code> 산식 — 모든 상세는 OG 이미지 라우트를 동반한다.</p>
+  </section>
+
+  <section id="deps">
+    <h2><span class="no">12</span>의존성과 인프라</h2>
+    <p class="why">Dependencies — 나중에 바꾸기 어려운 것들 중심.</p>
+    <div class="tblwrap"><table>
+      <tr><th>결정</th><th>선택</th><th>틀렸을 때 비용</th></tr>
+      <tr><td>프레임워크·호스팅</td><td>Next.js 16 + Vercel</td><td>높음 — 라우팅·프리렌더·OG 전부 결합</td></tr>
+      <tr><td>데이터 저장</td><td>외부 DB 없음 — 리포 내 gz 번들, 서버 모듈 캐시 로드</td><td>높음 — 대신 규모 상한이 명확(수백 MB 전까지 유효)</td></tr>
+      <tr><td>LLM</td><td>claude-sonnet-5, 문장 다듬기 한정</td><td>낮음 — 계약상 템플릿 폴백이 항상 존재</td></tr>
+      <tr><td>데이터 원천</td><td>K-apt·심평원·나이스·e하늘·행안부 (전부 벌크 또는 무료 API)</td><td>높음 — 원천 중단 시 해당 편 갱신 불가(기존 번들은 유지)</td></tr>
+      <tr><td>폰트·차트</td><td>Pretendard 단일 가족 · 인라인 SVG (차트 라이브러리 없음)</td><td>낮음</td></tr>
+    </table></div>
+  </section>
+
+  <section id="security">
+    <h2><span class="no">13</span>보안</h2>
+    <p class="why">Security — 위협 모델과 신뢰 경계. 설계 단계 항목이지만, 이 프로젝트에선 적대 감사로 사후 검증했다.</p>
+    <ul>
+      <li><b>공격 표면</b>은 사실상 대필 라우트 4개뿐 — 로그인·DB·파일 업로드가 없다. 검색은 인메모리 <code>includes</code>라 주입 표면이 없다.</li>
+      <li><b>과금 남용</b>(익명 LLM 호출 루프)이 최대 위협 — IP 레이트리밋(분당 5회, 429)으로 차단. 남용 관찰 시 전역 저장소 기반 리밋으로 승격 예정.</li>
+      <li><b>프롬프트 주입</b> — LLM 입력은 전부 정부 데이터셋 유래이고 사용자 입력은 조회 키로만 쓰인다. 적대 감사에서 주입 경로 미발견.</li>
+      <li><b>입력 검증</b> — 4개 라우트 공통 파서: 깨진 JSON·잘못된 id·허용 외 kind는 400.</li>
+      <li><b>신뢰 경계</b> — 공공데이터조차 신뢰하지 않는다: 무결성 게이트가 공시 오류(예: 소주 2,500만 원)를 이상치 규칙으로 걸러낸다.</li>
+    </ul>
+  </section>
+
+  <section id="privacy">
+    <h2><span class="no">14</span>개인정보</h2>
+    <p class="why">Privacy</p>
+    <p><b>수집하는 개인정보가 없다.</b> 로그인·회원가입 없음, 검색어 저장 없음, 쿠키·트래커 없음.
+    다루는 데이터는 전부 기관 단위의 정부 공개 정보다. 유일한 개인 연관 값(세입자 반환 추정액)은
+    서버로 전송되지 않는 화면 내 계산이며, 대필 문서의 동·호수는 사용자가 복사 후 직접 채우는 빈칸이다.</p>
+  </section>
+
+  <section id="legal">
+    <h2><span class="no">15</span>법적 고려사항</h2>
+    <p class="why">Legal considerations — 이 제품에서 가장 두꺼운 섹션인 것이 맞다.</p>
+    <ul>
+      <li><b>사실적시 명예훼손</b>(정보통신망법 §70①) — 실명 기관에 대한 위치 표시가 핵심 리스크.
+      방어 구조: 정부가 이미 실명 공개한 공시가의 재구성 + 판정어 금지(테스트로 강제) + 산식 전문 공개 +
+      무광고·비영리 + 24시간 정정 채널 → "비방 목적" 부정의 전형 요건.
+      홈의 실명 하이라이트는 <b>의도된 리스크 감수로 결정</b>(2026-09-16, 저자) — 항의 수신 시 정정 채널 우선 대응,
+      분쟁 격화 시 익명화 전환 지점을 코드에 기록해 둠.</li>
+      <li><b>법 조항 인용 정확성</b> — 대필 문서가 인용하는 전 조항(관리비 §27③·§30·시행령 §31⑧⑨, 의료법 §45, 학원법 §15, 장사법 §29)을
+      국가법령정보센터 기준으로 검증 완료. 잘못된 조항 인용(§31⑩)을 적대 감사가 검출해 정정한 이력 있음.</li>
+      <li><b>데이터 이용 조건</b> — 공공누리 1유형(장례), 심평원 비영리 조건, 공공데이터포털 개방 조건 각각 확인.
+      최신 데이터가 필요한 e하늘 화면 스크래핑은 <b>법적 회색으로 판단해 배제</b>하고 개방본(2023-06)을 기준 시점 명시로 사용.</li>
+    </ul>
+  </section>
+
+  <section id="logging">
+    <h2><span class="no">16</span>로깅</h2>
+    <p class="why">Logging — 무엇을 남기고, 무엇을 남기지 않는가.</p>
+    <p>Vercel 기본 함수 로그(요청 경로·상태·지연)만 사용한다. 애플리케이션 레벨에서 추가로 남기는 것은 없다 —
+    검색어·생성된 문서 내용·IP를 자체 저장하지 않는다(레이트리밋 버킷은 인메모리·휘발성).
+    데이터 갱신은 로그가 아니라 <b>git 커밋이 감사 기록</b>이다: 인제스트 산출물이 리포에 커밋되므로
+    "언제 어떤 데이터로 무엇이 보였는지"를 커밋 해시로 재현할 수 있다.</p>
+  </section>
+
+  <section id="issues">
+    <h2><span class="no">17</span>미해결 사항</h2>
+    <p class="why">Open issues — 문제 · 옵션 · 다음 단계를 함께 적는다.</p>
+    <div class="issue"><p class="it">1 · 병원비편에 의원급이 없다 (현재 병원급 3,944기관)</p>
+      <p class="row"><b>문제</b> 도수치료·독감접종 등 체감 항목은 동네 의원에서 발생 <b>옵션</b> 심평원 의원급 별도 op 탐색 / 현행 유지 <b>다음</b> 대회 후 스웨거 전수 탐색</p></div>
+    <div class="issue"><p class="it">2 · 주간 데이터 갱신이 수동이다</p>
+      <p class="row"><b>문제</b> 인제스트 → 커밋 → 재배포가 로컬 절차 <b>옵션</b> GitHub Actions 주간 크론 / 수동 유지 <b>다음</b> 심사기간엔 수동(무변경이 안전), 이후 Actions 이전</p></div>
+    <div class="issue"><p class="it">3 · 도메인 — jegap.vercel.app은 선점됨</p>
+      <p class="row"><b>옵션</b> jegap-one 유지 / 커스텀 도메인 구매 <b>다음</b> 접수는 현행 주소, TOP20 진출 시 도메인 구매 검토</p></div>
+    <div class="issue"><p class="it">4 · 상세 페이지 콜드 스타트 ~2초</p>
+      <p class="row"><b>원인</b> 서버리스 첫 기동 + 번들 gunzip <b>옵션</b> ISR 캐시(1차 시도는 검증 혼선으로 보류) / 수용 <b>다음</b> 심사기간 실측 후 판단</p></div>
+  </section>
+
+  <section id="resolved">
+    <h2><span class="no">18</span>해결된 사항</h2>
+    <p class="why">Resolved issues — 미해결에서 넘어온 결정들. 논의는 보존한다.</p>
+    <div class="tblwrap"><table>
+      <tr><th>사안</th><th>결정</th><th>근거·경위</th></tr>
+      <tr><td>신축 단지 허위 경고</td><td>24개월 미만 공시는 상승률 검사 자체를 내리지 않음</td><td>적대 감사 H1 — 첫 달 1원 분모로 "+4,300%·844배·주의" 실명 오탐 13건 검출</td></tr>
+      <tr><td>법 조항 오인용</td><td>반환=시행령 §31⑧ · 확인서=§31⑨로 정정</td><td>존재하지 않는 §31⑩ 인용을 감사가 법령 대조로 검출</td></tr>
+      <tr><td>중앙값 편향</td><td>짝수 표본은 가운데 두 값 평균</td><td>Codex — 상위측 선택으로 배수·소견이 달라짐을 재현</td></tr>
+      <tr><td>학원 과목 파편화</td><td>학년대×과목 표준화(53,950종→63과목)</td><td>표본 30 미달로 94% 학원이 빈 화면 → 정규화로 커버리지 94% 회복</td></tr>
+      <tr><td>DB 도입 여부</td><td>도입 안 함 — gz 번들 내장</td><td>원설계는 Supabase였으나 벌크 파일 발견으로 전환. 가용성 헌법(외부 의존 0)이 결정타</td></tr>
+      <tr><td>홈 실명 하이라이트</td><td>유지 (리스크 감수)</td><td>익명화(b)안 권고에도 임팩트 우선 — 전환 지점 기록으로 헤지</td></tr>
+      <tr><td>5호 도메인</td><td>원비 탈락 → 생활물가 채택</td><td>유치원알리미 14개 API 전수 확인 결과 금액 필드 0건. 행안부 지방물가 6년 시계열로 대체</td></tr>
+      <tr><td>e하늘 최신 데이터</td><td>스크래핑 배제, 개방본(2023-06) 사용</td><td>robots 불명 + 재게시 라이선스 회색 → 기준 시점 화면 명시로 정직성 확보</td></tr>
+    </table></div>
+  </section>
+
+  <section id="alternatives">
+    <h2><span class="no">19</span>검토된 대안</h2>
+    <p class="why">Alternatives considered — 간결하게, 왜 아닌지만.</p>
+    <div class="tblwrap"><table class="alt">
+      <tr><td>Supabase + pg_trgm</td><td>검색·조회는 훌륭하지만 심사기간의 외부 장애점이 된다. 데이터가 주간 정적이라 DB의 이점(쓰기·동시성)이 없었다.</td></tr>
+      <tr><td>recharts 등 차트 라이브러리</td><td>번들 비대 + 어디서나 본 "AI 앱 룩". 분포·스파크는 서버 계산 인라인 SVG로 충분했다.</td></tr>
+      <tr><td>LLM이 소견 생성</td><td>수치를 만들 위험. 소견은 결정론 템플릿, LLM은 문장 다듬기로 역할을 갈랐다 — "AI가 숫자를 만들지 않는다"가 오히려 차별화가 됐다.</td></tr>
+      <tr><td>API 증분 적재</td><td>일 1,000콜 상한으로 초기 적재만 72일. 벌크 파일(주간) + 재배포가 더 단순하고 재현 가능.</td></tr>
+      <tr><td>도메인별 개별 구현</td><td>병원 편에서 실제로 한 번 저질렀고(공용 컴포넌트 미적용), 그 결과가 소견 누락 버그였다. 공용 엔진 + 설정 선언이 정답.</td></tr>
+    </table></div>
+  </section>
+
+  <section id="qa">
+    <h2><span class="no">20</span>질의와 답</h2>
+    <p class="why">설계 루프·심사 루프·교차 감사에서 실제로 받았던 질문과, 예상 질문.</p>
+    <div class="qa">
+      <details open><summary><span class="q">Q1</span>왜 등급이나 점수를 안 매기나? 사용자는 한 줄 결론을 원할 텐데.</summary>
+        <div class="a"><p>두 가지 이유다. <b>법적으로</b> — 실명 기관에 대한 등급은 "비방 목적" 다툼의 정중앙이고, 위치·배수는 검증 가능한 사실이다.
+        <b>제품적으로</b> — 등급은 근거가 감춰진 판단이고, "17곳 중 3번째로 높음"은 사용자가 스스로 판단하게 하는 데이터다.
+        신호(양호·관찰·주의)가 결론 요약의 역할을 대신하되, 그 경계값까지 /method에 공개해 판정이 아닌 규칙임을 보였다.</p></div></details>
+      <details><summary><span class="q">Q2</span>AI 챔피언십인데 AI가 한 일이 "문장 다듬기"뿐이라 약하지 않나?</summary>
+        <div class="a"><p>런타임 기능만 보면 그렇게 보이지만, 이 제품에서 AI의 자리는 세 층이다.
+        ① <b>개발 전 과정</b>이 AI 협업(아이디어 10라운드 → 설계 패널 → 자율 빌드 → 교차 감사 — AI_TOOLS.md에 전부 기재).
+        ② 런타임에선 <b>"AI가 숫자를 만들지 않는다"는 선언 자체가 설계</b>다 — 검증 가능성이 신뢰 서비스의 조건이라서다(/method §0).
+        ③ 대필 6종은 다듬기가 아니라 <b>권리의 문서화</b>다 — 검진 결과와 법 조항을 조립해 보내도 되는 문서로 바꾸는 것이 이 제품의 행동 루프다.</p></div></details>
+      <details><summary><span class="q">Q3</span>공공데이터가 틀리면 어떡하나? 실제로 틀린 걸 봤나?</summary>
+        <div class="a"><p>봤다 — 장례식장 공시에 "소주 25,001,800원", 조사 단위가 바뀌며 닭고기가 한 달 새 반토막.
+        그래서 무결성 게이트를 뒀다: 시계열 ±35% 점프는 그 이전과의 비교를 차단하고, 중간값의 50배 초과·저액 항목은 표시하지 않는다.
+        그래도 새는 건 24시간 정정 채널로 받는다. 원천 오류를 우리가 다 못 잡는다는 것을 전제한 설계다.</p></div></details>
+      <details><summary><span class="q">Q4</span>아파트아이·참가격·하모니가 이미 있는데 뭐가 다른가?</summary>
+        <div class="a"><p>기존 서비스는 <b>숫자 표</b>를 준다. JEGAP은 세 가지를 더한다 —
+        ① 위치 번역("하위 7%", "중간값의 2.5배"), ② 행동 연결(법 조항 붙은 대필 문서), ③ 한곳 통합(물어볼 권리가 있는 가격 5종).
+        그리고 도메인 선정 원칙 자체가 차별화다: <b>"불투명하고, 협상 불가하고, 물어볼 권리가 법에 있는 가격만"</b> — 그래서 우유는 안 하고 장례비는 한다.</p></div></details>
+      <details><summary><span class="q">Q5</span>DB 없이 데이터를 앱에 내장한 게 규모가 커지면 무너지지 않나?</summary>
+        <div class="a"><p>맞다, 상한이 있다 — 그리고 그 상한이 명확하다는 게 이 선택의 장점이다.
+        현재 8.5MB, 도메인당 수 MB씩 늘어도 수십 개 도메인까지는 서버리스 번들 한도 안이다.
+        읽기 전용·주간 갱신 데이터에 DB를 두면 얻는 것은 없고 심사기간의 장애점만 는다.
+        무너지는 시점(수백 MB, 혹은 사용자 생성 데이터 등장)이 오면 그때 DataSource 계약 뒤에서 저장소만 갈아끼운다 — 그러라고 계약을 뒀다.</p></div></details>
+      <details><summary><span class="q">Q6</span>명예훼손으로 신고당하면?</summary>
+        <div class="a"><p>신고 자체는 누구나 할 수 있다 — 그것과 성립은 다른 문제다. 정부가 실명 공개한 공시가의 재구성 + 판정어 부재 + 공익 목적 정황(무광고·산식 공개·정정 채널)으로
+        "비방 목적" 부정 요건을 갖췄다. 실질 리스크는 패소가 아니라 대응 비용이며, 항의 수신 → 정정 채널 → (격화 시) 익명화 전환의 3단 대응을 준비해 뒀다. §15 참조.</p></div></details>
+      <details><summary><span class="q">Q7</span>데이터 갱신을 잊으면 낡은 가격이 계속 보이는 것 아닌가?</summary>
+        <div class="a"><p>그래서 모든 화면에 <b>기준 시점</b>을 박았다("2026.08 조사", "2023.6 공시분").
+        낡음 자체보다 낡음을 숨기는 것이 신뢰를 깬다. 갱신은 인제스트 스크립트 재실행 + 재배포이며, 커밋이 갱신 이력이 된다.</p></div></details>
+      <details><summary><span class="q">Q8</span>이 설계에서 다시 한다면 바꿀 것 하나는?</summary>
+        <div class="a"><p>공용 가격 엔진(<code>makeDomain</code>)을 <b>2호가 아니라 1호부터</b> 깔았을 것이다.
+        관리비편이 전용 엔진으로 먼저 만들어진 탓에 지금 두 계약이 공존하고, 병원편 통합 누락 같은 이음새 버그가 거기서 나왔다.
+        "확장은 나중에"가 아니라 확장 계약이 곧 1호의 스펙이어야 했다.</p></div></details>
+    </div>
+  </section>
+
+  <footer>
+    <p>JEGAP 제값 — 내가 내는 값이 정당한가 · 이 문서는 refactoringenglish.com의
+    "How to Write an Effective Design Doc" 구조를 따라 구현 완료 후 역설계로 작성되었다.
+    다이어그램 소스와 전체 코드는 저장소에 있다.</p>
+  </footer>
+</main>
+</div>

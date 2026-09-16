@@ -1,0 +1,266 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "JEGAP 제값 — 5편 검진 아키텍처",
+    "output": "jegap5-architecture.html",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1320,
+      600
+    ],
+    "views": [
+      {
+        "id": "checkup-path",
+        "label": "검진 경로",
+        "focus": [
+          "user",
+          "web",
+          "api",
+          "engine",
+          "data"
+        ],
+        "note": "검색에서 검진표까지 30초. 로그인 없음, 외부 DB 없음 — 데이터는 앱에 내장."
+      },
+      {
+        "id": "lineage",
+        "label": "데이터 계보",
+        "focus": [
+          "gov",
+          "ingest",
+          "guard",
+          "data"
+        ],
+        "note": "공공데이터 5원천을 주간 배치로 수집·검증해 8.5MB 번들로 압축. 재배포가 곧 갱신."
+      },
+      {
+        "id": "ai-boundary",
+        "label": "AI 경계",
+        "focus": [
+          "api",
+          "claude"
+        ],
+        "note": "수치·신호는 전부 코드가 계산한다. Claude는 질의서·요청문의 문장만 다듬는다."
+      },
+      {
+        "id": "integrity",
+        "label": "무결성 게이트",
+        "focus": [
+          "guard",
+          "engine"
+        ],
+        "note": "시계열 단절·공시 오류·표본 부족은 표시하지 않는다 — 무소음 원칙."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "gov",
+      "type": "external",
+      "label": "공공데이터 5원천",
+      "sublabel": "K-apt·심평원·NEIS·e하늘·하모니",
+      "pos": [
+        80,
+        120
+      ],
+      "size": [
+        220,
+        64
+      ]
+    },
+    {
+      "id": "ingest",
+      "type": "backend",
+      "label": "인제스트 파이프라인",
+      "sublabel": "주간 배치 · 로컬 실행",
+      "pos": [
+        420,
+        120
+      ],
+      "size": [
+        190,
+        64
+      ]
+    },
+    {
+      "id": "guard",
+      "type": "security",
+      "label": "무결성 게이트",
+      "sublabel": "단절 감지 · 이상치 제외",
+      "tag": "무소음 원칙",
+      "pos": [
+        730,
+        120
+      ],
+      "size": [
+        190,
+        64
+      ]
+    },
+    {
+      "id": "data",
+      "type": "database",
+      "label": "데이터 번들 .gz",
+      "sublabel": "5도메인 · 8.5MB 내장",
+      "tag": "외부 DB 없음",
+      "pos": [
+        1050,
+        120
+      ],
+      "size": [
+        190,
+        64
+      ]
+    },
+    {
+      "id": "user",
+      "type": "external",
+      "label": "사용자",
+      "sublabel": "심사위원 · 대중",
+      "pos": [
+        80,
+        400
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "web",
+      "type": "frontend",
+      "label": "Next.js 5탭 UI",
+      "sublabel": "Vercel · OG 공유",
+      "pos": [
+        360,
+        400
+      ],
+      "size": [
+        190,
+        64
+      ]
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "API 라우트",
+      "sublabel": "검색 4종 · 대필 4종",
+      "tag": "IP 레이트리밋",
+      "pos": [
+        670,
+        400
+      ],
+      "size": [
+        190,
+        64
+      ]
+    },
+    {
+      "id": "engine",
+      "type": "backend",
+      "label": "검진 엔진",
+      "sublabel": "백분위 · 중앙값 · 완화 사다리",
+      "pos": [
+        1050,
+        400
+      ],
+      "size": [
+        200,
+        64
+      ]
+    },
+    {
+      "id": "claude",
+      "type": "external",
+      "label": "Claude API",
+      "sublabel": "문장 다듬기만",
+      "pos": [
+        670,
+        260
+      ],
+      "size": [
+        190,
+        56
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "gov-to-ingest",
+      "from": "gov",
+      "to": "ingest",
+      "label": "벌크 수집",
+      "variant": "dashed"
+    },
+    {
+      "id": "ingest-to-guard",
+      "from": "ingest",
+      "to": "guard",
+      "label": "전처리",
+      "variant": "dashed"
+    },
+    {
+      "id": "guard-to-data",
+      "from": "guard",
+      "to": "data",
+      "label": "압축 산출",
+      "variant": "dashed"
+    },
+    {
+      "id": "user-to-web",
+      "from": "user",
+      "to": "web",
+      "label": "검색 1클릭",
+      "variant": "emphasis"
+    },
+    {
+      "id": "web-to-api",
+      "from": "web",
+      "to": "api",
+      "label": "fetch",
+      "variant": "emphasis"
+    },
+    {
+      "id": "api-to-engine",
+      "from": "api",
+      "to": "engine",
+      "label": "검진 실행",
+      "variant": "emphasis"
+    },
+    {
+      "id": "engine-to-data",
+      "from": "engine",
+      "to": "data",
+      "label": "모듈 캐시 로드",
+      "variant": "emphasis",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "id": "api-to-claude",
+      "from": "api",
+      "to": "claude",
+      "label": "SSE 스트리밍"
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Vercel 서버리스",
+      "wraps": [
+        "web",
+        "api",
+        "engine",
+        "data"
+      ]
+    },
+    {
+      "kind": "security-group",
+      "label": "주간 배치 (로컬)",
+      "wraps": [
+        "ingest",
+        "guard"
+      ]
+    }
+  ]
+}
