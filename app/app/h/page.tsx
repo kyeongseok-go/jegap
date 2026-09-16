@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import DomainTabs from "../../components/DomainTabs";
-import HSearch from "../../components/HSearch";
+import PriceSearch from "../../components/PriceSearch";
 import { hiraReady } from "../../lib/medical/hira";
 
 export const metadata: Metadata = {
@@ -32,7 +32,7 @@ export default function HospitalHome() {
           </p>
           {ready ? (
             <div className="hero-cta">
-              <HSearch wide />
+              <PriceSearch endpoint="/api/hsearch" hrefBase="/h" wide placeholder="병원 이름 검색  예: ○○정형외과" label="병원 이름 검색" />
               <p className="cta-note">심평원 공개 가격 기준 · 로그인 없음 · 30초</p>
             </div>
           ) : (

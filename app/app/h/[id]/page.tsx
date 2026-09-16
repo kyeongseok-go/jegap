@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import DomainTabs from "../../../components/DomainTabs";
-import HSearch from "../../../components/HSearch";
+import PriceSearch from "../../../components/PriceSearch";
 import Reveal from "../../../components/Reveal";
 import { hiraReady, getHospital, priceExams } from "../../../lib/medical/hira";
 
@@ -28,7 +28,7 @@ export default async function HospitalPage({ params }: { params: Promise<{ id: s
             <span className="bsub">제값</span>
           </a>
           <DomainTabs active="med" />
-          <HSearch />
+          <PriceSearch endpoint="/api/hsearch" hrefBase="/h" placeholder="병원 이름 검색" label="병원 이름 검색" />
         </div>
       </header>
       <main className="wrap" id="main">
@@ -48,7 +48,7 @@ export default async function HospitalPage({ params }: { params: Promise<{ id: s
           </p></section>
         ) : (
           <Reveal as="section" className="hexams">
-            <h3>공개 항목별 가격 위치 <span className="hnote">— {d.h.sido} · {d.h.kind} 기준</span></h3>
+            <h3>공개 항목별 가격 위치 <span className="hnote">— {exams[0].peerLabel} 기준</span></h3>
             <div className="htable" role="table" aria-label="비급여 항목별 가격 위치">
               <div className="hrow hhead" role="row">
                 <span role="columnheader">항목</span>

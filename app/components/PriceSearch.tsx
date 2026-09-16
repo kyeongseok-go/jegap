@@ -4,7 +4,11 @@ import { useRouter } from "next/navigation";
 
 type Item = { id: string; name: string; sigungu: string; kind: string };
 
-export default function HSearch({ wide = false }: { wide?: boolean }) {
+export default function PriceSearch({
+  endpoint, hrefBase, placeholder, label, wide = false,
+}: {
+  endpoint: string; hrefBase: string; placeholder: string; label: string; wide?: boolean;
+}) {
   const [q, setQ] = useState("");
   const [items, setItems] = useState<Item[]>([]);
   const [openList, setOpenList] = useState(false);
@@ -16,13 +20,13 @@ export default function HSearch({ wide = false }: { wide?: boolean }) {
     if (q.trim().length < 1) { setItems([]); return; }
     const t = setTimeout(async () => {
       try {
-        const r = await fetch(`/api/hsearch?q=${encodeURIComponent(q)}`);
+        const r = await fetch(`${endpoint}?q=${encodeURIComponent(q)}`);
         const j = await r.json();
         setItems(j.items ?? []); setOpenList(true); setHi(-1);
       } catch { /* 무소음 */ }
     }, 200);
     return () => clearTimeout(t);
-  }, [q]);
+  }, [q, endpoint]);
 
   useEffect(() => {
     const close = (e: MouseEvent) => {
@@ -32,16 +36,16 @@ export default function HSearch({ wide = false }: { wide?: boolean }) {
     return () => document.removeEventListener("mousedown", close);
   }, []);
 
-  const go = (id: string) => { setOpenList(false); router.push(`/h/${id}`); };
+  const go = (id: string) => { setOpenList(false); router.push(`${hrefBase}/${encodeURIComponent(id)}`); };
 
   return (
     <div className={`findwrap ${wide ? "wide" : ""}`} ref={boxRef}
       style={wide ? { marginLeft: 0, marginTop: 22, maxWidth: 520 } : undefined}>
       <form className="find" role="search"
         onSubmit={(e) => { e.preventDefault(); if (items[0]) go(items[0].id); }}>
-        <input type="search" placeholder="병원 이름 검색  예: ○○정형외과" value={q}
-          role="combobox" aria-expanded={openList} aria-controls="hsugg-list"
-          aria-label="병원 이름 검색" autoComplete="off"
+        <input type="search" placeholder={placeholder} value={q}
+          role="combobox" aria-expanded={openList} aria-controls="psugg-list"
+          aria-label={label} autoComplete="off"
           onChange={(e) => setQ(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "ArrowDown") { e.preventDefault(); setHi((h) => Math.min(h + 1, items.length - 1)); }
@@ -52,8 +56,8 @@ export default function HSearch({ wide = false }: { wide?: boolean }) {
         <button type="submit">검진</button>
       </form>
       {openList && q.trim() && (
-        <div className="sugg" id="hsugg-list" role="listbox" aria-label="검색 결과">
-          {items.length === 0 && <p className="none">일치하는 병원이 없습니다. 두세 글자로 검색해 보세요.</p>}
+        <div className="sugg" id="psugg-list" role="listbox" aria-label="검색 결과">
+          {items.length === 0 && <p className="none">일치하는 곳이 없습니다. 공식 명칭의 두세 글자로 검색해 보세요.</p>}
           {items.map((it, i) => (
             <button key={it.id} role="option" aria-selected={i === hi}
               className={i === hi ? "hit hi" : "hit"} onClick={() => go(it.id)}>
