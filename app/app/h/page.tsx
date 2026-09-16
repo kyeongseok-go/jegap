@@ -19,12 +19,12 @@ export default function HospitalHome() {
             <span className="bsub">제값</span>
           </a>
           <DomainTabs active="med" />
-          <span className="q">내가 내는 값이 정당한가</span>
+          <span className="q">지금 내는 돈, 제값인지 확인하세요</span>
         </div>
       </header>
       <main className="wrap" id="main">
         <section className="hero">
-          <p className="eyebrow"><span className="pulse" aria-hidden="true"></span>병원비편 — 비급여 진료비</p>
+          <p className="eyebrow"><span className="pulse" aria-hidden="true"></span>병원비편 · 비급여 진료비</p>
           <h1 className="head">같은 진료인데<br /><span className="hl">가격은 병원이 정합니다</span></h1>
           <p className="sub">
             비급여 진료는 병원이 가격을 자율로 정합니다. 심사평가원이 매년 <b>전체 의료기관의 비급여 가격</b>을
@@ -54,7 +54,7 @@ export default function HospitalHome() {
           </div>
         </section>
         <footer>
-          <p className="next"><b>1호 검진</b> — 관리비편이 먼저 열려 있습니다. 전국 2만 1천 단지.</p>
+          <p className="next"><b>관리비편</b>도 같은 방식으로 검진합니다. 전국 2만 1천 단지.</p>
           <p>계산식 공개 · 데이터 출처 · 정정 요청은 24시간 안에 처리합니다</p>
         </footer>
       </main>

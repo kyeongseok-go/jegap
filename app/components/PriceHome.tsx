@@ -18,7 +18,7 @@ export default function PriceHome({
             <span className="bsub">제값</span>
           </a>
           <DomainTabs active={active} />
-          <span className="q">내가 내는 값이 정당한가</span>
+          <span className="q">지금 내는 돈, 제값인지 확인하세요</span>
         </div>
       </header>
       <main className="wrap" id="main">
@@ -47,7 +47,7 @@ export default function PriceHome({
           </div>
         </section>
         <footer>
-          <p className="next"><b>1호 검진</b> — 관리비편이 먼저 열려 있습니다. 전국 2만 1천 단지.</p>
+          <p className="next"><b>관리비편</b>도 같은 방식으로 검진합니다. 전국 2만 1천 단지.</p>
           <p><a href="/design/">설계문서</a> · <a href="/method">계산식 공개</a> · 데이터 출처 · 정정 요청은 24시간 안에 처리합니다</p>
         </footer>
       </main>

@@ -11,7 +11,7 @@ export default function NotFound() {
             <span className="bsub">제값</span>
           </a>
           <DomainTabs active="apt" />
-          <span className="q">내가 내는 값이 정당한가</span>
+          <span className="q">지금 내는 돈, 제값인지 확인하세요</span>
         </div>
       </header>
       <main className="wrap" id="main">

@@ -53,7 +53,7 @@ export default function RxBox({ code, refundWon }: { code: string; refundWon?: n
       )}
       <div className="acts">
         <button className="btn" onClick={() => run("inquiry")}>
-          {busy ? "생성 중… (누르면 중단)" : "AI 질의서 만들기 — 관리사무소용"}
+          {busy ? "생성 중… (누르면 중단)" : "AI 질의서 만들기 · 관리사무소용"}
         </button>
         <button className="btn g" onClick={() => run("agenda")} disabled={busy}>
           입주자대표회의 안건 초안

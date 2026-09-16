@@ -88,7 +88,7 @@ export default function CheckupView({
             <span className="bsub">제값</span>
           </a>
           <DomainTabs active="apt" />
-          <span className="q">내가 내는 값이 정당한가</span>
+          <span className="q">지금 내는 돈, 제값인지 확인하세요</span>
           <Search />
         </div>
       </header>
@@ -97,12 +97,12 @@ export default function CheckupView({
         <section className="hero">
           <p className="eyebrow">
             <span className="pulse" aria-hidden="true"></span>
-            {isHome ? "이번 주 검진 사례 — 장기수선충당금 적립 하위 단지" : "단지 검진 결과"}
+            {isHome ? "이번 주 검진 사례 · 미래 수리비를 가장 안 쌓는 단지" : "단지 검진 결과"}
           </p>
           {isHome && (
             <>
-              <h1 className="head">관리비가 싼 단지가<br /><span className="hl">좋은 단지는 아닙니다</span></h1>
-              <p className="sub">미래를 위해 쌓아둬야 할 돈을 쌓지 않는 단지가 있습니다. 그 청구서는 <b>10년 뒤에 한꺼번에</b> 옵니다.</p>
+              <h1 className="head">우리 아파트 관리비,<br /><span className="hl">나만 많이 내는 걸까?</span></h1>
+              <p className="sub">단지 이름만 넣으면 <b>비슷한 단지와 비교한 검진표</b>가 바로 나옵니다. 관리비가 새는지, 미래 수리비는 쌓이고 있는지. 아래는 이번 주에 찾은 실제 사례입니다.</p>
               <div className="hero-cta">
                 <Search wide />
                 <p className="cta-note">전국 2만 1천 단지 · 로그인 없음 · 30초</p>
@@ -167,7 +167,7 @@ export default function CheckupView({
         )}
 
         <Reveal as="section" className="rail">
-          <h3>이 단지가 지나온 시간, 그리고 다가오는 시간</h3>
+          <h3>준공부터 다가올 대규모 수선까지</h3>
           <div className="node">
             <span className="yr">{c.danji.builtYear}</span>
             <p className="txt">준공. 배관·승강기의 설계 수명이 여기서 시작됩니다.</p>
@@ -283,12 +283,12 @@ export default function CheckupView({
           <p className="ctx">
             정부 합동 첫 외부 회계감사에서 전국 아파트 다섯 곳 중 한 곳이 회계 부적합
             판정을 받았습니다(국무조정실, 2016). 2026년에는 회계감사 면제 조항 폐지가
-            추진되고 있습니다. 데이터는 열렸습니다. JEGAP은 그것을 누구나 읽을 수 있는 형태로 바꿉니다.
+            추진되고 있습니다. 이미 공개돼 있는 이 데이터를 누구나 읽을 수 있게 정리한 것이 JEGAP입니다.
           </p>
         </section>
 
         <footer>
-          <p className="next">검진은 다섯입니다 — <a href="/h"><b>병원비</b></a> · <a href="/a"><b>학원비</b></a> · <a href="/f"><b>장례비</b></a> · <a href="/p"><b>생활물가</b></a>. 내가 내는 값이 정당한지, 한곳에서 물으세요.</p>
+          <p className="next"><a href="/h"><b>병원비</b></a> · <a href="/a"><b>학원비</b></a> · <a href="/f"><b>장례비</b></a> · <a href="/p"><b>생활물가</b></a>도 같은 방식으로 검진합니다.</p>
           <p><a href="/design/">설계문서</a> · <a href="/method">계산식 공개</a> · 데이터 출처 · 정정 요청은 24시간 안에 처리합니다</p>
         </footer>
       </main>

@@ -45,7 +45,7 @@ export default function PriceCheckup({
           </p></section>
         ) : (
           <Reveal as="section" className="hexams">
-            <h3>공개 항목별 가격 위치 <span className="hnote">— {mainLabel}{mixed && " · 표본이 좁은 항목은 행에 기준 별도 표기"}</span></h3>
+            <h3>공개 항목별 가격 위치 <span className="hnote">· {mainLabel}{mixed && " · 표본이 좁은 항목은 행에 기준 별도 표기"}</span></h3>
             <div className="htable" role="table" aria-label="항목별 가격 위치">
               <div className="hrow hhead" role="row">
                 <span role="columnheader">항목</span>
@@ -69,7 +69,7 @@ export default function PriceCheckup({
             )}
             <div className="popinion">
               <p className="lab">종합 소견</p>
-              <p className="body">{priceOpinion(exams, mixed ? `${mainLabel} 외 — 항목별 표기 참조` : mainLabel)}</p>
+              <p className="body">{priceOpinion(exams, mixed ? `${mainLabel} 외 · 항목별 표기 참조` : mainLabel)}</p>
               <p className="fine">공개된 가격만으로 규칙에 따라 작성한 요약입니다. 평가나 추천이 아닙니다.</p>
             </div>
             <p className="hfoot">{unitNote} {footNote}</p>
@@ -77,7 +77,7 @@ export default function PriceCheckup({
         )}
         {rx}
         <footer>
-          <p className="next"><b>관리비편</b> — 우리 단지 검진도 열려 있습니다.</p>
+          <p className="next"><b>관리비편</b>도 같은 방식으로 검진합니다.</p>
           <p><a href="/design/">설계문서</a> · <a href="/method">계산식 공개</a> · 데이터 출처 · 정정 요청은 24시간 안에 처리합니다</p>
         </footer>
       </main>

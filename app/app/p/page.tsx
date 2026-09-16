@@ -21,22 +21,22 @@ export default function LivingHome() {
             <span className="bsub">제값</span>
           </a>
           <DomainTabs active="liv" />
-          <span className="q">내가 내는 값이 정당한가</span>
+          <span className="q">지금 내는 돈, 제값인지 확인하세요</span>
         </div>
       </header>
       <main className="wrap" id="main">
         <section className="hero">
-          <p className="eyebrow"><span className="pulse" aria-hidden="true"></span>생활물가편 — 우리 동네 검진</p>
+          <p className="eyebrow"><span className="pulse" aria-hidden="true"></span>생활물가편 · 우리 동네 물가</p>
           <h1 className="head">같은 냉면 한 그릇도<br /><span className="hl">지역마다 값이 다릅니다</span></h1>
           <p className="sub">
-            행정안전부가 매월 조사하는 <b>서민밀접 30여 개 품목</b> — 냉면·삼겹살·이발료·목욕료·택시료.
+            행정안전부가 매월 조사하는 <b>서민밀접 30여 개 품목</b>의 가격입니다. 냉면, 삼겹살, 이발료, 목욕료, 택시료.
             내가 사는 지역의 값이 전국 어디쯤인지, 3년간 얼마나 올랐는지 보여드립니다.
           </p>
         </section>
 
         {ready && pairs.length > 0 && (
           <section className="pairband">
-            <h2 className="sech">재료값과 밥상값은 같이 움직이지 않습니다 <span className="hnote">— 시도 중간값 기준</span></h2>
+            <h2 className="sech">재료값과 밥상값은 같이 움직이지 않습니다 <span className="hnote">· 시도 중간값 기준</span></h2>
             <div className="pairs">
               {pairs.map((p) => (
                 <div className="pair" key={p.label}>
@@ -54,13 +54,13 @@ export default function LivingHome() {
 
         {ready ? (
           <section className="sidogrid-wrap">
-            <h2 className="sech">지역을 고르면 바로 검진합니다 <span className="hnote">— {ym.slice(0, 4)}년 {ym.slice(4)}월 조사 기준</span></h2>
+            <h2 className="sech">지역을 고르면 바로 검진합니다 <span className="hnote">· {ym.slice(0, 4)}년 {ym.slice(4)}월 조사 기준</span></h2>
             <div className="sidogrid">
               {SIDOS.map((s) => (
                 <Link key={s.key} href={`/p/${encodeURIComponent(s.key)}`} className="sido">{s.label}</Link>
               ))}
             </div>
-            <p className="hfoot">세종은 외식·개인서비스·농축산물 조사에서 충남에 포함됩니다 — 공공요금은 별도 조사 (행정안전부 기준).</p>
+            <p className="hfoot">세종은 외식·개인서비스·농축산물 조사에서 충남에 포함됩니다. 공공요금은 별도로 조사합니다 (행정안전부 기준).</p>
           </section>
         ) : (
           <div className="pending">
@@ -78,7 +78,7 @@ export default function LivingHome() {
           </div>
         </section>
         <footer>
-          <p className="next"><b>관리비편</b> — 우리 단지 검진도 열려 있습니다. 전국 2만 1천 단지.</p>
+          <p className="next"><b>관리비편</b>도 같은 방식으로 검진합니다. 전국 2만 1천 단지.</p>
           <p>계산식 공개 · 데이터 출처 · 정정 요청은 24시간 안에 처리합니다</p>
         </footer>
       </main>

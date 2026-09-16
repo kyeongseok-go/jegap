@@ -12,7 +12,7 @@ export default function AcademyHome() {
   return (
     <PriceHome
       active="aca"
-      eyebrow="학원비편 — 공시 교습비"
+      eyebrow="학원비편 · 공시 교습비"
       headline="학원비는 부르는 게 값이"
       hl="아니라, 신고된 값이 있습니다"
       sub={<>

@@ -109,7 +109,7 @@ export default function MethodPage() {
           정정 요청은 24시간 안에 처리합니다.
         </p>
       </section>
-      <footer><p>JEGAP 제값 — 내가 내는 값이 정당한가</p></footer>
+      <footer><p>JEGAP 제값 · 정부 공시 데이터 가격 검진</p></footer>
     </main>
   );
 }

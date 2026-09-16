@@ -12,7 +12,7 @@ export default function FuneralHome() {
   return (
     <PriceHome
       active="fun"
-      eyebrow="장례비편 — 장사시설 공개 가격"
+      eyebrow="장례비편 · 장사시설 공개 가격"
       headline="정신없을 때 내는 값이야말로"
       hl="제값인지 물어야 합니다"
       sub={<>
