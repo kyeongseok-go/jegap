@@ -47,7 +47,7 @@ export default function Search({ wide = false }: { wide?: boolean }) {
             if (e.key === "ArrowUp") { e.preventDefault(); setHi((h) => Math.max(h - 1, 0)); }
             if (e.key === "Escape") setOpenList(false);
           }}
-          placeholder="예: 한빛마을 3단지…"
+          placeholder="예: 은마, 헬리오시티…"
           aria-label="아파트 이름 검색" aria-expanded={openList && items.length > 0}
           role="combobox" aria-controls="sugg-list" aria-autocomplete="list"
           autoComplete="off" spellCheck={false} name="danji" type="search" enterKeyHint="search"
