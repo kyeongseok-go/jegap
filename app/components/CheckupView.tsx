@@ -38,9 +38,10 @@ function distPath(values: number[], W = 900, H = 190, base = 150): {
 }
 
 export default function CheckupView({
-  checkup: c, data, peerReserves, isHome = false,
+  checkup: c, data, peerReserves, isHome = false, highlights = [],
 }: {
   checkup: Checkup; data: DanjiData; peerReserves: number[]; isHome?: boolean;
+  highlights?: Array<{ dom: string; href: string; fact: string }>;
 }) {
   const fee = c.exams.find((e) => e.key === "fees");
   const res = c.exams.find((e) => e.key === "reserve");
@@ -247,6 +248,21 @@ export default function CheckupView({
           </p>
         </Reveal>
 
+        {isHome && highlights.length > 0 && (
+          <Reveal as="section" className="finds">
+            <h2 className="sech">다른 검진에서 나온 이번 주 발견</h2>
+            <div className="findgrid">
+              {highlights.map((h) => (
+                <a key={h.dom} className="findcard" href={h.href}>
+                  <span className="fd">{h.dom}</span>
+                  <span className="ff">{h.fact}</span>
+                  <span className="fa">검진 보기 →</span>
+                </a>
+              ))}
+            </div>
+            <p className="fine-note">공개 데이터에서 규칙으로 찾아낸 사실입니다. 기관·지역에 대한 평가가 아닙니다.</p>
+          </Reveal>
+        )}
         <RxBox code={c.danji.code} refundWon={Math.round(data.reserve.perM2 * 84 * 24 / 100) * 100} />
 
         <Reveal as="section" className="cta">
@@ -261,6 +277,7 @@ export default function CheckupView({
             <div><b>정부가 공개한 수치만 씁니다</b><span>국토교통부 K-apt. 추정하거나 지어내지 않습니다.</span></div>
             <div><b>판정하지 않습니다</b><span>신호는 의견이 아니라 데이터에서의 위치입니다. 계산식을 전부 공개합니다.</span></div>
             <div><b>광고를 받지 않습니다</b><span>검진하는 곳이 광고를 받으면, 그건 검진이 아닙니다.</span></div>
+            <div><b>AI는 문장만 씁니다</b><span>수치와 신호는 공개된 계산식이 만들고, AI는 질의서의 문장을 다듬습니다. <a href="/method">원칙 보기</a></span></div>
           </div>
           <p className="ctx">
             정부 합동 첫 외부 회계감사에서 전국 아파트 다섯 곳 중 한 곳이 회계 부적합

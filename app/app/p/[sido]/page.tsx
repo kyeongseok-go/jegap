@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import DomainTabs from "../../../components/DomainTabs";
 import Reveal from "../../../components/Reveal";
-import { livingReady, livingExams, SIDOS, goodShops } from "../../../lib/living";
+import { livingReady, livingExams, livingOpinion, SIDOS, goodShops } from "../../../lib/living";
 
 export async function generateMetadata({ params }: { params: Promise<{ sido: string }> }): Promise<Metadata> {
   const { sido } = await params;
@@ -75,6 +75,12 @@ export default async function LivingSidoPage({ params }: { params: Promise<{ sid
             </Reveal>
           );
         })}
+
+        <div className="popinion">
+          <p className="lab">종합 소견</p>
+          <p className="body">{livingOpinion(s.label, exams)}</p>
+          <p className="fine">조사 가격만으로 규칙에 따라 작성한 요약입니다. 지역에 대한 평가가 아닙니다.</p>
+        </div>
 
         <Reveal as="section" className="rx">
           <h2 className="sech">이 값이 부담스럽다면</h2>

@@ -31,7 +31,7 @@ export default async function AcademyPage({ params }: { params: Promise<{ id: st
         id={d.h.id} endpoint="/api/arx"
         title="물어볼 수 있습니다"
         lead="근거 조항까지 갖춘 확인 요청문을 만들어 드립니다. 그대로 복사해 학원에 보내세요."
-        btnLabel="교습비 확인 요청문 만들기"
+        btnLabel="AI 확인 요청문 만들기"
         hint={<>학원은 교습비를 게시해야 하고, 교육청에 <b>신고한 금액보다 더 받을 수 없습니다</b>
           (학원법 제15조). 초과 징수는 관할 교육지원청에 신고할 수 있습니다.</>}
       />}

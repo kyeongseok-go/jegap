@@ -82,7 +82,11 @@ export function makeDomain(cfg: DomainConfig) {
         if (pctBelow === null) continue;
         const sorted = [...arr].sort((a, b) => a - b);
         const median = sorted[Math.floor(sorted.length / 2)];
-        if (median <= 0) continue;
+        // 저액 항목(중간값 1,000원 미만)은 기관별 단위 해석이 갈려 배수가 무의미 — 미표시.
+        // 중간값의 50배 초과·1/50 미만은 공시 입력 오류 가능성 — 미표시(무소음).
+        if (median < 1000) continue;
+        const m = it.price / median;
+        if (m > 50 || m < 1 / 50) continue;
         out.push({
           code: it.code, name: it.name, price: it.price,
           peerCount: arr.length, percentile: 100 - pctBelow, median,

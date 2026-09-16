@@ -194,3 +194,19 @@ export function goodShops(shopPrefix: string) {
     sample: mine.filter((s) => s.menus.length > 0).slice(0, 8),
   };
 }
+
+/** 지역 종합 소견 — 결정론. 상위권 품목 수·최다 상승 품목만 서술. */
+export function livingOpinion(sidoLabel: string, exams: LivingExam[]): string {
+  if (exams.length === 0) return "";
+  const top3 = exams.filter((e) => e.rank <= 3);
+  const bottom = exams.filter((e) => e.rank >= e.of - 2);
+  const withRise = exams.filter((e) => e.rise3y !== null);
+  const maxRise = withRise.length
+    ? withRise.reduce((a, b) => (b.rise3y! > a.rise3y! ? b : a)) : null;
+  const parts: string[] = [];
+  parts.push(`${sidoLabel}은(는) 비교 가능한 ${exams.length}개 품목 가운데 ${top3.length}개가 시도 중 상위 3위 안에 있습니다.`);
+  if (bottom.length > 0) parts.push(`${bottom.length}개 품목은 하위 3위 안으로 낮은 편입니다.`);
+  if (maxRise && maxRise.rise3y! > 0)
+    parts.push(`최근 3년 동월 대비 가장 많이 오른 품목은 ${maxRise.name}(+${maxRise.rise3y}%)입니다.`);
+  return parts.join(" ");
+}

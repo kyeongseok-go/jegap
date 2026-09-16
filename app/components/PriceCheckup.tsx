@@ -1,4 +1,5 @@
 import type { OrgData, PriceExam } from "../lib/pricedom/core";
+import { priceOpinion } from "../lib/pricedom/opinion";
 import DomainTabs from "./DomainTabs";
 import Reveal from "./Reveal";
 
@@ -62,6 +63,11 @@ export default function PriceCheckup({
             {exams.length > maxRows && (
               <p className="hmore">배수가 큰 순으로 {maxRows}개를 표시했습니다. 공개 항목은 모두 {exams.length}개입니다.</p>
             )}
+            <div className="popinion">
+              <p className="lab">종합 소견</p>
+              <p className="body">{priceOpinion(exams, exams[0].peerLabel)}</p>
+              <p className="fine">공개된 가격만으로 규칙에 따라 작성한 요약입니다. 평가나 추천이 아닙니다.</p>
+            </div>
             <p className="hfoot">{unitNote} {footNote}</p>
           </Reveal>
         )}
