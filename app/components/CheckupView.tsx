@@ -68,8 +68,9 @@ export default function CheckupView({
     const lo = Math.min(...hs), hi = Math.max(...hs), span = hi - lo || 1;
     const ours = hs.map((h, i) =>
       `${Math.round(4 + (i / (hs.length - 1)) * 272)},${Math.round(46 - ((h - lo) / span) * 40)}`);
-    // peer 평균 기울기 선: 시작 동일, 상승률 = ours/multiple
-    const peerRise = fee.facts.risePct / fee.facts.multiple;
+    // peer 평균 기울기 선 — 엔진이 계산한 평균 상승률 그대로 (역산 금지: 반올림·0 나눗셈 왜곡)
+    const peerRise = fee.facts.peerAvgRise;
+    if (typeof peerRise !== "number" || !isFinite(peerRise)) return null;
     const peerEndY = 46 - (((hs[0] * (1 + peerRise / 100)) - lo) / span) * 40;
     return {
       ours: ours.join(" "),

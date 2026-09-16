@@ -13,9 +13,9 @@ export function runCheckup(me: DanjiData, all: DanjiData[]): Checkup {
   const resSig = reserveSignal(pct);
 
   // 관리비(난방) 상승 배수
-  const myRise = totalRisePct(me.fees.map((f) => f.heating));
+  const myRise = totalRisePct(me.fees.map((f) => ({ ym: f.ym, v: f.heating })));
   const peerRises = peerData
-    .map((d) => totalRisePct(d.fees.map((f) => f.heating)))
+    .map((d) => totalRisePct(d.fees.map((f) => ({ ym: f.ym, v: f.heating }))))
     .filter((r): r is number => r !== null);
   const peerAvgRise = peerRises.length ? peerRises.reduce((a, b) => a + b, 0) / peerRises.length : null;
   const mult = riseMultiple(myRise, peerAvgRise);
@@ -28,8 +28,8 @@ export function runCheckup(me: DanjiData, all: DanjiData[]): Checkup {
   const repSig = me.repairs ? repairSignal(me.repairs.count5y, repAvg) : null;
 
   const exams: ExamResult[] = [];
-  if (feeSig !== null && myRise !== null && mult !== null)
-    exams.push({ key: "fees", signal: feeSig, facts: { risePct: myRise, multiple: mult } });
+  if (feeSig !== null && myRise !== null && mult !== null && peerAvgRise !== null)
+    exams.push({ key: "fees", signal: feeSig, facts: { risePct: myRise, multiple: mult, peerAvgRise: Math.round(peerAvgRise * 10) / 10 } });
   if (resSig !== null && pct !== null)
     exams.push({ key: "reserve", signal: resSig, facts: { percentile: pct, perM2: me.reserve.perM2 } });
   if (repSig !== null && repAvg !== null && me.repairs)

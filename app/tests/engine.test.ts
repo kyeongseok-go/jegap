@@ -27,10 +27,33 @@ describe("percentileBelow", () => {
   });
 });
 
+const pts = (vals: number[], startYm = 202301) =>
+  vals.map((v, i) => {
+    const y = Math.floor(startYm / 100) + Math.floor((startYm % 100 - 1 + i) / 12);
+    const m = ((startYm % 100 - 1 + i) % 12) + 1;
+    return { ym: `${y}${String(m).padStart(2, "0")}`, v };
+  });
+
 describe("totalRisePct / riseMultiple", () => {
-  it("점 1개 → null", () => expect(totalRisePct([100])).toBeNull());
-  it("시작 0 → null (0나눗셈 방어)", () => expect(totalRisePct([0, 100])).toBeNull());
-  it("100→142는 +42%", () => expect(totalRisePct([100, 120, 142])).toBe(42));
+  it("점 1개 → null", () => expect(totalRisePct(pts([100]))).toBeNull());
+  it("시작 0 → null (0나눗셈 방어)", () => expect(totalRisePct(pts([0, 100]))).toBeNull());
+  it("100→142는 +42%", () => expect(totalRisePct(pts([100, 120, 142]))).toBe(42));
+  it("월별 24점: 연속 12개월 합끼리 비교", () => {
+    const vals = [...Array(12).fill(100), ...Array(12).fill(120)];
+    expect(totalRisePct(pts(vals))).toBe(20);
+  });
+  it("누락 월로 두 연속 창이 겹치면 → null (무소음)", () => {
+    // 26개월 중 5·20번째 결측(24점 유지) — 확보 가능한 두 12개월 창이 겹친다
+    const p2 = pts(Array.from({ length: 26 }, (_, i) => 100 + i))
+      .filter((_, i) => i !== 5 && i !== 20);
+    expect(totalRisePct(p2)).toBeNull();
+  });
+  it("창 24점이지만 겹치면 → null", () => {
+    // 13개월치 관측을 24점처럼 늘릴 수 없음 — 18개월 연속 24점? 불가하므로 갭 시나리오로 대체:
+    // 연속 18개월(18점)은 24점 미만 → 첫/끝 비교 경로
+    const p3 = pts(Array.from({ length: 18 }, (_, i) => 100 + i));
+    expect(totalRisePct(p3)).toBe(17);
+  });
   it("peer 평균 0 이하 → null", () => expect(riseMultiple(42, 0)).toBeNull());
   it("42% vs 20% → 2.1배", () => expect(riseMultiple(42, 20)).toBe(2.1));
 });

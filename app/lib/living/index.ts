@@ -1,5 +1,6 @@
 import { readFileSync, existsSync } from "node:fs";
 import { gunzipSync } from "node:zlib";
+import { median as medianOf } from "../engine/stats";
 import { join } from "node:path";
 
 /**
@@ -122,8 +123,7 @@ export function livingExams(sidoKey: string): LivingExam[] {
     const peers = SIDOS.map((s) => d.series[`${it.code}|${s.key}`]?.[idx])
       .filter((v): v is number => typeof v === "number" && v > 0);
     if (peers.length < 10) continue;                    // 표본 부족 — 무소음
-    const sorted = [...peers].sort((a, b) => a - b);
-    const median = sorted[Math.floor(sorted.length / 2)];
+    const median = medianOf(peers)!;
     if (median <= 0) continue;
     const rank = peers.filter((v) => v > latest).length + 1;
     const brk = lastBreak(mine);
@@ -132,7 +132,7 @@ export function livingExams(sidoKey: string): LivingExam[] {
     out.push({
       code: it.code, name: DISPLAY[it.code] ?? it.name, cat: it.cat, unit: UNITS[it.code],
       latest, latestYm: d.months[idx],
-      median, multiple: Math.round((latest / median) * 100) / 100,
+      median: Math.round(median), multiple: Math.round((latest / median) * 100) / 100,
       rank, of: peers.length,
       rise3y: typeof past === "number" && past > 0 ? Math.round(((latest - past) / past) * 100) : null,
       spark: mine.slice(-36),
@@ -158,7 +158,7 @@ export function pairTrends(): PairTrend[] {
       const vals = SIDOS.map((s) => d.series[`${code}|${s.key}`]?.[i])
         .filter((v): v is number => typeof v === "number" && v > 0);
       if (vals.length < 10) return null;
-      return [...vals].sort((a, b) => a - b)[Math.floor(vals.length / 2)];
+      return medianOf(vals);
     });
   // 최근 36개월 고정 창 — 같은 달끼리 비교해 계절 왜곡 방지
   const risePct = (arr: Array<number | null>): [number, number] | null => {

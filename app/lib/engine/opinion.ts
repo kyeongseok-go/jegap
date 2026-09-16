@@ -16,8 +16,12 @@ export function buildOpinion(c: Omit<Checkup, "opinion">): string {
   if (rep && rep.signal !== "good")
     parts.push(`수선 이력 등록이 같은 연차 단지 평균보다 적습니다. 고치지 않았거나 기록하지 않았다는 뜻이므로, 둘 다 확인이 필요합니다.`);
 
-  if (parts.length === 0)
-    parts.push(`세 가지 검사 모두 비슷한 단지들의 일반적인 범위 안에 있습니다.`);
+  if (parts.length === 0) {
+    if (c.exams.length === 0)
+      parts.push(`비교할 수 있는 유사 단지 표본이 부족해 이번에는 검사 결과를 표시하지 않습니다. 불확실한 값은 만들지 않습니다.`);
+    else
+      parts.push(`수행한 ${c.exams.length}가지 검사 모두 비슷한 단지들의 일반적인 범위 안에 있습니다.`);
+  }
 
   const age = new Date().getFullYear() - c.danji.builtYear;
   if (age >= 25 && res && res.signal !== "good")

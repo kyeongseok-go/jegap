@@ -12,6 +12,10 @@ export default function PriceCheckup({
   eyebrow: string; srcLine: string; unitNote: string; footNote: string;
   search: React.ReactNode; rx?: React.ReactNode; maxRows?: number;
 }) {
+  const labelCounts = new Map<string, number>();
+  for (const e of exams) labelCounts.set(e.peerLabel, (labelCounts.get(e.peerLabel) ?? 0) + 1);
+  const mainLabel = [...labelCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? "";
+  const mixed = labelCounts.size > 1;
   return (
     <>
       <header>
@@ -41,7 +45,7 @@ export default function PriceCheckup({
           </p></section>
         ) : (
           <Reveal as="section" className="hexams">
-            <h3>공개 항목별 가격 위치  <span className="hnote">— {exams[0].peerLabel}</span></h3>
+            <h3>공개 항목별 가격 위치 <span className="hnote">— {mainLabel}{mixed && " · 표본이 좁은 항목은 행에 기준 별도 표기"}</span></h3>
             <div className="htable" role="table" aria-label="항목별 가격 위치">
               <div className="hrow hhead" role="row">
                 <span role="columnheader">항목</span>
@@ -51,7 +55,7 @@ export default function PriceCheckup({
               </div>
               {exams.slice(0, maxRows).map((e) => (
                 <div className="hrow" role="row" key={e.code}>
-                  <span role="cell" className="hname">{e.name}</span>
+                  <span role="cell" className="hname">{e.name}{e.peerLabel !== mainLabel && <i className="unit"> · {e.peerLabel}</i>}</span>
                   <span role="cell" className="num">{e.price.toLocaleString()}원</span>
                   <span role="cell" className="num slate">{e.median.toLocaleString()}원 <i>({e.peerCount}곳)</i></span>
                   <span role="cell" className={`num ${e.multiple >= 2 ? "hot" : ""}`}>
@@ -65,7 +69,7 @@ export default function PriceCheckup({
             )}
             <div className="popinion">
               <p className="lab">종합 소견</p>
-              <p className="body">{priceOpinion(exams, exams[0].peerLabel)}</p>
+              <p className="body">{priceOpinion(exams, mixed ? `${mainLabel} 외 — 항목별 표기 참조` : mainLabel)}</p>
               <p className="fine">공개된 가격만으로 규칙에 따라 작성한 요약입니다. 평가나 추천이 아닙니다.</p>
             </div>
             <p className="hfoot">{unitNote} {footNote}</p>

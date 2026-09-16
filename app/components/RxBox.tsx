@@ -21,6 +21,10 @@ export default function RxBox({ code, refundWon }: { code: string; refundWon?: n
         body: JSON.stringify({ code, kind }),
         signal: ac.signal,
       });
+      if (!res.ok) {
+        setText("요청을 처리하지 못했습니다. 잠시 후 다시 시도해 주세요.");
+        setMode(null); setBusy(false); return;
+      }
       setMode((res.headers.get("x-rx-mode") as "template" | "llm") ?? "template");
       const reader = res.body!.getReader();
       const dec = new TextDecoder();

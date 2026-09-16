@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 type Item = { code: string; name: string; sigungu: string };
@@ -12,17 +12,22 @@ export default function Search({ wide = false }: { wide?: boolean }) {
   const [hi, setHi] = useState(-1);
   const router = useRouter();
   const boxRef = useRef<HTMLDivElement>(null);
+  const seqRef = useRef(0);
+  const listId = useId();
 
   useEffect(() => {
     if (q.trim().length < 1) { setItems([]); return; }
+    const seq = ++seqRef.current;
+    const ac = new AbortController();
     const t = setTimeout(async () => {
       try {
-        const r = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
+        const r = await fetch(`/api/search?q=${encodeURIComponent(q)}`, { signal: ac.signal });
         const j = (await r.json()) as { items: Item[] };
+        if (seq !== seqRef.current) return;
         setItems(j.items); setOpenList(true); setHi(-1);
-      } catch { setItems([]); }
+      } catch { /* 중단·실패 무소음 */ }
     }, 200);
-    return () => clearTimeout(t);
+    return () => { clearTimeout(t); ac.abort(); };
   }, [q]);
 
   useEffect(() => {
@@ -44,22 +49,23 @@ export default function Search({ wide = false }: { wide?: boolean }) {
           value={q}
           onChange={(e) => setQ(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "ArrowDown") { e.preventDefault(); setHi((h) => Math.min(h + 1, items.length - 1)); }
-            if (e.key === "ArrowUp") { e.preventDefault(); setHi((h) => Math.max(h - 1, 0)); }
+            if (e.key === "ArrowDown") { e.preventDefault(); if (items.length) setHi((h) => Math.min(h + 1, items.length - 1)); }
+            if (e.key === "ArrowUp") { e.preventDefault(); if (items.length) setHi((h) => Math.max(h - 1, 0)); }
             if (e.key === "Escape") setOpenList(false);
           }}
           placeholder={ph}
           aria-label="아파트 이름 검색" aria-expanded={openList && items.length > 0}
-          role="combobox" aria-controls="sugg-list" aria-autocomplete="list"
+          role="combobox" aria-controls={listId}
+          aria-activedescendant={hi >= 0 && items[hi] ? `${listId}-${hi}` : undefined} aria-autocomplete="list"
           autoComplete="off" spellCheck={false} name="danji" type="search" enterKeyHint="search"
         />
         <button type="submit">검진</button>
       </form>
       {openList && q.trim() && (
-        <div className="sugg" id="sugg-list" role="listbox" aria-label="검색 결과">
+        <div className="sugg" id={listId} role="listbox" aria-label="검색 결과">
           {items.length === 0 && <p className="none">일치하는 단지가 없습니다. 공식 명칭의 두세 글자로 검색해 보세요.</p>}
           {items.map((it, i) => (
-            <button key={it.code} role="option" aria-selected={i === hi} onClick={() => go(it)}>
+            <button key={it.code} id={`${listId}-${i}`} role="option" aria-selected={i === hi} onClick={() => go(it)}>
               <span>{it.name}</span><span className="gu">{it.sigungu}</span>
             </button>
           ))}

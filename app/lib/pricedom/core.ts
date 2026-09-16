@@ -1,7 +1,7 @@
 import { readFileSync, existsSync } from "node:fs";
 import { gunzipSync } from "node:zlib";
 import { join } from "node:path";
-import { percentileBelow } from "../engine/stats";
+import { percentileBelow, median as medianOf } from "../engine/stats";
 
 /**
  * 가격 도메인 공통 엔진 — "기관 × 공시 항목 가격"의 위치 검진.
@@ -80,8 +80,7 @@ export function makeDomain(cfg: DomainConfig) {
         if (!arr) continue;                                  // 무소음
         const pctBelow = percentileBelow(it.price, arr);
         if (pctBelow === null) continue;
-        const sorted = [...arr].sort((a, b) => a - b);
-        const median = sorted[Math.floor(sorted.length / 2)];
+        const median = medianOf(arr)!;
         // 저액 항목(중간값 1,000원 미만)은 기관별 단위 해석이 갈려 배수가 무의미 — 미표시.
         // 중간값의 50배 초과·1/50 미만은 공시 입력 오류 가능성 — 미표시(무소음).
         if (median < 1000) continue;
@@ -89,7 +88,7 @@ export function makeDomain(cfg: DomainConfig) {
         if (m > 50 || m < 1 / 50) continue;
         out.push({
           code: it.code, name: it.name, price: it.price,
-          peerCount: arr.length, percentile: 100 - pctBelow, median,
+          peerCount: arr.length, percentile: 100 - pctBelow, median: Math.round(median),
           multiple: Math.round((it.price / median) * 10) / 10,
           peerLabel: label,
         });

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 type Item = { id: string; name: string; sigungu: string; kind: string };
@@ -15,17 +15,22 @@ export default function PriceSearch({
   const [hi, setHi] = useState(-1);
   const router = useRouter();
   const boxRef = useRef<HTMLDivElement>(null);
+  const seqRef = useRef(0);
+  const listId = useId();
 
   useEffect(() => {
     if (q.trim().length < 1) { setItems([]); return; }
+    const seq = ++seqRef.current;
+    const ac = new AbortController();
     const t = setTimeout(async () => {
       try {
-        const r = await fetch(`${endpoint}?q=${encodeURIComponent(q)}`);
+        const r = await fetch(`${endpoint}?q=${encodeURIComponent(q)}`, { signal: ac.signal });
         const j = await r.json();
+        if (seq !== seqRef.current) return;        // 늦게 도착한 이전 검색 무시
         setItems(j.items ?? []); setOpenList(true); setHi(-1);
-      } catch { /* 무소음 */ }
+      } catch { /* 중단·실패 무소음 */ }
     }, 200);
-    return () => clearTimeout(t);
+    return () => { clearTimeout(t); ac.abort(); };
   }, [q, endpoint]);
 
   useEffect(() => {
@@ -44,22 +49,23 @@ export default function PriceSearch({
       <form className="find" role="search"
         onSubmit={(e) => { e.preventDefault(); if (items[0]) go(items[0].id); }}>
         <input type="search" placeholder={placeholder} value={q}
-          role="combobox" aria-expanded={openList} aria-controls="psugg-list"
+          role="combobox" aria-expanded={openList} aria-controls={listId}
+          aria-activedescendant={hi >= 0 && items[hi] ? `${listId}-${hi}` : undefined}
           aria-label={label} autoComplete="off"
           onChange={(e) => setQ(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "ArrowDown") { e.preventDefault(); setHi((h) => Math.min(h + 1, items.length - 1)); }
-            if (e.key === "ArrowUp") { e.preventDefault(); setHi((h) => Math.max(h - 1, 0)); }
-            if (e.key === "Enter" && hi >= 0) { e.preventDefault(); go(items[hi].id); }
+            if (e.key === "ArrowDown") { e.preventDefault(); if (items.length) setHi((h) => Math.min(h + 1, items.length - 1)); }
+            if (e.key === "ArrowUp") { e.preventDefault(); if (items.length) setHi((h) => Math.max(h - 1, 0)); }
+            if (e.key === "Enter" && hi >= 0 && items[hi]) { e.preventDefault(); go(items[hi].id); }
             if (e.key === "Escape") setOpenList(false);
           }} />
         <button type="submit">검진</button>
       </form>
       {openList && q.trim() && (
-        <div className="sugg" id="psugg-list" role="listbox" aria-label="검색 결과">
+        <div className="sugg" id={listId} role="listbox" aria-label="검색 결과">
           {items.length === 0 && <p className="none">일치하는 곳이 없습니다. 공식 명칭의 두세 글자로 검색해 보세요.</p>}
           {items.map((it, i) => (
-            <button key={it.id} role="option" aria-selected={i === hi}
+            <button key={it.id} id={`${listId}-${i}`} role="option" aria-selected={i === hi}
               className={i === hi ? "hit hi" : "hit"} onClick={() => go(it.id)}>
               <span>{it.name}</span><span className="gu">{it.sigungu} · {it.kind}</span>
             </button>

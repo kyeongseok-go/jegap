@@ -7,18 +7,43 @@ export function percentileBelow(value: number, peers: number[]): number | null {
   return Math.round(((below + equal / 2) / peers.length) * 100);
 }
 
-/** 시계열 총 상승률 (%). 점이 2개 미만이거나 시작값 0이면 null.
- * 월별 실데이터(24점 이상)는 계절성 왜곡을 막기 위해 첫 12개월 합 vs 마지막 12개월 합으로 비교.
- * 표본이 성긴 시계열(예: 반기 샘플)은 첫/끝 점 비교. */
-export function totalRisePct(series: number[]): number | null {
-  if (series.length < 2) return null;
-  if (series.length >= 24) {
-    const first = series.slice(0, 12).reduce((a, b) => a + b, 0);
-    const last = series.slice(-12).reduce((a, b) => a + b, 0);
+/** 시계열 총 상승률 (%).
+ * 월별 실데이터(24점 이상): ym 기준으로 "가장 이른 연속 12개월 합"과 "가장 늦은 연속 12개월 합"을
+ * 비교한다. 어느 한쪽이라도 달력상 연속 12개월을 확보하지 못하거나 두 창이 겹치면 null(무소음) —
+ * 누락 월을 무시하고 관측치 개수로만 자르면 기간이 다른 값을 비교하게 되기 때문이다.
+ * 표본이 성긴 시계열(24점 미만, 예: 반기 샘플)은 첫/끝 점 비교. */
+export function totalRisePct(points: Array<{ ym: string; v: number }>): number | null {
+  if (points.length < 2) return null;
+  const sorted = [...points].sort((a, b) => a.ym.localeCompare(b.ym));
+  if (sorted.length >= 24) {
+    const idx = (ym: string) => parseInt(ym.slice(0, 4)) * 12 + parseInt(ym.slice(4)) - 1;
+    const byIdx = new Map(sorted.map((p) => [idx(p.ym), p.v]));
+    const window = (startIdx: number): number | null => {
+      let sum = 0;
+      for (let k = 0; k < 12; k++) {
+        const v = byIdx.get(startIdx + k);
+        if (v === undefined) return null;
+        sum += v;
+      }
+      return sum;
+    };
+    const lo = idx(sorted[0].ym), hi = idx(sorted[sorted.length - 1].ym);
+    let first: number | null = null, firstStart = lo;
+    for (let st = lo; st + 11 <= hi; st++) {
+      const w = window(st);
+      if (w !== null) { first = w; firstStart = st; break; }
+    }
+    let last: number | null = null, lastStart = hi;
+    for (let st = hi - 11; st >= lo; st--) {
+      const w = window(st);
+      if (w !== null) { last = w; lastStart = st; break; }
+    }
+    if (first === null || last === null) return null;
+    if (lastStart < firstStart + 12) return null;      // 창 겹침 — 비교 무의미
     if (first <= 0) return null;
     return Math.round(((last - first) / first) * 100);
   }
-  const first = series[0], last = series[series.length - 1];
+  const first = sorted[0].v, last = sorted[sorted.length - 1].v;
   if (first <= 0) return null;
   return Math.round(((last - first) / first) * 100);
 }
@@ -27,4 +52,12 @@ export function totalRisePct(series: number[]): number | null {
 export function riseMultiple(ours: number | null, peerAvg: number | null): number | null {
   if (ours === null || peerAvg === null || peerAvg <= 0) return null;
   return Math.round((ours / peerAvg) * 10) / 10;
+}
+
+/** 중앙값 — 짝수 표본은 가운데 두 값의 평균 (상위측 편향 방지) */
+export function median(values: number[]): number | null {
+  if (values.length === 0) return null;
+  const s = [...values].sort((a, b) => a - b);
+  const mid = Math.floor(s.length / 2);
+  return s.length % 2 === 1 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
 }
