@@ -16,6 +16,17 @@ export default function MethodPage() {
       </section>
 
       <section className="opinion" style={{ marginTop: 0 }}>
+        <p className="lab">0 · AI를 쓰는 곳과 쓰지 않는 곳</p>
+        <p>
+          JEGAP의 <b>모든 수치·백분위·배수·신호는 공개된 계산식이 만듭니다</b>. AI는 숫자를
+          만들거나 바꾸지 않습니다. AI(Claude)가 하는 일은 하나 — 계산식이 채워 넣은 수치와
+          법 조항을 그대로 유지한 채 질의서·안건·요청문의 <b>문장을 공문체로 다듬는 것</b>입니다.
+          다듬은 결과에는 &ldquo;AI가 문장을 다듬었습니다&rdquo;라고 표시하고, AI를 쓸 수 없는
+          상황에서는 표준 양식이 그대로 나갑니다. 판단을 흉내 내는 AI보다, 검증 가능한 계산과
+          검증 가능한 문장이 낫다고 믿습니다.
+        </p>
+      </section>
+      <section className="opinion">
         <p className="lab">1 · 비슷한 단지 고르기</p>
         <p>
           같은 시도 · 준공연도 ±5년 · 세대수 구간(300 미만 / 300~699 / 700~1,499 / 1,500 이상) ·
