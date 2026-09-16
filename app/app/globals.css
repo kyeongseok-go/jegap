@@ -195,7 +195,7 @@ footer .next b{color:var(--signal)}
   border-radius:2px;padding:2px 8px;vertical-align:2px;margin-left:8px}
 
 /* 세입자 반환 훅 */
-.rx-hint{margin:10px 0 2px;font-size:13.5px;line-height:1.65;color:var(--slate);max-width:64ch;padding:10px 14px;background:var(--signal-wash);border-left:3px solid var(--signal)}
+.rx-hint{margin:10px 0 2px;font-size:13.5px;line-height:1.65;color:var(--slate);max-width:64ch;padding:10px 14px;background:var(--signal-wash)}
 .rx-hint b{color:var(--signal)}
 
 /* 홈 히어로 CTA */
@@ -206,8 +206,9 @@ footer .next b{color:var(--signal)}
 .cta-note{margin-top:8px;font-size:12.5px;color:var(--slate);letter-spacing:.02em}
 
 /* 도메인 탭 */
-.domains{display:flex;gap:2px;margin-left:18px;border:1px solid var(--hair);padding:3px;background:var(--surface)}
-.domains a{padding:6px 14px;font-size:13.5px;font-weight:600;color:var(--slate);text-decoration:none;min-height:0}
+.domains{display:flex;gap:2px;margin-left:18px;border:1px solid var(--hair);padding:3px;background:var(--surface);overflow-x:auto;scrollbar-width:none;flex-shrink:1;min-width:0}
+.domains::-webkit-scrollbar{display:none}
+.domains a{padding:6px 14px;font-size:13.5px;font-weight:600;color:var(--slate);text-decoration:none;min-height:0;white-space:nowrap}
 .domains a.on{background:var(--ink);color:var(--paper)}
 @media(max-width:720px){.domains{margin-left:8px}.domains a{padding:6px 10px}}
 
