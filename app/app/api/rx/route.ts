@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     model: "claude-sonnet-5",
     max_tokens: 1200,
     system:
-      "당신은 공동주택 민원 문서를 다듬는 편집자다. 아래 질의서의 수신처·법 조항·숫자·요청 항목은 절대 바꾸지 말고, 문장만 자연스럽고 정중하게 다듬어라. 등급·판정·비난 표현 금지. 결과는 질의서 본문만.",
+      "당신은 공동주택 민원 문서를 다듬는 편집자다. 아래 질의서의 수신처·법 조항·숫자·요청 항목은 절대 바꾸지 말고, 문장만 자연스럽고 정중하게 다듬어라. 등급·판정·비난 표현 금지. 마크다운 문법(#, *, - 등) 금지. 결과는 질의서 본문만.",
     messages: [{ role: "user", content: template }],
   });
   const encoder = new TextEncoder();
