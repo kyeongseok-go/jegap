@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import PriceCheckup from "../../../components/PriceCheckup";
 import PriceSearch from "../../../components/PriceSearch";
 import { hiraReady, getHospital, priceExams } from "../../../lib/medical/hira";
+import RxSimple from "../../../components/RxSimple";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
@@ -25,6 +26,12 @@ export default async function HospitalPage({ params }: { params: Promise<{ id: s
       footNote="이 표는 병원에 대한 평가나 추천이 아닙니다. 유사 기관 기준: 같은 시도 · 같은 종별."
       search={<PriceSearch endpoint="/api/hsearch" hrefBase="/h"
         placeholder="병원 이름 검색" label="병원 이름 검색" />}
+      rx={<RxSimple
+        id={d.h.id} endpoint="/api/hrx"
+        title="진료 전에 물어볼 수 있습니다"
+        lead="병원은 비급여 진료비용을 고지할 의무가 있습니다(의료법 제45조). 예약할 때 그대로 읽어도 되는 확인 메모를 만들어 드립니다."
+        btnLabel="AI 확인 메모 만들기"
+      />}
     />
   );
 }

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import PriceCheckup from "../../../components/PriceCheckup";
 import PriceSearch from "../../../components/PriceSearch";
 import { funeralReady, getFuneral, funeralExams } from "../../../lib/funeral";
+import RxSimple from "../../../components/RxSimple";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
@@ -25,6 +26,12 @@ export default async function FuneralPage({ params }: { params: Promise<{ id: st
       footNote="이 표는 시설에 대한 평가나 추천이 아닙니다."
       search={<PriceSearch endpoint="/api/fsearch" hrefBase="/f"
         placeholder="장례식장 이름 검색" label="장례식장 이름 검색" />}
+      rx={<RxSimple
+        id={d.h.id} endpoint="/api/frx"
+        title="계약 전에 확인할 수 있습니다"
+        lead="장례식장은 가격표 게시·등록 의무가 있습니다(장사법 제29조). 경황없는 순간에 그대로 확인하면 되는 목록을 만들어 드립니다."
+        btnLabel="AI 확인 목록 만들기"
+      />}
     />
   );
 }
