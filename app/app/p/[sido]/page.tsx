@@ -66,7 +66,7 @@ export default async function LivingSidoPage({ params }: { params: Promise<{ sid
                     <span role="cell" className="num">{e.latest.toLocaleString()}원</span>
                     <span role="cell" className="num slate">{e.median.toLocaleString()}원</span>
                     <span role="cell" className={`num ${e.rank <= 3 && e.multiple > 1 ? "hot" : ""}`}>
-                      {e.of}곳 중 {e.rank}번째로 높음
+                      {e.rank === 1 ? `${e.of}곳 중 가장 높음` : `${e.of}곳 중 ${e.rank}번째로 높음`}
                       {e.rise3y !== null && <> · 3년 {e.rise3y >= 0 ? "+" : ""}{e.rise3y}%</>}
                     </span>
                   </div>
