@@ -1,6 +1,7 @@
 import type { OrgData, PriceExam } from "../lib/pricedom/core";
 import { priceOpinion } from "../lib/pricedom/opinion";
 import DomainTabs from "./DomainTabs";
+import ExamTable from "./ExamTable";
 import Reveal from "./Reveal";
 import { CONTACT } from "../lib/site";
 
@@ -33,7 +34,7 @@ export default function PriceCheckup({
         <section className="hero">
           <p className="eyebrow"><span className="pulse" aria-hidden="true"></span>{eyebrow}</p>
           <div className="subject">
-            <h2>{d.h.name}</h2>
+            <h1>{d.h.name}</h1>
             <span className="meta">{d.h.sido} {d.h.sigungu} · {d.h.kind}</span>
             <span className="src">{srcLine}</span>
           </div>
@@ -46,28 +47,8 @@ export default function PriceCheckup({
           </p></section>
         ) : (
           <Reveal as="section" className="hexams">
-            <h3>공개 항목별 가격 위치 <span className="hnote">· {mainLabel}{mixed && " · 표본이 좁은 항목은 행에 기준 별도 표기"}</span></h3>
-            <div className="htable" role="table" aria-label="항목별 가격 위치">
-              <div className="hrow hhead" role="row">
-                <span role="columnheader">항목</span>
-                <span role="columnheader">이곳</span>
-                <span role="columnheader">유사 기관 중간값</span>
-                <span role="columnheader">위치</span>
-              </div>
-              {exams.slice(0, maxRows).map((e) => (
-                <div className="hrow" role="row" key={e.code}>
-                  <span role="cell" className="hname">{e.name}{e.peerLabel !== mainLabel && <i className="unit"> · {e.peerLabel}</i>}</span>
-                  <span role="cell" className="num">{e.price.toLocaleString()}원</span>
-                  <span role="cell" className="num slate">{e.median.toLocaleString()}원 <i>({e.peerCount}곳)</i></span>
-                  <span role="cell" className={`num ${e.multiple >= 2 ? "hot" : ""}`}>
-                    중간값의 {e.multiple}배 · 상위 {Math.max(1, Math.min(99, e.percentile))}%
-                  </span>
-                </div>
-              ))}
-            </div>
-            {exams.length > maxRows && (
-              <p className="hmore">배수가 큰 순으로 {maxRows}개를 표시했습니다. 공개 항목은 모두 {exams.length}개입니다.</p>
-            )}
+            <h2>공개 항목별 가격 위치 <span className="hnote">· {mainLabel}{mixed && " · 표본이 좁은 항목은 행에 기준 별도 표기"}</span></h2>
+            <ExamTable exams={exams} mainLabel={mainLabel} maxRows={maxRows} />
             <div className="popinion">
               <p className="lab">종합 소견</p>
               <p className="body">{priceOpinion(exams, mixed ? `${mainLabel} 외 · 항목별 표기 참조` : mainLabel)}</p>

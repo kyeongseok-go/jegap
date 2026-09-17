@@ -7,7 +7,7 @@ import { CONTACT } from "../../lib/site";
 
 export const metadata: Metadata = {
   title: "JEGAP 제값 — 병원비 검진",
-  description: "같은 진료, 병원마다 가격이 다릅니다. 심평원이 공개한 비급여 가격으로 우리 동네 병원의 위치를 확인하세요.",
+  description: "진료받기 전, 비급여 가격부터 확인하세요. 심평원이 공개한 병원급 이상 의료기관의 항목별 가격과 같은 시도 · 같은 종별 비교값을 보여드립니다.",
 };
 
 export default function HospitalHome() {
@@ -28,21 +28,24 @@ export default function HospitalHome() {
         <section className="hero hero-scene" data-scene="med">
           <HeroReceipt domain="med" />
           <p className="eyebrow"><span className="pulse" aria-hidden="true"></span>병원비편 · 비급여 진료비</p>
-          <h1 className="head">같은 진료인데<br /><span className="hl">가격은 병원이 정합니다</span></h1>
+          <h1 className="head">진료받기 전,<br /><span className="hl">비급여 가격부터 확인하세요</span></h1>
           <p className="sub">
-            비급여 진료는 병원이 가격을 자율로 정합니다. 심사평가원이 매년 <b>전체 의료기관의 비급여 가격</b>을
-            공개하지만, 아는 사람만 찾아봅니다. 병원 이름을 넣으면 우리 동네 기준 어디쯤인지 보여드립니다.
+            비급여 진료는 병원이 가격을 자율로 정하고, 심사평가원이 매년 <b>병원급 이상 의료기관의 비급여 가격</b>을
+            공개합니다. 병원 이름을 넣으면 그 병원이 공개한 항목별 가격과 <b>같은 시도 · 같은 종별</b> 병원의
+            중간값을 나란히 보여드립니다.
           </p>
           {ready ? (
             <div className="hero-cta">
-              <PriceSearch endpoint="/api/hsearch" hrefBase="/h" wide placeholder="병원 이름 검색  예: ○○정형외과" label="병원 이름 검색" />
-              <p className="cta-note">심평원 공개 가격 기준 · 로그인 없음 · 30초</p>
+              <p className="cta-note">검색 범위 — 심평원에 비급여 가격을 공개한 <b>병원급 이상</b> 의료기관.
+                동네 <b>의원급은 포함되지 않습니다</b>.</p>
+              <PriceSearch endpoint="/api/hsearch" hrefBase="/h" wide cta="가격 확인하기" placeholder="병원 이름 검색  예: ○○병원" label="병원 이름 검색" />
+              <p className="cta-note">심평원 공개 가격 기준 · 같은 시도 · 같은 종별 비교 · 로그인 없음</p>
             </div>
           ) : (
             <div className="pending">
               <p className="pending-t">실데이터 연동 준비 중</p>
               <p>
-                건강보험심사평가원 비급여 공개 데이터(전 의료기관 693개 항목)를 연동하는 중입니다.
+                건강보험심사평가원 비급여 공개 데이터(병원급 이상 693개 항목)를 연동하는 중입니다.
                 데이터 출처: <a href="https://www.hira.or.kr/npay/index.do">심평원 비급여 진료비 정보</a>.
               </p>
             </div>

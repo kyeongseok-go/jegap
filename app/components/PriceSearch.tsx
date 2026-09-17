@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 type Item = { id: string; name: string; sigungu: string; kind: string };
 
 export default function PriceSearch({
-  endpoint, hrefBase, placeholder, label, wide = false,
+  endpoint, hrefBase, placeholder, label, cta = "검진", wide = false,
 }: {
-  endpoint: string; hrefBase: string; placeholder: string; label: string; wide?: boolean;
+  endpoint: string; hrefBase: string; placeholder: string; label: string; cta?: string; wide?: boolean;
 }) {
   const [q, setQ] = useState("");
   const [items, setItems] = useState<Item[]>([]);
@@ -59,7 +59,7 @@ export default function PriceSearch({
             if (e.key === "Enter" && hi >= 0 && items[hi]) { e.preventDefault(); go(items[hi].id); }
             if (e.key === "Escape") setOpenList(false);
           }} />
-        <button type="submit">검진</button>
+        <button type="submit">{cta}</button>
       </form>
       {openList && q.trim() && (
         <div className="sugg" id={listId} role="listbox" aria-label="검색 결과">

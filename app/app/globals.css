@@ -41,7 +41,7 @@ header .wrap{display:flex;align-items:center;gap:22px;height:62px}
 .hero{padding:68px 0 10px;position:relative}
 .eyebrow{display:flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--slate);margin-bottom:18px}
 .pulse{width:7px;height:7px;border-radius:0;background:var(--signal);flex:none;position:relative}
-.pulse::after{content:"";position:absolute;inset:0;background:var(--signal);animation:ring 2.4s var(--ease) infinite}
+.pulse::after{content:"";position:absolute;inset:0;background:var(--signal);animation:ring 2.4s var(--ease) 3}
 @keyframes ring{0%{transform:scale(1);opacity:.55}70%,100%{transform:scale(3.4);opacity:0}}
 h1.head{font-family:var(--serif);font-size:clamp(30px,5.6vw,52px);font-weight:800;letter-spacing:-.02em;line-height:1.18;max-width:17ch;text-wrap:balance;word-break:keep-all}
 h1.head .hl{position:relative;white-space:nowrap}
@@ -53,7 +53,7 @@ h1.head .hl::after{content:"";position:absolute;left:-.04em;right:-.04em;bottom:
 
 /* 단지 식별 바 — 합계 더블 룰 */
 .subject{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-top:40px;padding-bottom:14px;border-bottom:3px double var(--ink)}
-.subject h2{font-family:var(--serif);font-size:22px;font-weight:700;letter-spacing:-.01em}
+.subject h1,.subject h2{font-family:var(--serif);font-size:22px;font-weight:700;letter-spacing:-.01em}
 .subject .meta{font-family:var(--mono);font-size:12.5px;color:var(--slate)}
 .subject .src{margin-left:auto;font-family:var(--mono);font-size:11.5px;color:var(--slate)}
 
@@ -213,7 +213,23 @@ footer .next b{color:var(--signal)}
 .domains::-webkit-scrollbar{display:none}
 .domains a{padding:6px 14px;font-family:var(--mono);font-size:12.5px;font-weight:600;letter-spacing:.02em;color:var(--slate);text-decoration:none;min-height:0;white-space:nowrap}
 .domains a.on{background:var(--ink);color:var(--paper)}
-@media(max-width:720px){.domains{margin-left:8px}.domains a{padding:6px 10px}}
+@media(max-width:760px){
+  /* 헤더 2행: [브랜드 + 탭] / [검색]. 한 줄 flex가 검색 wrapper를 폭 0으로 찌그러뜨리던 문제. */
+  header .wrap{flex-wrap:wrap;height:auto;gap:8px 10px;padding-top:9px;padding-bottom:9px}
+  .findwrap{flex:1 0 100%;order:2;margin-left:0;max-width:none}
+  .find{min-width:0}
+  .domains{margin-left:auto;padding:2px;gap:1px;flex:0 1 auto;
+    /* 스크롤 가능할 때만 보이는 끝단 페이드(local 배경 = 콘텐츠와 함께 이동) */
+    background:
+      linear-gradient(90deg,var(--surface) 40%,rgba(252,250,242,0)) left/20px 100% no-repeat local,
+      linear-gradient(-90deg,var(--surface) 40%,rgba(252,250,242,0)) right/20px 100% no-repeat local,
+      radial-gradient(farthest-side at 0 50%,rgba(26,26,24,.2),transparent) left/10px 100% no-repeat scroll,
+      radial-gradient(farthest-side at 100% 50%,rgba(26,26,24,.2),transparent) right/10px 100% no-repeat scroll,
+      var(--surface)}
+  .domains a{padding:13px 9px;font-size:11.5px}  /* 터치 타깃 44px */
+}
+@media(max-width:430px){.domains a{padding:13px 7px;font-size:11px;letter-spacing:0}header .wrap{gap:8px}}
+@media(max-width:600px){.wrap{padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}}
 
 /* 병원비편 대기 상태 */
 .pending{margin-top:26px;max-width:520px;padding:16px 18px;border:1.5px dashed var(--hair-2);background:var(--surface)}
@@ -223,10 +239,10 @@ footer .next b{color:var(--signal)}
 
 /* 병원 상세 표 — 영수증: 항목·점선·금액 우측 정렬 */
 .hexams{margin-top:44px}
-.hexams h3{font-size:19px;font-weight:700;margin-bottom:16px}
+.hexams h2,.hexams h3{font-size:19px;font-weight:700;margin-bottom:16px}
 .hnote{font-size:13px;font-weight:500;color:var(--slate)}
 .htable{border-top:3px double var(--ink)}
-.hrow{display:grid;grid-template-columns:1.6fr .8fr 1fr 1.1fr;gap:12px;padding:12px 4px;border-bottom:1px dotted var(--hair-2);font-size:14px;align-items:baseline}
+.hrow{display:grid;grid-template-columns:1.45fr .75fr .95fr 1.35fr;gap:12px;padding:12px 4px;border-bottom:1px dotted var(--hair-2);font-size:14px;align-items:baseline}
 .hrow .num{text-align:right}
 .hrow.hhead{font-family:var(--mono);font-size:11.5px;color:var(--slate);font-weight:600;letter-spacing:.05em;border-bottom:1px solid var(--hair-2)}
 .hrow.hhead span:not(:first-child){text-align:right}
@@ -235,8 +251,26 @@ footer .next b{color:var(--signal)}
 .hrow .slate i{font-style:normal;font-size:12px}
 .hrow .hot{color:var(--signal);font-weight:700}
 .hfoot{margin-top:14px;font-size:12.5px;color:var(--slate);line-height:1.65;max-width:70ch}
-@media(max-width:720px){.hrow{grid-template-columns:1.3fr .9fr 1.1fr;font-size:13px}.hrow span:nth-child(3){display:none}.hrow.hhead span:nth-child(3){display:none}}
+@media(max-width:720px){
+  /* 모바일: 표 → 카드형 행. 중간값·표본 수를 숨기지 않고 라벨과 함께 보여준다. */
+  .hrow{display:block;padding:13px 2px 14px}
+  .hrow.hhead{display:none}
+  .hname{display:block;font-size:14.5px;line-height:1.45;margin-bottom:7px}
+  .hrow .num{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:2.5px 0;font-size:13px}
+  .hrow .num::before{content:attr(data-l);flex:none;text-align:left;font-family:var(--mono);font-size:11px;
+    font-weight:600;letter-spacing:.06em;color:var(--slate)}
+  .hrow .num:not([data-l])::before{content:"가격"}
+  .hrow .num.slate:not([data-l])::before{content:"중간값"}
+  .hrow .num:not([data-l]):last-child::before{content:"위치"}
+}
 .hmore{margin-top:10px;font-size:12.5px;color:var(--slate)}
+.htools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.htools input{flex:1 1 210px;min-width:0;min-height:44px;padding:10px 12px;border:1.5px solid var(--hair-2);
+  background:var(--surface);border-radius:0;font:inherit;font-size:16px;outline:none}
+.htools input:focus-within,.htools input:hover{border-color:var(--ink)}
+.hmorebtn{flex:none;min-height:44px;padding:0 16px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);
+  border-radius:0;font-family:var(--mono);font-weight:700;font-size:12.5px;letter-spacing:.03em;cursor:pointer;touch-action:manipulation}
+.hmorebtn:hover{background:var(--ink);color:var(--paper)}
 
 /* 생활물가편 */
 .pairband{margin-top:40px}
@@ -419,6 +453,6 @@ footer .next b{color:var(--signal)}
   .hero-scene h1.head{font-size:clamp(28px,7.5vw,38px);line-height:1.3}
   .hero-scene .eyebrow{font-size:10px;letter-spacing:.04em;max-width:90%}
   .hero-scene .sub{font-size:15px;line-height:1.8}
-  .hero-scene .hero-cta .find input{font-size:15px}
+  .hero-scene .hero-cta .find input{font-size:16px}
   .hero-scene .subject{gap:8px;margin-top:30px}
 }

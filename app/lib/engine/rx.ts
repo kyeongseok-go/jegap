@@ -37,8 +37,9 @@ export function buildAgenda(c: Checkup): string {
     lines.push(
       ``,
       `참고 수치 (국토교통부 K-apt 공시 기준)`,
-      `- 현재 적립: ㎡당 월 ${res.facts.perM2}원`,
-      `- 유사 단지 ${c.peerCount}곳 대비 위치: 하위 ${c.reservePercentile}%`,
+      `- 현재 부과: ㎡당 월 ${res.facts.perM2}원 (장기수선충당금)`,
+      `- 비교 가능한 유사 단지 ${c.peerValidCount}곳 중 ${c.peerHigherCount}곳이 더 높게 부과`,
+      `- 위 수치는 월 부과액 비교이며, 적립 잔액이나 계획 공사비 대비 충분성은 공시에 없습니다.`,
     );
   lines.push(
     ``,

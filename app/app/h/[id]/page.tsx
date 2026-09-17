@@ -24,7 +24,7 @@ export default async function HospitalPage({ params }: { params: Promise<{ id: s
       srcLine="건강보험심사평가원 비급여 공개 가격 기준"
       unitNote="공개된 가격만으로 작성했습니다. 진료의 질·범위·구성은 반영되어 있지 않으며,"
       footNote="이 표는 병원에 대한 평가나 추천이 아닙니다. 유사 기관 기준: 같은 시도 · 같은 종별."
-      search={<PriceSearch endpoint="/api/hsearch" hrefBase="/h"
+      search={<PriceSearch endpoint="/api/hsearch" hrefBase="/h" cta="가격 확인"
         placeholder="병원 이름 검색" label="병원 이름 검색" />}
       rx={<RxSimple
         id={d.h.id} endpoint="/api/hrx"

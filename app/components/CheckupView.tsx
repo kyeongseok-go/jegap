@@ -48,9 +48,9 @@ export default function CheckupView({
   const fee = c.exams.find((e) => e.key === "fees");
   const res = c.exams.find((e) => e.key === "reserve");
   const rep = c.exams.find((e) => e.key === "repairs");
-  const displayPct = Math.max(1, c.reservePercentile);
-  // 100곳 중 몇 곳이 더 많이 쌓는가 (백분위의 쉬운 번역)
-  const aheadCount = Math.min(99, Math.max(1, 100 - displayPct));
+  // 백분위를 100 기준 개수로 환산하지 않는다 — 엔진이 직접 센 유효 표본 N과 초과 단지 K를 그대로 쓴다
+  const peerN = c.peerValidCount;
+  const peerHigher = c.peerHigherCount;
 
   const feeFirst = data.fees[0], feeLast = data.fees[data.fees.length - 1];
   const y0 = feeFirst ? feeFirst.ym.slice(0, 4) : "";
@@ -101,13 +101,13 @@ export default function CheckupView({
         <section className={isHome ? "hero hero-scene" : "hero"} data-scene={isHome ? "apt" : undefined}>
           <p className="eyebrow">
             <span className="pulse" aria-hidden="true"></span>
-            {isHome ? "이번 주 검진 사례 · 2,500세대 이상 단지 중 미래 수리비를 가장 적게 쌓는 곳" : "단지 검진 결과"}
+            {isHome ? "이번 주 검진 사례 · 2,500세대 이상 단지 중 매달 걷는 수선비가 가장 적은 곳" : "단지 검진 결과"}
           </p>
           {isHome && <HeroReceipt domain="apt" />}
           {isHome && (
             <>
               <h1 className="head">우리 아파트 관리비,<br /><span className="hl">나만 많이 내는 걸까?</span></h1>
-              <p className="sub">우리 단지 이름만 검색하면 됩니다. 비슷한 조건의 단지들과 <b>나란히 놓고</b> 보여드려요. 관리비는 어느 쪽인지, 나중에 쓸 수리비는 잘 쌓이고 있는지. 아래는 이번 주에 눈에 띈 단지 하나입니다.</p>
+              <p className="sub">우리 단지 이름만 검색하면 됩니다. 비슷한 조건의 단지들과 <b>나란히 놓고</b> 보여드려요. 관리비는 어느 쪽인지, 매달 걷는 수선비는 어느 수준인지. 아래는 이번 주에 눈에 띈 단지 하나입니다.</p>
               <div className="hero-cta">
                 <Search wide />
                 <p className="cta-note">전국 2만 1천 단지 · 로그인 없음 · 30초</p>
@@ -129,36 +129,37 @@ export default function CheckupView({
         {res && dist && (
           <section className="centerpiece">
             <HeroCount
-              percentile={res.signal === "good" ? 1 : aheadCount}
+              percentile={res.signal === "good" ? 1 : peerHigher}
               signal={res.signal}
               signalLabel={SIG_LABEL[res.signal]}
               meX={meX}
             >
               <div className="cp-verdict">
-                <p className="lab">미래 수리비 저금 <span style={{ color: "var(--hair-2)" }}>|</span> 장기수선충당금</p>
+                <p className="lab">매달 걷는 수선비 <span style={{ color: "var(--hair-2)" }}>|</span> 장기수선충당금 ㎡당 월 부과액</p>
                 <p className="big">
                   {res.signal === "good"
-                    ? <>비슷한 단지들과 <em>비슷한 만큼</em> 쌓고 있어요</>
-                    : <>비슷한 단지 100곳 중 <em className="num" data-count>{aheadCount}</em><em>곳</em>이 더 많이 쌓고 있어요</>}
+                    ? <>비교 가능한 {peerN}곳과 <em>비슷한 금액</em>을 걷고 있어요</>
+                    : <>비교 가능한 {peerN}곳 중 <em className="num" data-count>{peerHigher}</em><em>곳</em>이 더 많이 걷고 있어요</>}
                 </p>
                 <p className="why">
-                  {age >= 25 && res.signal !== "good"
-                    ? <>지은 지 {age}년이면 배관과 승강기를 갈아야 할 때가 가까워집니다. 그때 쓸 돈을 지금 적게 쌓고 있다면, 공사가 시작될 때 세대마다 목돈을 걷게 될 수 있어요.{age >= 35 && <> 다만 재건축이나 리모델링을 추진하는 단지는 적립을 낮춰 잡기도 합니다. 계획이 있는지는 관리사무소에 확인해 보세요.</>} </>
-                    : <>지금 쌓는 속도로 나중에 필요한 공사비를 감당할 수 있는지 함께 보시죠. </>}
+                  {/* 사실(월 부과액이 낮다)과 추론(재원이 부족하다)을 섞지 않는다 — 잔액·계획 공시가 없다 */}
+                  이 숫자는 매달 걷는 금액이고, 적립 잔액과 계획 공사비는 공시에 없습니다.
+                  {age >= 25 && res.signal !== "good" && <> 지은 지 {age}년이면 배관·승강기 교체 주기가 가까워집니다.</>}
+                  {" "}실제로 모자랄지는 적립 잔액과 수선 계획을 함께 봐야 합니다. 관리사무소에 장기수선계획서와 적립 잔액을 물어보세요.{" "}
                   <a href="/method">어떻게 계산했나</a>
                 </p>
               </div>
             </HeroCount>
             <div className="chartbox">
               <svg className="dist" viewBox="0 -14 900 210" preserveAspectRatio="xMidYMid meet" role="img"
-                aria-label={`유사 단지 ${c.peerCount}곳의 장기수선충당금 적립 분포에서 ${c.danji.name}의 위치`}>
+                aria-label={`비교 가능한 단지 ${peerN}곳의 장기수선충당금 ㎡당 월 부과액 분포에서 ${c.danji.name}의 위치`}>
                 <path className="curve" d={dist.curve} />
                 <line className="axis" x1="40" y1="150" x2="860" y2="150" />
                 <text className="peer-lab" x="450" y="166" textAnchor="middle">
-                  비슷한 단지 {c.peerCount}곳의 적립 수준 →
+                  비교 가능한 단지 {peerN}곳의 월 부과액 →
                 </text>
-                <text className="tick" x="40" y="166">적게 쌓음</text>
-                <text className="tick" x="860" y="166" textAnchor="end">많이 쌓음</text>
+                <text className="tick" x="40" y="166">적게 걷음</text>
+                <text className="tick" x="860" y="166" textAnchor="end">많이 걷음</text>
                 <line className="me-line" data-me-line x1={meX} y1="150" x2={meX} y2="60" />
                 <circle className="me-dot" data-me-dot cx={meX} cy="150" r="5.5" />
                 <text className="me-lab" data-me-lab
@@ -191,8 +192,8 @@ export default function CheckupView({
               <span className="yr">{age >= 28 ? "지금" : `${c.danji.builtYear + 29} 무렵`}</span>
               <p className="txt">
                 {age >= 28
-                  ? <>이 단지는 이미 <b>대규모 수선 주기</b>(28~30년차) 안에 있습니다. 배관·승강기 등 큰 공사의 재원이 지금의 적립에서 나옵니다.</>
-                  : <>28~30년차는 <b>대규모 수선 주기</b>입니다. 지금 적립 속도로는 필요한 금액에 닿지 못할 수 있습니다.</>}
+                  ? <>이 단지는 이미 <b>대규모 수선 주기</b>(28~30년차) 안에 있습니다. 큰 공사의 재원은 적립 잔액과 장기수선계획에서 나오므로, 둘 다 관리사무소에 확인해 보세요.</>
+                  : <>28~30년차는 <b>대규모 수선 주기</b>입니다. 적립 잔액과 장기수선계획을 관리사무소에 확인해 보세요.</>}
               </p>
             </div>
           )}
@@ -217,14 +218,15 @@ export default function CheckupView({
           )}
           {res && (
             <Reveal className="row">
-              <div className="name">미래 수리비 저금<span>장기수선충당금</span></div>
+              <div className="name">매달 걷는 수선비<span>장기수선충당금 · ㎡당 월 부과액</span></div>
               <div className="body">
-                비슷한 단지 {c.peerCount}곳 중에서 <b>적게 쌓는 편</b>입니다(아래에서 {displayPct}% 지점).
-                {age >= 25 && res.signal !== "good" && <> 지은 지 {age}년 된 단지 기준으로는 낮습니다.</>}
+                비교 가능한 단지 {peerN}곳 중 <b>{peerHigher}곳</b>이 우리보다 많이 걷습니다.
+                적립 잔액과 계획 공사비는 공시에 없어, 재원이 모자란지는 이 수치만으로 알 수 없습니다.
+                {age >= 25 && res.signal !== "good" && <> 지은 지 {age}년이면 관리사무소에 장기수선계획서와 적립 잔액을 확인해 보세요.</>}
               </div>
               <div className="metric">
                 <span className="v">{data.reserve.perM2}<span style={{ fontSize: 15, fontWeight: 600 }}>원</span></span>
-                <span className="u">㎡당 월 적립</span><br />
+                <span className="u">㎡당 월 부과</span><br />
                 <span className={`sig ${SIG_CLASS[res.signal]}`}>{SIG_LABEL[res.signal]}</span>
               </div>
             </Reveal>

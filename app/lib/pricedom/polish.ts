@@ -1,56 +1,52 @@
-/** 대필 스트리밍 공용 계층 — 4개 라우트(rx/arx/hrx/frx)가 공유.
+/** 대필 공용 계층 — 4개 라우트(rx/arx/hrx/frx)가 공유.
  * 계약:
- * - 수치·법 조항 불변은 system 프롬프트가 강제하고, 산출 수치는 애초에 템플릿이 만든다.
- * - 첫 델타를 받기 전에 실패하면(연결·오류 이벤트 포함) 템플릿을 그대로 반환한다(x-rx-mode: template).
- * - 첫 델타 이후 실패하면 부분 출력에 중단 안내만 덧붙인다 — 부분+전체 템플릿 혼합 금지.
- * - 클라이언트 중단(req.signal)과 스트림 cancel을 업스트림으로 전파한다.
+ * - 수치·법 조항·항목명은 템플릿이 결정론적으로 만든다. 모델은 문장만 다듬는다.
+ * - 모델 출력은 **전부 받은 뒤 검증**하고(preservesFacts), 숫자나 법 조항이 하나라도
+ *   달라지면 그 응답을 버리고 템플릿을 그대로 내보낸다. 검증 전에는 한 글자도 내보내지
+ *   않는다 — 틀린 수치를 먼저 스트리밍한 뒤 교체하는 설계를 쓰지 않기 위해서다.
+ *   (대가: 토큰 단위 점진 표시가 사라지고 완성 후 한 번에 도착한다. 문서가 1200토큰
+ *    이하로 짧아 감수한다. 클라이언트는 그대로 ReadableStream으로 읽는다.)
+ * - LLM이 꺼져 있거나(JEGAP_LLM_DISABLED) 일일 상한을 넘으면 오류가 아니라 템플릿 폴백.
+ * - 업스트림에는 타임아웃이 있고, 같은 템플릿의 연속 요청은 짧은 TTL 캐시로 합친다.
  */
+import { llmBudget } from "./ratelimit";
 
 const BASE_SYSTEM =
   "너는 안내문 문장을 다듬는 편집자다. 수치·법 조항·항목명은 절대 바꾸지 마라. " +
+  "숫자를 새로 만들지도, 지우지도, 한글로 풀어쓰지도 마라. 번호 목록의 번호도 그대로 둬라. " +
   "추가 주장·판정·감정 표현을 넣지 마라. 마크다운 문법(#, *, - 등)을 쓰지 말고 " +
   "일반 문서처럼 써라. 정중하고 간결한 한국어로만 다듬어라.";
 
-export async function polishResponse(
-  template: string,
-  opts?: { system?: string; signal?: AbortSignal }
-): Promise<Response> {
+const UPSTREAM_TIMEOUT_MS = 20_000;
+const CACHE_TTL_MS = 60_000;
+const MAX_BODY_BYTES = 4_096;
+const SEP = String.fromCharCode(31); // 캐시 키 구분자
+
+/** 출력 검증: 템플릿의 숫자 집합이 그대로 남아 있고(추가·삭제·변형 없음),
+ * 템플릿에 있던 법 조항 표기(제N조/제N항/제N호)가 전부 출력에 있는지.
+ * 하나라도 어긋나면 false → 호출자는 그 응답을 버리고 템플릿을 낸다. */
+export function preservesFacts(template: string, out: string): boolean {
+  const nums = (s: string) =>
+    (s.match(/\d[\d,]*/g) ?? []).map((t) => t.replace(/,/g, "")).sort();
+  const a = nums(template);
+  const b = nums(out);
+  if (a.length !== b.length || a.some((v, i) => v !== b[i])) return false;
+  return (template.match(/제\s?\d+\s?[조항호]/g) ?? []).every((m) => out.includes(m));
+}
+
+/** 같은 입력 반복 억제 + in-flight 합치기. 값이 Promise라 동시 요청이 한 번만 호출한다.
+ * 실패(null)도 TTL 동안 기억한다 — 실패 루프가 예산을 갉아먹지 않도록. */
+const cache = new Map<string, { at: number; text: Promise<string | null> }>();
+
+async function callUpstream(template: string, system: string): Promise<string | null> {
   const key = process.env.ANTHROPIC_API_KEY;
-  const plain = () => new Response(template, {
-    headers: { "content-type": "text/plain; charset=utf-8", "x-rx-mode": "template" },
-  });
-  if (!key) return plain();
-
-  let reader: ReadableStreamDefaultReader<Uint8Array>;
-  let buf = "";
-  const dec = new TextDecoder();
-
-  /** SSE에서 다음 이벤트 하나: 텍스트 델타 / 오류 / 종료 */
-  async function nextDelta(): Promise<{ text?: string; error?: boolean; done?: boolean }> {
-    for (;;) {
-      const nl = buf.indexOf("\n");
-      if (nl >= 0) {
-        const line = buf.slice(0, nl);
-        buf = buf.slice(nl + 1);
-        if (!line.startsWith("data: ")) continue;
-        try {
-          const j = JSON.parse(line.slice(6));
-          if (j.type === "error") return { error: true };
-          if (j.type === "content_block_delta" && j.delta?.text) return { text: j.delta.text };
-          if (j.type === "message_stop") return { done: true };
-        } catch { /* keep-alive 등 무시 */ }
-        continue;
-      }
-      const { done, value } = await reader.read();
-      if (done) return { done: true };
-      buf += dec.decode(value, { stream: true });
-    }
-  }
-
+  if (!key) return null;
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), UPSTREAM_TIMEOUT_MS);
   try {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
-      signal: opts?.signal,
+      signal: ctl.signal,
       headers: {
         "content-type": "application/json",
         "x-api-key": key,
@@ -59,51 +55,73 @@ export async function polishResponse(
       body: JSON.stringify({
         model: "claude-sonnet-5",
         max_tokens: 1200,
-        stream: true,
-        system: opts?.system ?? BASE_SYSTEM,
+        system,
         messages: [{ role: "user", content: template }],
       }),
     });
-    if (!res.ok || !res.body) return plain();
-    reader = res.body.getReader();
-
-    // 첫 유효 델타까지는 폴백 가능 구간
-    const first = await nextDelta();
-    if (first.error || first.done || !first.text) { reader.cancel().catch(() => {}); return plain(); }
-
-    const enc = new TextEncoder();
-    const stream = new ReadableStream({
-      async start(controller) {
-        controller.enqueue(enc.encode(first.text!));
-        try {
-          for (;;) {
-            const ev = await nextDelta();
-            if (ev.text) { controller.enqueue(enc.encode(ev.text)); continue; }
-            if (ev.error)
-              controller.enqueue(enc.encode("\n\n[네트워크 문제로 생성이 중단되었습니다. 버튼을 다시 눌러 주세요.]"));
-            break;
-          }
-        } catch {
-          controller.enqueue(enc.encode("\n\n[네트워크 문제로 생성이 중단되었습니다. 버튼을 다시 눌러 주세요.]"));
-        }
-        controller.close();
-      },
-      cancel() { reader.cancel().catch(() => {}); },
-    });
-    return new Response(stream, {
-      headers: { "content-type": "text/plain; charset=utf-8", "x-rx-mode": "llm" },
-    });
+    if (!res.ok) return null;
+    const j = (await res.json()) as { content?: { type?: string; text?: string }[] };
+    const text = (j.content ?? [])
+      .filter((b) => b.type === "text" && typeof b.text === "string")
+      .map((b) => b.text as string)
+      .join("")
+      .trim();
+    return text && preservesFacts(template, text) ? text : null;
   } catch {
-    return plain();
+    return null;
+  } finally {
+    clearTimeout(timer);
   }
 }
 
-/** 라우트 공용 입력 파서 — 실패 시 null (라우트는 400 반환) */
+export async function polishResponse(
+  template: string,
+  opts?: { system?: string; signal?: AbortSignal }
+): Promise<Response> {
+  const plain = () =>
+    new Response(template, {
+      headers: { "content-type": "text/plain; charset=utf-8", "x-rx-mode": "template" },
+    });
+  if (!process.env.ANTHROPIC_API_KEY) return plain();
+  if (opts?.signal?.aborted) return plain();
+
+  const system = opts?.system ?? BASE_SYSTEM;
+  const now = Date.now();
+  for (const [k, v] of cache) if (now - v.at > CACHE_TTL_MS) cache.delete(k);
+
+  const ck = system.length + SEP + template;
+  let hit = cache.get(ck);
+  if (!hit) {
+    // 캐시 히트는 새 호출이 아니므로 예산을 먹지 않는다.
+    if (!llmBudget()) return plain();
+    hit = { at: now, text: callUpstream(template, system) };
+    cache.set(ck, hit);
+    if (cache.size > 200) cache.clear();
+  }
+  // 진행 중 호출은 클라이언트 중단으로 끊지 않는다 — 다른 요청과 공유하기 때문.
+  const text = await hit.text.catch(() => null);
+  return text
+    ? new Response(text, {
+        headers: { "content-type": "text/plain; charset=utf-8", "x-rx-mode": "llm" },
+      })
+    : plain();
+}
+
+/** 라우트 공용 입력 파서 — 실패 시 null (라우트는 400 반환).
+ * 본문 크기 상한을 여기서 한 번만 건다(4개 라우트 공통 관문).
+ * ponytail: content-length가 없으면 일단 읽고 길이로 자른다. 플랫폼 자체 본문 상한이
+ * 위에 하나 더 있어 이 경로로 들어오는 최대치는 이미 제한돼 있다. */
 export async function readJsonBody(req: Request): Promise<Record<string, unknown> | null> {
+  const len = Number(req.headers.get("content-length"));
+  if (Number.isFinite(len) && len > MAX_BODY_BYTES) return null;
   try {
-    const j = await req.json();
+    const raw = await req.text();
+    if (raw.length > MAX_BODY_BYTES) return null;
+    const j = JSON.parse(raw);
     return j && typeof j === "object" ? (j as Record<string, unknown>) : null;
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
 export function safeDecode(v: unknown): string | null {

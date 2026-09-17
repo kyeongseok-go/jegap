@@ -19,6 +19,8 @@ CORE = {
     "funeral.json.gz": lambda n: n.startswith("시설임대료"),
     "hira.json.gz": lambda n: any(k in n for k in ("MRI", "초음파", "도수치료", "체외충격파")),
 }
+# 자료 기준일 — 과거 공시를 현재 가격처럼 읽히게 두지 않는다
+ASOF = {"funeral.json.gz": "2023.6 공시", "hira.json.gz": "심평원 공개 기준"}
 for fname, dom, href, peerkey in [
     ("funeral.json.gz", "장례비", "/f", lambda o, c: f"{c}|{o['sido']}"),
     ("hira.json.gz", "병원비", "/h", lambda o, c: f"{c}|{o['sido']}|{o['kind']}"),
@@ -44,7 +46,7 @@ for fname, dom, href, peerkey in [
         mult, o, c, n, p, medv, cnt = best
         out.append({
             "dom": dom, "href": f"{href}/{o['id']}",
-            "fact": f"{o['name']}의 {n} {p:,}원 — 유사 기관 {cnt}곳 중간값({medv:,}원)의 {mult:.1f}배",
+            "fact": f"{o['name']}의 {n} {p:,}원 — 유사 기관 {cnt}곳 중간값({medv:,}원)의 {mult:.1f}배 · {ASOF[fname]}",
         })
 
 # 생활물가: 최근 3년 동월 대비 최다 상승 품목(전국 중간값 기준, 단절 제외)

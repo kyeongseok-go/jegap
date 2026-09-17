@@ -7,7 +7,7 @@ import { CONTACT } from "../../lib/site";
 
 export const metadata: Metadata = {
   title: "JEGAP 제값 — 생활물가 검진",
-  description: "냉면·삼겹살·이발료… 우리 지역의 생활물가는 전국 어디쯤일까요. 행안부가 매월 조사한 가격으로 확인합니다.",
+  description: "우리 지역 냉면값, 얼마나 올랐을까요. 행정안전부가 매월 조사한 지역별 가격과 변화를 확인하세요.",
 };
 
 export default function LivingHome() {
@@ -29,35 +29,17 @@ export default function LivingHome() {
       <main className="wrap" id="main">
         <section className="hero hero-scene" data-scene="liv">
           <HeroReceipt domain="liv" />
-          <p className="eyebrow"><span className="pulse" aria-hidden="true"></span>생활물가편 · 우리 동네 물가</p>
-          <h1 className="head">같은 냉면 한 그릇도<br /><span className="hl">지역마다 값이 다릅니다</span></h1>
+          <p className="eyebrow"><span className="pulse" aria-hidden="true"></span>생활물가편 · 지역별 조사 가격</p>
+          <h1 className="head">우리 지역 냉면값,<br /><span className="hl">얼마나 올랐을까요?</span></h1>
           <p className="sub">
             행정안전부가 매월 조사하는 <b>서민밀접 30여 개 품목</b>의 가격입니다. 냉면, 삼겹살, 이발료, 목욕료, 택시료.
-            내가 사는 지역의 값이 전국 어디쯤인지, 3년간 얼마나 올랐는지 보여드립니다.
+            지역을 고르면 그 지역의 조사 가격과 3년간의 변화, 지정된 착한가격업소를 함께 보여드립니다.
           </p>
         </section>
 
-        {ready && pairs.length > 0 && (
-          <section className="pairband">
-            <h2 className="sech">재료값과 밥상값은 같이 움직이지 않습니다 <span className="hnote">· 시도 중간값 기준</span></h2>
-            <div className="pairs">
-              {pairs.map((p) => (
-                <div className="pair" key={p.label}>
-                  <p className="pl">{p.label} · 최근 {Math.round(p.months / 12 * 10) / 10}년</p>
-                  <p className="pv">
-                    <span className={p.cookedRise >= 0 ? "up" : "down"}>{p.cookedName} {p.cookedRise >= 0 ? "+" : ""}{p.cookedRise}%</span>
-                    <span className="vs">vs</span>
-                    <span className={p.rawRise >= 0 ? "up" : "down"}>{p.rawName} {p.rawRise >= 0 ? "+" : ""}{p.rawRise}%</span>
-                  </p>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
         {ready ? (
           <section className="sidogrid-wrap">
-            <h2 className="sech">지역을 고르면 바로 검진합니다 <span className="hnote">· {ym.slice(0, 4)}년 {ym.slice(4)}월 조사 기준</span></h2>
+            <h2 className="sech">지역 선택 <span className="hnote">· {ym.slice(0, 4)}년 {ym.slice(4)}월 조사 기준</span></h2>
             <div className="sidogrid">
               {SIDOS.map((s) => (
                 <Link key={s.key} href={`/p/${encodeURIComponent(s.key)}`} className="sido">{s.label}</Link>
@@ -72,10 +54,30 @@ export default function LivingHome() {
           </div>
         )}
 
+        {ready && pairs.length > 0 && (
+          <section className="pairband">
+            <h2 className="sech">외식 가격과 식재료 가격의 변화 <span className="hnote">· 시도 중간값 기준</span></h2>
+            <div className="pairs">
+              {pairs.map((p) => (
+                <div className="pair" key={p.label}>
+                  <p className="pl">{p.label} · 최근 {Math.round(p.months / 12 * 10) / 10}년</p>
+                  <p className="pv">
+                    <span className={p.cookedRise >= 0 ? "up" : "down"}>{p.cookedName} {p.cookedRise >= 0 ? "+" : ""}{p.cookedRise}%</span>
+                    <span className="vs">vs</span>
+                    <span className={p.rawRise >= 0 ? "up" : "down"}>{p.rawName} {p.rawRise >= 0 ? "+" : ""}{p.rawRise}%</span>
+                  </p>
+                </div>
+              ))}
+            </div>
+            <p className="hfoot">같은 기간 두 가격이 각각 얼마나 변했는지 나란히 놓은 것입니다.
+              원가나 마진을 분석한 결과가 아닙니다.</p>
+          </section>
+        )}
+
         <section className="act-hint">
           <p className="ah-lab">검진 다음에 할 수 있는 일</p>
           <p className="ah-body">생활물가는 가게마다 물어볼 대상이 아니라 <b>고를 수 있는</b> 값입니다.
-            지역을 고르면 정부·지자체가 지정한 <b>착한가격업소</b>를 함께 보여드립니다. 같은 품목을 주변보다 싸게 파는 곳입니다.</p>
+            지역을 고르면 정부·지자체가 지정한 <b>착한가격업소</b>를 함께 보여드립니다. 지정 기준과 지정일이 함께 공개되는 제도입니다.</p>
         </section>
         <section className="why">
           <h2>다른 편과 같은 원칙으로 검진합니다</h2>

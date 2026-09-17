@@ -25,7 +25,7 @@ export default async function AcademyPage({ params }: { params: Promise<{ id: st
       srcLine="교육청(NEIS) 공시 교습비 기준"
       unitNote="공시된 인당 교습비만으로 작성했습니다. 수업 시간·횟수·정원 등 구성은 반영되어 있지 않으며,"
       footNote="이 표는 학원에 대한 평가나 추천이 아닙니다. 신고 금액 초과 징수는 학원법 위반으로 교육청에 신고할 수 있습니다."
-      search={<PriceSearch endpoint="/api/asearch" hrefBase="/a"
+      search={<PriceSearch endpoint="/api/asearch" hrefBase="/a" cta="교습비 확인"
         placeholder="학원 이름 검색" label="학원 이름 검색" />}
       rx={<RxSimple
         id={d.h.id} endpoint="/api/arx"

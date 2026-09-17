@@ -24,7 +24,7 @@ export default async function FuneralPage({ params }: { params: Promise<{ id: st
       srcLine="e하늘 장사정보 공시 가격 기준 · 2023년 6월 공시분"
       unitNote="2023년 6월 공시 가격만으로 작성했습니다. 현재 가격은 다를 수 있으니 방문 전 e하늘(15774129.go.kr)에서 최신 공시를 확인하세요. 같은 품명의 세부 상품(특실·일반실 등)은 중앙값으로 대표했습니다."
       footNote="이 표는 시설에 대한 평가나 추천이 아닙니다."
-      search={<PriceSearch endpoint="/api/fsearch" hrefBase="/f"
+      search={<PriceSearch endpoint="/api/fsearch" hrefBase="/f" cta="가격 확인"
         placeholder="장례식장 이름 검색" label="장례식장 이름 검색" />}
       rx={<RxSimple
         id={d.h.id} endpoint="/api/frx"

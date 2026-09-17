@@ -46,6 +46,10 @@ export interface ExamResult {
 export interface Checkup {
   danji: Danji;
   peerCount: number;
+  /** 장충금 비교에 실제로 쓴 유효 표본 수 (0원 부과 = 데이터 부재로 제외한 뒤) */
+  peerValidCount: number;
+  /** 그 유효 표본 중 우리보다 ㎡당 월 부과액이 엄밀히 높은 단지 수 */
+  peerHigherCount: number;
   peerRelaxed: number;     // 유사군 완화 단계 (0=기본)
   reservePercentile: number; // 하위 N% (0~100, 낮을수록 적게 쌓음)
   peerReserves: number[];   // 실제 유사군의 적립액(0원 제외) — 분포 차트 모집단

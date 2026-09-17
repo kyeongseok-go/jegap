@@ -146,6 +146,49 @@ function fixture(): { me: DanjiData; all: DanjiData[] } {
   return { me, all };
 }
 
+// ───────── 유효 표본 N · 초과 단지 K (백분위 환산 금지) ─────────
+describe("peerValidCount / peerHigherCount", () => {
+  // 장충금만 보는 최소 픽스처 — fees는 24점 미만이라 무소음
+  const one = (code: string, reserve: number): DanjiData => ({
+    danji: mk({ code }), reserve: { perM2: reserve }, fees: [],
+  });
+  const run = (mine: number, peers: number[]) =>
+    runCheckup(one("ME", mine), [one("ME", mine), ...peers.map((v, i) => one(`P${i}`, v))]);
+
+  it("동률이 많아도 K는 엄밀한 초과 개수 (백분위 보수 아님)", () => {
+    const c = run(100, [100, 100, 100, 100, 200]);
+    expect(c.peerValidCount).toBe(5);
+    expect(c.peerHigherCount).toBe(1);          // 100원 동률 4곳은 초과가 아니다
+    expect(c.peerHigherCount).not.toBe(100 - c.reservePercentile); // 환산값과 다르다
+  });
+  it("0원 표본은 N에서 제외 (데이터 부재)", () => {
+    const c = run(100, [0, 0, 150, 200]);
+    expect(c.peerValidCount).toBe(2);
+    expect(c.peerHigherCount).toBe(2);
+    expect(c.peerCount).toBe(4);                 // 유사군 전체 수와 유효 표본 수는 다르다
+  });
+  it("자기 값이 최소면 K = N", () => {
+    const c = run(50, [80, 90, 100]);
+    expect(c.peerHigherCount).toBe(c.peerValidCount);
+  });
+  it("자기 값이 최대면 K = 0", () => {
+    const c = run(500, [80, 90, 100]);
+    expect(c.peerHigherCount).toBe(0);
+  });
+  it("유효 표본이 비면 무소음 — 검사도 소견 수치도 없다", () => {
+    const c = run(100, [0, 0]);
+    expect(c.peerValidCount).toBe(0);
+    expect(c.peerHigherCount).toBe(0);
+    expect(c.exams.find((e) => e.key === "reserve")).toBeUndefined();
+    expect(c.reservePercentile).toBe(-1);
+  });
+  it("소견은 세어낸 N·K를 그대로 인용한다", () => {
+    const c = run(50, [80, 90, 100]);
+    expect(c.opinion).toContain("3곳 중 3곳");
+    expect(c.opinion).not.toContain("100곳");
+  });
+});
+
 describe("runCheckup 통합", () => {
   const { me, all } = fixture();
   const c = runCheckup(me, all);

@@ -5,7 +5,7 @@ import { academyReady } from "../../lib/academy";
 
 export const metadata: Metadata = {
   title: "JEGAP 제값 — 학원비 검진",
-  description: "우리 동네 같은 과목 학원들 가운데, 이 학원의 교습비는 어디쯤일까요. 교육청 공시 교습비로 확인합니다.",
+  description: "학원비, 등록 전에 확인하세요. 교육청에 공시된 교습비와 같은 시군구 · 같은 과목의 중간값을 보여드립니다.",
 };
 
 export default function AcademyHome() {
@@ -13,15 +13,16 @@ export default function AcademyHome() {
     <PriceHome
       active="aca"
       eyebrow="학원비편 · 공시 교습비"
-      headline="학원비는 부르는 게 값이"
-      hl="아니라, 신고된 값이 있습니다"
+      headline="학원비,"
+      hl="등록 전에 확인하세요"
       sub={<>
         학원은 교습비를 교육청에 신고하고 <b>게시할 의무</b>가 있습니다(학원법 제15조).
-        신고된 금액보다 더 받으면 위법입니다. 학원 이름을 넣으면 우리 동네 같은 과목 기준
-        어디쯤인지 보여드립니다.
+        학원 이름을 넣으면 공시된 과목별 교습비와 같은 시군구 · 같은 과목의 중간값을 보여드립니다.
+        공시 자료에는 <b>수업 시간 · 횟수 · 구성이 남아 있지 않습니다.</b> 조건이 다른 과정끼리는
+        가격 순위로 비교할 수 없으니, 등록 전에 시간과 횟수를 함께 확인하세요.
       </>}
       ready={academyReady()}
-      search={<PriceSearch endpoint="/api/asearch" hrefBase="/a" wide
+      search={<PriceSearch endpoint="/api/asearch" hrefBase="/a" wide cta="공개 교습비 보기"
         placeholder="학원 이름 검색  예: ○○영어학원" label="학원 이름 검색" />}
       ctaNote="교육청(NEIS) 공시 교습비 기준 · 로그인 없음 · 30초"
       actionNote={<>학원은 신고한 교습비를 게시해야 하고, 그보다 더 받으면 위법입니다(학원법 제15조).

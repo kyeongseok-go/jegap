@@ -96,12 +96,17 @@ export default async function LivingSidoPage({ params }: { params: Promise<{ sid
                 <div className="shop" key={sh.name + sh.addr}>
                   <span className="sn">{sh.name}</span>
                   <span className="sk">{sh.sigungu} · {sh.kind}</span>
+                  {sh.addr && <span className="sk">{sh.addr}</span>}
+                  {sh.addr && <span className="sk">{sh.addr}</span>}
+                  {sh.addr && <span className="sk">{sh.addr}</span>}
                   <span className="sm">{sh.menus.slice(0, 2).map(([m, p]) => `${m} ${p.toLocaleString()}원`).join(" · ")}</span>
                 </div>
               ))}
             </div>
           )}
-          <p className="rx-mode">행정안전부 착한가격업소 현황(2026.6) 기준. 특정 업소의 추천이 아니라 정부 지정 제도의 안내입니다.</p>
+          <p className="rx-mode">행정안전부 착한가격업소 현황(2026.6) 기준. 표시된 메뉴 가격은 지정 당시 등록값이며
+            현재 최저가를 뜻하지 않습니다. 주소 · 영업 여부 · 최신 지정 현황은 방문 전에 업소나 관할 지자체에 확인하세요.
+            특정 업소의 추천이 아니라 정부 지정 제도의 안내입니다.</p>
         </Reveal>
 
         <p className="hfoot">
