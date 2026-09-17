@@ -107,7 +107,7 @@ export default function CheckupView({
           {isHome && (
             <>
               <h1 className="head">우리 아파트 관리비,<br /><span className="hl">나만 많이 내는 걸까?</span></h1>
-              <p className="sub">우리 단지 이름만 검색하면 됩니다. 비슷한 조건의 단지들과 <b>나란히 놓고</b> 보여드려요. 관리비는 어느 쪽인지, 매달 걷는 수선비는 어느 수준인지. 아래는 이번 주에 눈에 띈 단지 하나입니다.</p>
+              <p className="sub">옆 단지보다 더 내고 있는 건 아닐까. 단지 이름만 넣으면 <b>비슷한 조건의 단지들과 나란히</b> 놓고 보여드려요.</p>
               <div className="hero-cta">
                 <Search wide />
                 <p className="cta-note">전국 2만 1천 단지 · 로그인 없음 · 30초</p>

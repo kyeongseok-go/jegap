@@ -32,8 +32,8 @@ export default function LivingHome() {
           <p className="eyebrow"><span className="pulse" aria-hidden="true"></span>생활물가편 · 지역별 조사 가격</p>
           <h1 className="head">우리 지역 냉면값,<br /><span className="hl">얼마나 올랐을까요?</span></h1>
           <p className="sub">
-            행정안전부가 매월 조사하는 <b>서민밀접 30여 개 품목</b>의 가격입니다. 냉면, 삼겹살, 이발료, 목욕료, 택시료.
-            지역을 고르면 그 지역의 조사 가격과 3년간의 변화, 지정된 착한가격업소를 함께 보여드립니다.
+            같은 냉면인데 지역마다 값이 다릅니다.
+            지역을 고르면 <b>조사 가격과 3년간의 변화</b>, 가까운 착한가격업소를 함께 보여드려요.
           </p>
         </section>
 

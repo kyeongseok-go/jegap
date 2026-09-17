@@ -16,9 +16,8 @@ export default function FuneralHome() {
       headline="장례 비용,"
       hl="항목별로 확인하세요"
       sub={<>
-        장례식장은 <b>임대료·수수료 등 가격표 게시 의무</b>가 있고(장사법), 보건복지부 e하늘에
-        시설별 가격이 공개되어 있습니다. 여기서 보여드리는 것은 <b>2023년 6월 공시 자료</b>입니다.
-        현재 가격이 아닌 과거 공시 참고자료이니, 상담 때 물어볼 항목을 정하는 데 쓰세요.
+        장례는 사흘 안에 모든 값을 정해야 합니다.{" "}
+        <b>항목별 공개 가격</b>을 미리 보고, 상담 때 물어볼 목록을 준비하세요.
       </>}
       ready={funeralReady()}
       search={<PriceSearch endpoint="/api/fsearch" hrefBase="/f" wide cta="공개 가격 보기"

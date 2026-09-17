@@ -30,9 +30,8 @@ export default function HospitalHome() {
           <p className="eyebrow"><span className="pulse" aria-hidden="true"></span>병원비편 · 비급여 진료비</p>
           <h1 className="head">진료받기 전,<br /><span className="hl">비급여 가격부터 확인하세요</span></h1>
           <p className="sub">
-            비급여 진료는 병원이 가격을 자율로 정하고, 심사평가원이 매년 <b>병원급 이상 의료기관의 비급여 가격</b>을
-            공개합니다. 병원 이름을 넣으면 그 병원이 공개한 항목별 가격과 <b>같은 시도 · 같은 종별</b> 병원의
-            중간값을 나란히 보여드립니다.
+            같은 MRI인데 병원마다 값이 다릅니다.
+            병원 이름을 넣으면 그 병원이 <b>공개한 가격</b>이 비슷한 병원들 중 어디쯤인지 보여드려요.
           </p>
           {ready ? (
             <div className="hero-cta">
