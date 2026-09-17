@@ -290,46 +290,43 @@ footer .next b{color:var(--signal)}
   .sub{max-width:38ch}
 }
 .rstage{display:none;position:relative;width:292px;height:352px;perspective:1200px;
-  --rx:0deg;--ry:0deg}
+  --rx:0deg;--ry:0deg;--receipt-top:#fcf8ec;--receipt-bottom:#eee5d1;--receipt-shadow:89,65,34;--receipt-angle:-5deg}
 @media(min-width:1000px){.rstage{display:block}}
 
-/* 바닥에 깔리는 은은한 빛 — 뭉치가 공중에 뜨지 않고 놓여 보이게 */
-.rstage::before{content:"";position:absolute;left:12%;right:10%;bottom:8px;height:58px;
-  background:radial-gradient(60% 100% at 50% 100%,rgba(26,26,24,.22) 0%,rgba(26,26,24,.10) 42%,transparent 72%);
-  filter:blur(12px);transform:translateZ(-160px)}
+/* 접촉 그림자는 종이 자체에 붙인다. 별도 바닥 타원은 떠 보이므로 사용하지 않는다. */
 
 /* 영수증 한 장 — 종이 질감·방향광·3중 그림자 */
 .receipt{position:absolute;left:26px;top:28px;width:240px;padding:18px 16px 20px;
   background:
-    linear-gradient(150deg,rgba(255,255,255,.9) 0%,rgba(255,255,255,0) 34%),
-    linear-gradient(330deg,rgba(120,113,95,.14) 0%,rgba(120,113,95,0) 42%),
-    repeating-linear-gradient(90.5deg,rgba(150,142,120,.05) 0 1px,transparent 1px 4px),
-    linear-gradient(168deg,#FFFEFA 0%,#FDFAF0 44%,#F3EDDA 100%);
-  border:1px solid rgba(185,177,155,.7);transform-style:preserve-3d;
-  transform:rotate(1.6deg) rotateY(var(--ry)) rotateX(var(--rx));
+    linear-gradient(176deg,transparent 0 47%,rgba(var(--receipt-shadow),.045) 49.5%,rgba(255,255,255,.4) 50%,transparent 52%),
+    linear-gradient(94deg,rgba(var(--receipt-shadow),.04),transparent 5% 94%,rgba(var(--receipt-shadow),.065)),
+    repeating-linear-gradient(18deg,rgba(var(--receipt-shadow),.022) 0 .6px,transparent .6px 3px),
+    linear-gradient(155deg,var(--receipt-top),var(--receipt-top) 30%,var(--receipt-bottom));
+  border:1px solid rgba(var(--receipt-shadow),.16);transform-style:preserve-3d;
+  transform:rotate(var(--receipt-angle)) rotateY(var(--ry)) rotateX(var(--rx));
   box-shadow:
-    0 1px 1px rgba(26,26,24,.22),
-    0 4px 7px -1px rgba(26,26,24,.18),
-    0 20px 34px -10px rgba(26,26,24,.34),
-    0 40px 60px -24px rgba(26,26,24,.28);
+    1px 2px 2px rgba(var(--receipt-shadow),.17),
+    4px 7px 9px -3px rgba(var(--receipt-shadow),.20),
+    12px 19px 25px -12px rgba(var(--receipt-shadow),.23),
+    inset 1px 0 1px rgba(255,255,255,.5);
   transition:transform .45s var(--ease),box-shadow .45s var(--ease)}
 .rstage:hover .receipt{
   box-shadow:
-    0 1px 1px rgba(26,26,24,.22),
-    0 6px 10px -1px rgba(26,26,24,.20),
-    0 30px 46px -12px rgba(26,26,24,.36),
-    0 56px 76px -28px rgba(26,26,24,.30)}
+    1px 2px 2px rgba(var(--receipt-shadow),.17),
+    5px 9px 12px -4px rgba(var(--receipt-shadow),.20),
+    14px 22px 28px -12px rgba(var(--receipt-shadow),.23),
+    inset 1px 0 1px rgba(255,255,255,.5)}
 /* 위·아래 절취 톱니 */
 .receipt::before{content:"";position:absolute;left:0;right:0;top:-7px;height:7px;
-  background:linear-gradient(45deg,transparent 33.333%,#FFFEFA 33.333%,#FFFEFA 66.667%,transparent 66.667%),
-             linear-gradient(-45deg,transparent 33.333%,#FFFEFA 33.333%,#FFFEFA 66.667%,transparent 66.667%);
-  background-size:12px 14px;background-position:0 100%;background-repeat:repeat-x;
+  background:linear-gradient(45deg,transparent 33.333%,var(--receipt-top) 33.333%,var(--receipt-top) 66.667%,transparent 66.667%),
+             linear-gradient(-45deg,transparent 33.333%,var(--receipt-top) 33.333%,var(--receipt-top) 66.667%,transparent 66.667%);
+  background-size:8px 14px;background-position:0 100%;background-repeat:repeat-x;
   filter:drop-shadow(0 -1px 0 rgba(185,177,155,.55))}
 .receipt::after{content:"";position:absolute;left:0;right:0;bottom:-7px;height:7px;
-  background:linear-gradient(45deg,#F3EDDA 33.333%,transparent 33.333%,transparent 66.667%,#F3EDDA 66.667%),
-             linear-gradient(-45deg,#F3EDDA 33.333%,transparent 33.333%,transparent 66.667%,#F3EDDA 66.667%);
-  background-size:12px 14px;background-position:0 0;background-repeat:repeat-x;
-  filter:drop-shadow(0 4px 4px rgba(26,26,24,.22))}
+  background:linear-gradient(45deg,var(--receipt-bottom) 33.333%,transparent 33.333%,transparent 66.667%,var(--receipt-bottom) 66.667%),
+             linear-gradient(-45deg,var(--receipt-bottom) 33.333%,transparent 33.333%,transparent 66.667%,var(--receipt-bottom) 66.667%);
+  background-size:8px 14px;background-position:0 0;background-repeat:repeat-x;
+  filter:drop-shadow(1px 3px 2px rgba(var(--receipt-shadow),.13))}
 
 .r-head{font-family:var(--mono);font-weight:700;font-size:13.5px;letter-spacing:.08em;text-align:center}
 .r-src{font-family:var(--mono);font-size:10.5px;color:var(--slate);letter-spacing:.06em;text-align:center;margin-top:3px;
@@ -395,6 +392,12 @@ footer .next b{color:var(--signal)}
   background:linear-gradient(transparent 88%,rgba(196,30,30,.3) 88%,rgba(196,30,30,.3) 98%,transparent 98%)}
 .hero-scene h1.head .hl::after{content:none}
 .hero-scene .rprop{display:none}
+.hero-scene[data-scene="med"] .rstage{--receipt-top:#faf9f1;--receipt-bottom:#e9e9dc;--receipt-shadow:64,79,72;--receipt-angle:3deg}
+.hero-scene[data-scene="aca"] .rstage{--receipt-top:#fcf7e8;--receipt-bottom:#eee2c8;--receipt-angle:-4deg}
+.hero-scene[data-scene="fun"] .rstage{--receipt-top:#faf7f0;--receipt-bottom:#e9e3d9;--receipt-shadow:78,69,65;--receipt-angle:-3deg}
+.hero-scene[data-scene="liv"] .rstage{--receipt-top:#faf7e9;--receipt-bottom:#eae5d2;--receipt-shadow:77,78,51;--receipt-angle:4deg}
+.hero-scene .r-stamp{mix-blend-mode:multiply;
+  box-shadow:inset 0 0 0 1.5px var(--receipt-top),inset 0 0 0 2.5px var(--signal)}
 .hero-scene .hero-cta{position:relative;z-index:2}
 .hero-scene .hero-cta .find{background:rgba(252,250,242,.96);box-shadow:0 4px 14px rgba(66,48,24,.05)}
 @media(min-width:1000px){

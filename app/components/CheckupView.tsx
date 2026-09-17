@@ -101,7 +101,7 @@ export default function CheckupView({
         <section className={isHome ? "hero hero-scene" : "hero"} data-scene={isHome ? "apt" : undefined}>
           <p className="eyebrow">
             <span className="pulse" aria-hidden="true"></span>
-            {isHome ? "이번 주 검진 사례 · 미래 수리비를 가장 안 쌓는 단지" : "단지 검진 결과"}
+            {isHome ? "이번 주 검진 사례 · 2,500세대 이상 단지 중 미래 수리비를 가장 적게 쌓는 곳" : "단지 검진 결과"}
           </p>
           {isHome && <HeroReceipt domain="apt" />}
           {isHome && (
@@ -143,7 +143,7 @@ export default function CheckupView({
                 </p>
                 <p className="why">
                   {age >= 25 && res.signal !== "good"
-                    ? <>지은 지 {age}년이면 배관과 승강기를 갈아야 할 때가 가까워집니다. 그때 쓸 돈을 지금 적게 쌓고 있다면, 공사가 시작될 때 세대마다 목돈을 걷게 될 수 있어요. </>
+                    ? <>지은 지 {age}년이면 배관과 승강기를 갈아야 할 때가 가까워집니다. 그때 쓸 돈을 지금 적게 쌓고 있다면, 공사가 시작될 때 세대마다 목돈을 걷게 될 수 있어요.{age >= 35 && <> 다만 재건축이나 리모델링을 추진하는 단지는 적립을 낮춰 잡기도 합니다. 계획이 있는지는 관리사무소에 확인해 보세요.</>} </>
                     : <>지금 쌓는 속도로 나중에 필요한 공사비를 감당할 수 있는지 함께 보시죠. </>}
                   <a href="/method">어떻게 계산했나</a>
                 </p>

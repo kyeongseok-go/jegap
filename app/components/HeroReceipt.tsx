@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * 히어로 영수증 더미 — 뒤로 구겨진 영수증이 쌓이고, 맨 앞 장에 3D 틸트·취소선·도장.
+ * 책상 위 영수증 한 장 — 은은한 3D 틸트·취소선·도장.
  * 금액은 전부 "?" (수치를 지어내지 않는다는 원칙. 답은 검진표에 있다는 훅)
  */
 const RECEIPTS = {
@@ -58,15 +58,15 @@ export default function HeroReceipt({ domain }: { domain: keyof typeof RECEIPTS 
     return () => clearTimeout(t);
   }, []);
 
-  // 더미 전체가 커서를 따라 기운다 (뒷장은 더 적게 → 깊이감)
+  // 책상에 놓인 종이가 살짝 반응하는 정도로만 기울인다.
   const onMove = (e: React.PointerEvent) => {
     const el = stageRef.current;
-    if (!el || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!el || e.pointerType === "touch" || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const b = el.getBoundingClientRect();
     const px = (e.clientX - b.left) / b.width - 0.5;
     const py = (e.clientY - b.top) / b.height - 0.5;
-    el.style.setProperty("--ry", `${px * 15}deg`);
-    el.style.setProperty("--rx", `${-py * 11}deg`);
+    el.style.setProperty("--ry", `${px * 8}deg`);
+    el.style.setProperty("--rx", `${-py * 6}deg`);
   };
   const onLeave = () => {
     const el = stageRef.current;
