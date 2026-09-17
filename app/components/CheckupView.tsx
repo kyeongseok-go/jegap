@@ -99,6 +99,7 @@ export default function CheckupView({
 
       <main className="wrap" id="main">
         <section className={isHome ? "hero hero-scene" : "hero"} data-scene={isHome ? "apt" : undefined}>
+          {!isHome && <p className="backlink"><a href="/">← 관리비 검진으로</a></p>}
           <p className="eyebrow">
             <span className="pulse" aria-hidden="true"></span>
             {isHome ? "이번 주 검진 사례 · 2,500세대 이상 단지 중 매달 걷는 수선비가 가장 적은 곳" : "단지 검진 결과"}

@@ -19,6 +19,7 @@ export default async function FuneralPage({ params }: { params: Promise<{ id: st
   if (!d) notFound();
   return (
     <PriceCheckup
+      backHref="/f" backLabel="장례비 검진으로"
       d={d} exams={funeralExams(d)} active="fun"
       eyebrow="장례비 검진 결과"
       srcLine="e하늘 장사정보 공시 가격 기준 · 2023년 6월 공시분"

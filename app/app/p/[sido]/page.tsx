@@ -40,6 +40,7 @@ export default async function LivingSidoPage({ params }: { params: Promise<{ sid
       </header>
       <main className="wrap" id="main">
         <section className="hero">
+          <p className="backlink"><a href="/p">← 지역 다시 고르기</a></p>
           <p className="eyebrow"><span className="pulse" aria-hidden="true"></span>생활물가 검진 결과</p>
           <div className="subject">
             <h2>{s.label}</h2>
@@ -96,8 +97,6 @@ export default async function LivingSidoPage({ params }: { params: Promise<{ sid
                 <div className="shop" key={sh.name + sh.addr}>
                   <span className="sn">{sh.name}</span>
                   <span className="sk">{sh.sigungu} · {sh.kind}</span>
-                  {sh.addr && <span className="sk">{sh.addr}</span>}
-                  {sh.addr && <span className="sk">{sh.addr}</span>}
                   {sh.addr && <span className="sk">{sh.addr}</span>}
                   <span className="sm">{sh.menus.slice(0, 2).map(([m, p]) => `${m} ${p.toLocaleString()}원`).join(" · ")}</span>
                 </div>

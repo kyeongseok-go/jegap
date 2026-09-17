@@ -456,3 +456,9 @@ footer .next b{color:var(--signal)}
   .hero-scene .hero-cta .find input{font-size:16px}
   .hero-scene .subject{gap:8px;margin-top:30px}
 }
+
+/* 뒤로 가기 — 상세에서 목록·홈으로 */
+.backlink{margin-bottom:14px;font-size:13.5px}
+.backlink a{color:var(--slate);text-decoration:none;display:inline-flex;align-items:center;gap:6px;
+  min-height:44px;padding:4px 0;touch-action:manipulation}
+.backlink a:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}

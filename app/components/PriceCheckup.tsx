@@ -8,11 +8,13 @@ import { CONTACT } from "../lib/site";
 /** 가격 도메인 공용 검진표 — 병원비·학원비·장례비·원비가 공유 */
 export default function PriceCheckup({
   d, exams, active, eyebrow, srcLine, unitNote, footNote, search, rx, maxRows = 20,
+  backHref, backLabel,
 }: {
   d: OrgData; exams: PriceExam[];
   active: "med" | "aca" | "fun" | "liv";
   eyebrow: string; srcLine: string; unitNote: string; footNote: string;
   search: React.ReactNode; rx?: React.ReactNode; maxRows?: number;
+  backHref: string; backLabel: string;
 }) {
   const labelCounts = new Map<string, number>();
   for (const e of exams) labelCounts.set(e.peerLabel, (labelCounts.get(e.peerLabel) ?? 0) + 1);
@@ -32,6 +34,7 @@ export default function PriceCheckup({
       </header>
       <main className="wrap" id="main">
         <section className="hero">
+          <p className="backlink"><a href={backHref}>← {backLabel}</a></p>
           <p className="eyebrow"><span className="pulse" aria-hidden="true"></span>{eyebrow}</p>
           <div className="subject">
             <h1>{d.h.name}</h1>

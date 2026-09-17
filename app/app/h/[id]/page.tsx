@@ -19,6 +19,7 @@ export default async function HospitalPage({ params }: { params: Promise<{ id: s
   if (!d) notFound();
   return (
     <PriceCheckup
+      backHref="/h" backLabel="병원비 검진으로"
       d={d} exams={priceExams(d)} active="med"
       eyebrow="병원비 검진 결과"
       srcLine="건강보험심사평가원 비급여 공개 가격 기준"

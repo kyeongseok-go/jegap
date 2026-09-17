@@ -7,7 +7,7 @@ import { CONTACT } from "../../lib/site";
 
 export const metadata: Metadata = {
   title: "JEGAP 제값 — 생활물가 검진",
-  description: "우리 지역 냉면값, 얼마나 올랐을까요. 행정안전부가 매월 조사한 지역별 가격과 변화를 확인하세요.",
+  description: "우리 동네 삼겹살값, 얼마나 올랐을까요. 행정안전부가 매월 조사한 지역별 가격과 변화를 확인하세요.",
 };
 
 export default function LivingHome() {
@@ -30,9 +30,9 @@ export default function LivingHome() {
         <section className="hero hero-scene" data-scene="liv">
           <HeroReceipt domain="liv" />
           <p className="eyebrow"><span className="pulse" aria-hidden="true"></span>생활물가편 · 지역별 조사 가격</p>
-          <h1 className="head">우리 지역 냉면값,<br /><span className="hl">얼마나 올랐을까요?</span></h1>
+          <h1 className="head">우리 동네 삼겹살값,<br /><span className="hl">얼마나 올랐을까요?</span></h1>
           <p className="sub">
-            같은 냉면인데 지역마다 값이 다릅니다.
+            같은 삼겹살 1인분인데 지역마다 값이 다릅니다.
             지역을 고르면 <b>조사 가격과 3년간의 변화</b>, 가까운 착한가격업소를 함께 보여드려요.
           </p>
         </section>

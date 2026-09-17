@@ -20,6 +20,7 @@ export default async function AcademyPage({ params }: { params: Promise<{ id: st
   const exams = academyExams(d);
   return (
     <PriceCheckup
+      backHref="/a" backLabel="학원비 검진으로"
       d={d} exams={exams} active="aca"
       eyebrow="학원비 검진 결과"
       srcLine="교육청(NEIS) 공시 교습비 기준"
