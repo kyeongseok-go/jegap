@@ -375,7 +375,7 @@ footer .next b{color:var(--signal)}
 
 /* Category still lifes: clear copy area, real tabletop under the live receipt. */
 .hero-scene{isolation:isolate;--scene-tint:rgba(171,131,73,.06)}
-.hero-scene[data-scene="apt"]{--scene-image:url('/images/heroes/apt-v1.webp')}
+.hero-scene[data-scene="apt"]{--scene-image:url('/images/heroes/apt-v2.webp')}
 .hero-scene[data-scene="med"]{--scene-image:url('/images/heroes/med-v1.webp');--scene-tint:rgba(89,131,136,.07)}
 .hero-scene[data-scene="aca"]{--scene-image:url('/images/heroes/aca-v1.webp');--scene-tint:rgba(183,149,66,.06)}
 .hero-scene[data-scene="fun"]{--scene-image:url('/images/heroes/fun-v1.webp');--scene-tint:rgba(108,91,109,.05)}

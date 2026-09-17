@@ -1,0 +1,7 @@
+# Apartment background v2
+
+Built-in image generation edit, 2026-09-17. Reference: `app/public/images/heroes/apt-v1.webp`. Output: `app/public/images/heroes/apt-v2.webp`, 1536×1024 WebP. Original retained.
+
+## Prompt
+
+Edit this website hero background photograph. Change ONLY the coffee cup and its coaster in the upper right corner into a small elegant ivory architectural scale model of a Korean apartment complex: two slender residential apartment buildings, 10-15 stories, delicate repetitive windows and balcony recesses, matte warm-white plaster, on a very thin neutral base. The model must be recognizable, shot from the same elevated tabletop camera, softly lit from upper left with realistic gentle contact shadows. Keep its entire footprint confined to the far upper-right corner x=83%-100%, y=0%-30%, about the same visual weight as the original cup. Keep both towers' rooflines visible with a little space above, right base may be cropped. Preserve the original pale oak tabletop, subtle paper grain, warm ivory negative space on the whole left 58%, olive leaves, linen notebook at far right, and keys at bottom right. Preserve empty middle-right area x=60%-84%, y=22%-85% for a live HTML receipt overlay. No receipt in the image, no text or numbers or logos, no people. Maintain original 1536x1024 composition and refined photographic realism. Architectural model should be a modest desk object, not a giant building or a cityscape.
