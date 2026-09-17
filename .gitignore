@@ -9,3 +9,6 @@ node_modules/
 
 # 접수용 스크린샷 (재생성 가능)
 artifacts/submission/*.png
+
+# 제출용 캡처 (재생성 가능)
+artifacts/submission-final/*.png
