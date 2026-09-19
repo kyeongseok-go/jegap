@@ -58,10 +58,8 @@
     {
       "id": "T7-real-ingest",
       "title": "실데이터 수집",
-      "status": "blocked",
-      "blockedBy": [
-        "USER-KEYS"
-      ],
+      "status": "todo",
+      "blockedBy": [],
       "spec": "app/.env.local 에 키가 생기면 해제. 공정위·참가격은 DATA_GO_KR_KEY 로 동작하지만 API마다 data.go.kr 활용신청이 필요하다(보유 키로 실호출 시 SERVICE_KEY_IS_NOT_REGISTERED_ERROR 확인함). 오피넷·KAMIS는 별도 키. 매 사이클 시작 시 키 존재를 확인해 생겼으면 status를 todo로 바꾼다. KAMIS는 이번 범위에서 제외(승인 대기). 오피넷 키는 자동승인이라 먼저 들어올 가능성이 높다 — 들어온 도메인부터 순서대로 수집한다."
     },
     {

@@ -96,6 +96,15 @@
   명세로 확정하지 않았다. 인제스트 전에 단위를 반드시 확정할 것(틀리면 1000배 오차).
 - **참가격 `B551919/ProductPriceInfoService`**: 인증 통과(`resultCode 01 "올바른 조사일자가 아닙니다"`).
   **조사일자 파라미터가 필수**다. 기준데이터 오퍼레이션으로 유효 조사일자를 먼저 받아올 것.
+- **오피넷 실호출 성공(키 발급 완료)**. 응답 필드 실물 확인:
+  - `api/avgAllPrice.do?out=json&code=KEY` → `TRADE_DT · PRODCD · PRODNM · PRICE · DIFF`
+    (B027 휘발유, B034 고급휘발유, D047 경유 등). **당일 값만. 시계열 없음.**
+  - `api/lowTop10.do?out=json&code=KEY&area=01&prodcd=B027&cnt=20` → **개별 주유소 단위**
+    `UNI_ID · PRICE · POLL_DIV_CD(상표) · OS_NM(상호) · VAN_ADR(지번) · NEW_ADR(도로명)
+     · GIS_X_COOR · GIS_Y_COOR`
+  - ⚠ 좌표는 **WGS84 위경도가 아니라 KATEC/TM 계열**(x≈298014, y≈547054). 지도에 쓰려면 변환 필요.
+    변환 라이브러리를 새로 넣지 말고, 좌표를 쓰지 않는 설계(주소 표기)로 가는 편이 싸다.
+  - ⚠ 응답 본문에 공백·개행이 다량 섞여 있다. JSON 파싱은 되지만 정규식 처리는 하지 말 것.
 - **오피넷**: 안내 `opinet.co.kr/user/custapi/custApiInfo.do` · 신청 `.../custApiNew.do`
   (기존 설계서의 `infoCustAPI.do` 는 404). 일반 API 19종 자동승인·즉시발급.
   ⚠ **클라이언트 IP 등록·체크**(Key당 최대 3개). **Vercel 서버리스에서 런타임 호출 불가** —
