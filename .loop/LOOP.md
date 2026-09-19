@@ -36,11 +36,36 @@ python3.14 .loop/tick.py            # 정지조건 판정 + 다음 태스크 출
    export PATH="$HOME/.local/node/bin:$PATH"; cd app
    npx tsc --noEmit && npx vitest run && npm run build
    ```
-4. 통과하면 커밋한다(push 안 함). 실패하면 고칠 때까지 같은 태스크에 머문다.
+4. **회귀 관문 — 커밋 전 반드시 통과해야 한다.**
+   ```bash
+   python3.14 .loop/regress.py --check     # exit 0 이어야 커밋 가능
+   ```
+   살아 있는 5개 도메인(`/ /h /a /f /p /method /terms` + 도메인별 상세 1건, 총 11경로)의
+   보이는 텍스트를 기준선과 대조한다. **한 글자라도 다르면 exit 1 과 diff 를 낸다.**
+   - 새 도메인을 붙이는 작업이 기존 화면을 건드렸다면 그건 회귀다. 되돌린다.
+   - **의도한 변경일 때만** `--save` 로 기준선을 갱신하고, **왜 바뀌어야 했는지를
+     커밋 메시지에 쓴다.** 통과시키려고 말없이 `--save` 하는 것은 금지다.
+   - 새 라우트(`/fr /oil /gr`)는 기준선에 없으므로 "신규" 로 보고된다. 그 도메인이
+     완성된 태스크의 끝에서만 `--save` 로 편입한다.
+5. 통과하면 커밋한다(push 안 함). 실패하면 고칠 때까지 같은 태스크에 머문다.
    - 같은 태스크에서 3사이클 연속 실패하면 `state.json` 의 해당 태스크를 `blocked` 로 바꾸고
      `notes` 에 막힌 이유를 적은 뒤 다음 태스크로 넘어간다.
-5. `python3.14 .loop/tick.py --done <task-id> --evidence "<검증 결과 한 줄>"` 로 상태를 갱신한다.
-6. 편집은 **assert 포함 python 스크립트**로 한다(무음 no-op 사고 3회 이력).
+6. `python3.14 .loop/tick.py --done <task-id> --evidence "<검증 결과 한 줄>"` 로 상태를 갱신한다.
+7. 편집은 **assert 포함 python 스크립트**로 한다(무음 no-op 사고 3회 이력).
+
+### 지금 돌아가는 서비스를 깨뜨리지 않는 것이 1순위다
+
+새 도메인 3개를 붙이는 것보다 **기존 5개가 계속 정상인 것**이 중요하다. 심사기간에
+링크가 깨지면 기능이 아무리 많아도 소용없다(헌법 5·6조). 다음을 반드시 지킨다.
+
+- `lib/pricedom/core.ts` 처럼 **5개 도메인이 공유하는 파일을 고칠 때는** 고치기 전에
+  왜 공유 파일을 건드려야 하는지 한 줄로 적고, 고친 뒤 회귀 관문을 돌린다.
+  가능하면 공유 파일을 건드리지 말고 **새 파일로 확장**한다.
+- `app/data/` 의 기존 `.json.gz` 5개는 **절대 손대지 않는다.** 새 도메인은 새 파일로.
+- 픽스처·합성 데이터가 `app/data/` 나 프로덕션 번들에 들어가면 안 된다.
+- 전역 CSS는 **새 선택자만 추가**한다. 기존 선택자의 속성을 바꾸면 5개 도메인이 같이 움직인다.
+- `next.config.ts`(보안 헤더)·`middleware`·`robots`·`sitemap` 은 기존 항목을 유지한 채 추가만 한다.
+- 의심스러우면 **하지 않는다.** 판단이 갈리면 그 항목을 `GATE.md` 에 적어 사용자에게 넘긴다.
 
 ## 3. 정지 조건 — 하나라도 걸리면 즉시 중단
 
@@ -95,7 +120,8 @@ echo "usage-limit-warning $(date -Iseconds)" > .loop/STOP
    - 표본 미달 항목이 순위·하이라이트에 뜨지 않음
    - 기준 시점이 화면에 표기됨
 8. 픽스처(합성) 데이터가 프로덕션 번들·`app/data/` 에 섞이지 않음
-9. 기존 5개 도메인 회귀 없음 — `/`, `/h`, `/a`, `/f`, `/p` 200 + 스냅샷 대조
+9. **기존 5개 도메인 회귀 없음** — `python3.14 .loop/regress.py --check` 가 exit 0.
+   이 항목은 다른 8개가 다 통과해도 단독으로 태스크를 실패시킨다.
 
 ## 6. Codex 교차검증 (마지막, 여유 있을 때만)
 
@@ -111,6 +137,7 @@ echo "usage-limit-warning $(date -Iseconds)" > .loop/STOP
 - Node: `export PATH="$HOME/.local/node/bin:$PATH"`
 - Python: **`python3.14`** (openpyxl·websocket-client 설치돼 있음). `SSL_CERT_FILE=/etc/ssl/cert.pem` 필요.
 - 로컬 확인: `cd app && npx next start -p 4000` (점유 시 `lsof -ti:4000 | xargs kill -9`)
+- 회귀 관문: `.loop/regress.py --check` (기준선 `.loop/baseline/`, 갱신은 `--save`)
 - CDP 캡처·측정 스크립트: `.loop/cdp.py` (인자: url width out.png). 출력의 `over:[]` 와 `mq` 를 본다.
 - git author 는 `kugll9606@naver.com` 이어야 한다(Vercel 계정 일치).
 
