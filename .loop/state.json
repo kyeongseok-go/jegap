@@ -2,7 +2,7 @@
   "branch": "feat/domains-6-9",
   "startedAt": "2026-09-20T02:20:00+09:00",
   "stopAtLocal": "2026-09-20T08:30:00+09:00",
-  "cycles": 3,
+  "cycles": 4,
   "maxCycles": 20,
   "consecutiveFailures": {},
   "tasks": [
@@ -129,6 +129,12 @@
       "kind": "done",
       "task": "T3-fixtures",
       "msg": "makeDomain 계약 3종 확정(오피넷은 시군구 평균으로 결정 — 개별 주유소 API는 최저가 편향) · 상세라우트+OG 3종 · vitest 48 · 돌연변이 2건 검증 · data/ 유출 픽스처 제거 + 영구 가드 · 회귀관문 14경로 exit 0"
+    },
+    {
+      "at": "2026-09-20T04:19:43+09:00",
+      "kind": "pick",
+      "task": "T4-ingest-specs",
+      "msg": "cycle 4"
     }
   ],
   "scope": "마감 2026-09-20 23:59 기준 대상은 3개 — franchise(공정위)·grocery(참가격)·fuel(오피넷). KAMIS(agriculture)는 승인 결재 대기로 기한 내 불가 → 마감 후로 미룬다. 배경 이미지 agriculture-v1.png 는 보관만 하고 적용하지 않는다."

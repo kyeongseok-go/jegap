@@ -110,6 +110,22 @@
   ⚠ **클라이언트 IP 등록·체크**(Key당 최대 3개). **Vercel 서버리스에서 런타임 호출 불가** —
   로컬 배치 수집 + 리포 번들 캐시 구조로만 설계할 것.
 
+#### Swagger 추출로 확정한 명세 (2026-09-20)
+
+data.go.kr 의 API 상세 페이지 HTML 에 **Swagger JSON 전문이 `const swaggerJson = \`...\`` 로 박혀 있다.**
+정규식으로 뽑으면 파라미터·응답 필드를 전부 확인할 수 있다. 앞으로 새 API 는 이 방법으로 먼저 확인할 것.
+
+- **참가격** `apis.data.go.kr/B551919/ProductPriceInfoService` — 오퍼레이션 4종.
+  `/getProductPriceInfoSvc` (키 파라미터 **소문자 `serviceKey`**, `goodInspectDay` 필수, `entpId|goodId` 택1) ·
+  `/getStoreInfoSvc.do` · `/getProductInfoSvc.do` · `/getStandardInfoSvc.do` (이 셋은 **대문자 `ServiceKey`**).
+  ⚠ `.do` 접미사와 키 파라미터 대소문자가 오퍼레이션마다 다르다.
+  조사 주기는 문서상 '매주 금요일'이나 **실측은 격주**(20260911 O / 20260918·20260904 X).
+- **공정위** `/getBrandFntnStats` — `yr` 필수. **금액 단위는 Swagger 설명에도 없다**(확인 완료).
+  인제스트에 `AMT_UNIT_WON=1000` 가정 + 합계 중앙값이 1천만~3억원 밖이면 거부하는 게이트를 넣었다.
+  이건 명세 확인이 아니라 범위 타당성 추론이다 — 배포 전 사용자 확인 필요.
+- **오피넷** `avgSigunPrice.do?sido=NN&prodcd=XXX` (파라미터가 `area=` 가 아니라 `sido=`).
+  개별 주유소 `aroundAll.do` 는 반경 전수(5km 69곳 실측)지만 TM 좌표 격자가 필요.
+
 선정 기준(헌법): ① 불투명 ② 개인이 협상 불가 ③ 물어볼 권리가 법에 있음 ④ 정부 데이터 존재. ③을 충족하면 대필(질의서) 기능이 성립하므로 **FairData 우선**.
 
 착수 전 필수: 이용허락 조건(공공누리 유형)·일일 호출 한도·상업적 이용 제한을 **원문으로 확인**하고 `/terms`의 출처표에 추가.
