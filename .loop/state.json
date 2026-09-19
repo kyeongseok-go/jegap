@@ -2,7 +2,7 @@
   "branch": "feat/domains-6-9",
   "startedAt": "2026-09-20T02:20:00+09:00",
   "stopAtLocal": "2026-09-20T08:30:00+09:00",
-  "cycles": 0,
+  "cycles": 1,
   "maxCycles": 20,
   "consecutiveFailures": {},
   "tasks": [
@@ -90,6 +90,13 @@
       "spec": "KAMIS 승인이 나면 착수. 조사 결과는 HANDOFF.md STEP 3 참조. 배경은 artifacts/category-backgrounds/agriculture-v1.png. 마감(09-20 23:59) 이후 작업이므로 서두르지 않는다."
     }
   ],
-  "log": [],
+  "log": [
+    {
+      "at": "2026-09-20T02:49:39+09:00",
+      "kind": "pick",
+      "task": "T1-skeleton",
+      "msg": "cycle 1"
+    }
+  ],
   "scope": "마감 2026-09-20 23:59 기준 대상은 3개 — franchise(공정위)·grocery(참가격)·fuel(오피넷). KAMIS(agriculture)는 승인 결재 대기로 기한 내 불가 → 마감 후로 미룬다. 배경 이미지 agriculture-v1.png 는 보관만 하고 적용하지 않는다."
 }
