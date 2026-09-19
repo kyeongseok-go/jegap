@@ -17,9 +17,10 @@
     {
       "id": "T2-backgrounds",
       "title": "카테고리 히어로 배경 4종 적용",
-      "status": "todo",
+      "status": "done",
       "blockedBy": [],
-      "spec": "artifacts/category-backgrounds/{franchise,fuel,grocery}-v1.png 를 기존 apt-v2.webp 와 같은 방식으로 webp 변환(장당 180KB 이하 목표)해 app/public/images/heroes/ 에 넣고, globals.css 의 .hero-scene[data-scene=...] 규칙을 3개 추가한다. 원본은 좌측 52%가 비어 있는 구도다 — 제목·검색창이 소품을 가리지 않는지 390px와 1280px에서 CDP로 확인한다. 장식용 이미지이며 실제 가격·기관 로고가 아님을 alt 또는 aria-hidden으로 처리."
+      "spec": "artifacts/category-backgrounds/{franchise,fuel,grocery}-v1.png 를 기존 apt-v2.webp 와 같은 방식으로 webp 변환(장당 180KB 이하 목표)해 app/public/images/heroes/ 에 넣고, globals.css 의 .hero-scene[data-scene=...] 규칙을 3개 추가한다. 원본은 좌측 52%가 비어 있는 구도다 — 제목·검색창이 소품을 가리지 않는지 390px와 1280px에서 CDP로 확인한다. 장식용 이미지이며 실제 가격·기관 로고가 아님을 alt 또는 aria-hidden으로 처리.",
+      "evidence": "webp 3종 78~96KB(기존 규격 일치) · CSS 3줄 추가 0줄 삭제 · CDP 6건 over:[] · 회귀관문 exit 0 · agriculture는 범위 밖"
     },
     {
       "id": "T3-fixtures",
@@ -109,6 +110,12 @@
       "kind": "pick",
       "task": "T2-backgrounds",
       "msg": "cycle 2"
+    },
+    {
+      "at": "2026-09-20T03:22:23+09:00",
+      "kind": "done",
+      "task": "T2-backgrounds",
+      "msg": "webp 3종 78~96KB(기존 규격 일치) · CSS 3줄 추가 0줄 삭제 · CDP 6건 over:[] · 회귀관문 exit 0 · agriculture는 범위 밖"
     }
   ],
   "scope": "마감 2026-09-20 23:59 기준 대상은 3개 — franchise(공정위)·grocery(참가격)·fuel(오피넷). KAMIS(agriculture)는 승인 결재 대기로 기한 내 불가 → 마감 후로 미룬다. 배경 이미지 agriculture-v1.png 는 보관만 하고 적용하지 않는다."
