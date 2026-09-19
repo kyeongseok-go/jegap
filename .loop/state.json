@@ -9,9 +9,10 @@
     {
       "id": "T1-skeleton",
       "title": "6~9호 도메인 공통 뼈대",
-      "status": "todo",
+      "status": "done",
       "blockedBy": [],
-      "spec": "pricedom 확장 계약 위에 3개 도메인 자리를 만든다. DomainTabs에 프랜차이즈·주유소·생필품 추가, 라우트 /fr /oil /gr (목록+상세). /ag 는 만들지 않는다, 검색 API 3종, opengraph-image, sitemap, robots. 데이터가 없으면 ready()가 false라 목록 페이지는 '준비 중' 상태로 정상 렌더되어야 한다(500 금지). 기존 5개 도메인 회귀 없을 것."
+      "spec": "pricedom 확장 계약 위에 3개 도메인 자리를 만든다. DomainTabs에 프랜차이즈·주유소·생필품 추가, 라우트 /fr /oil /gr (목록+상세). /ag 는 만들지 않는다, 검색 API 3종, opengraph-image, sitemap, robots. 데이터가 없으면 ready()가 false라 목록 페이지는 '준비 중' 상태로 정상 렌더되어야 한다(500 금지). 기존 5개 도메인 회귀 없을 것.",
+      "evidence": "tsc 0 · vitest 37 · build 성공 · 신규 3경로+API 3종+sitemap 200 · 회귀관문 exit 0(기존 11경로 불변) · CDP 390/1280 6건 over:[] · 상세라우트와 OG는 T3로 이관"
     },
     {
       "id": "T2-backgrounds",
@@ -25,7 +26,7 @@
       "title": "픽스처 기반 어댑터·화면·테스트 (실데이터 없이 완성)",
       "status": "todo",
       "blockedBy": [],
-      "spec": "3개 도메인 각각의 데이터 계약을 먼저 정하고(pricedom Record_ 와 동일한 [code,label,price,rankable] 또는 도메인 고유 형태), 합성 픽스처로 어댑터·검진 화면·소견 문장·테스트를 끝까지 완성한다. 픽스처는 app/tests/fixtures/ 아래 두고 프로덕션 번들에 섞이지 않게 한다. 도메인별 최소 3개 테스트: 표본 오염 없음 / 표본 미달 시 순위 미산출 / 단위·조건 불일치 처리. 주의: 프랜차이즈 금액은 '편차 5% 범위값'이라 단일 값이 아니다 — 범위를 범위로 표시하고 배수를 내지 않는 설계를 검토할 것."
+      "spec": "3개 도메인 각각의 데이터 계약을 먼저 정하고(pricedom Record_ 와 동일한 [code,label,price,rankable] 또는 도메인 고유 형태), 합성 픽스처로 어댑터·검진 화면·소견 문장·테스트를 끝까지 완성한다. 픽스처는 app/tests/fixtures/ 아래 두고 프로덕션 번들에 섞이지 않게 한다. 도메인별 최소 3개 테스트: 표본 오염 없음 / 표본 미달 시 순위 미산출 / 단위·조건 불일치 처리. 주의: 프랜차이즈 금액은 '편차 5% 범위값'이라 단일 값이 아니다 — 범위를 범위로 표시하고 배수를 내지 않는 설계를 검토할 것. 추가(T1에서 이관): 상세 라우트 /fr/[id] /oil/[id] /gr/[id] 와 opengraph-image 도 여기서 만든다 — 데이터 계약이 없는 상태에서 만들면 다시 쓰게 되므로 T1에서 미뤘다. 만든 뒤 .loop/regress.py --save 로 신규 경로를 기준선에 편입하고, 왜 편입했는지 커밋 메시지에 쓴다."
     },
     {
       "id": "T4-ingest-specs",
@@ -96,6 +97,12 @@
       "kind": "pick",
       "task": "T1-skeleton",
       "msg": "cycle 1"
+    },
+    {
+      "at": "2026-09-20T02:53:45+09:00",
+      "kind": "done",
+      "task": "T1-skeleton",
+      "msg": "tsc 0 · vitest 37 · build 성공 · 신규 3경로+API 3종+sitemap 200 · 회귀관문 exit 0(기존 11경로 불변) · CDP 390/1280 6건 over:[] · 상세라우트와 OG는 T3로 이관"
     }
   ],
   "scope": "마감 2026-09-20 23:59 기준 대상은 3개 — franchise(공정위)·grocery(참가격)·fuel(오피넷). KAMIS(agriculture)는 승인 결재 대기로 기한 내 불가 → 마감 후로 미룬다. 배경 이미지 agriculture-v1.png 는 보관만 하고 적용하지 않는다."
