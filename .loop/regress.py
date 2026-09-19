@@ -17,7 +17,8 @@ MAN = os.path.join(BASE, "_manifest.json")
 PORT = 4000
 ORIGIN = f"http://localhost:{PORT}"
 
-STATIC = ["/", "/h", "/a", "/f", "/p", "/method", "/terms", "/p/서울"]
+STATIC = ["/", "/h", "/a", "/f", "/p", "/method", "/terms", "/p/서울",
+          "/fr", "/oil", "/gr"]   # 신규 3종도 이제 감시 대상
 # 도메인별 상세 1건 — 검색 API로 대표 id를 뽑아 manifest에 고정한다
 PROBES = [("/h", "/api/hsearch", "서울"), ("/a", "/api/asearch", "수학"), ("/f", "/api/fsearch", "서울")]
 

@@ -2,7 +2,7 @@
   "branch": "feat/domains-6-9",
   "startedAt": "2026-09-20T02:20:00+09:00",
   "stopAtLocal": "2026-09-20T08:30:00+09:00",
-  "cycles": 2,
+  "cycles": 3,
   "maxCycles": 20,
   "consecutiveFailures": {},
   "tasks": [
@@ -116,6 +116,12 @@
       "kind": "done",
       "task": "T2-backgrounds",
       "msg": "webp 3종 78~96KB(기존 규격 일치) · CSS 3줄 추가 0줄 삭제 · CDP 6건 over:[] · 회귀관문 exit 0 · agriculture는 범위 밖"
+    },
+    {
+      "at": "2026-09-20T03:49:41+09:00",
+      "kind": "pick",
+      "task": "T3-fixtures",
+      "msg": "cycle 3"
     }
   ],
   "scope": "마감 2026-09-20 23:59 기준 대상은 3개 — franchise(공정위)·grocery(참가격)·fuel(오피넷). KAMIS(agriculture)는 승인 결재 대기로 기한 내 불가 → 마감 후로 미룬다. 배경 이미지 agriculture-v1.png 는 보관만 하고 적용하지 않는다."

@@ -1,6 +1,6 @@
 import type { OrgData, PriceExam, PriceNote } from "../lib/pricedom/core";
 import { priceOpinion } from "../lib/pricedom/opinion";
-import DomainTabs from "./DomainTabs";
+import DomainTabs, { type DomainKey } from "./DomainTabs";
 import ExamTable from "./ExamTable";
 import Reveal from "./Reveal";
 import { CONTACT } from "../lib/site";
@@ -11,7 +11,7 @@ export default function PriceCheckup({
   backHref, backLabel,
 }: {
   d: OrgData; exams: PriceExam[]; notes?: PriceNote[];
-  active: "med" | "aca" | "fun" | "liv";
+  active: DomainKey;
   eyebrow: string; srcLine: string; unitNote: string; footNote: string;
   search: React.ReactNode; rx?: React.ReactNode; maxRows?: number;
   backHref: string; backLabel: string;
@@ -38,7 +38,7 @@ export default function PriceCheckup({
           <p className="eyebrow"><span className="pulse" aria-hidden="true"></span>{eyebrow}</p>
           <div className="subject">
             <h1>{d.h.name}</h1>
-            <span className="meta">{d.h.sido} {d.h.sigungu} · {d.h.kind}</span>
+            <span className="meta">{[[d.h.sido, d.h.sigungu].filter(Boolean).join(" "), d.h.kind].filter(Boolean).join(" · ")}</span>
             <span className="src">{srcLine}</span>
           </div>
         </section>
