@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PriceCheckup from "../../../components/PriceCheckup";
 import PriceSearch from "../../../components/PriceSearch";
-import { academyReady, getAcademy, academyExams } from "../../../lib/academy";
+import { academyReady, getAcademy, academyExams, academyNotes } from "../../../lib/academy";
 import RxSimple from "../../../components/RxSimple";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
@@ -21,10 +21,10 @@ export default async function AcademyPage({ params }: { params: Promise<{ id: st
   return (
     <PriceCheckup
       backHref="/a" backLabel="학원비 검진으로"
-      d={d} exams={exams} active="aca"
+      d={d} exams={exams} notes={academyNotes(d)} active="aca"
       eyebrow="학원비 검진 결과"
       srcLine="교육청(NEIS) 공시 교습비 기준"
-      unitNote="공시된 인당 교습비만으로 작성했습니다. 수업 시간·횟수·정원 등 구성은 반영되어 있지 않으며,"
+      unitNote="공시된 인당 교습비만으로 작성했습니다. 교습 시간·횟수는 NEIS 공시에 별도 항목이 없어, 학원이 과목 표기에 직접 적어둔 경우에만 구분됩니다. 같은 표기끼리만 비교하며,"
       footNote="이 표는 학원에 대한 평가나 추천이 아닙니다. 신고 금액 초과 징수는 학원법 위반으로 교육청에 신고할 수 있습니다."
       search={<PriceSearch endpoint="/api/asearch" hrefBase="/a" cta="교습비 확인"
         placeholder="학원 이름 검색" label="학원 이름 검색" />}

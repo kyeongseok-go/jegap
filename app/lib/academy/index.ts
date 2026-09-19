@@ -18,4 +18,5 @@ const dom = makeDomain({
 export const academyReady = dom.ready;
 export const searchAcademies = dom.search;
 export const getAcademy = dom.get;
-export const academyExams = dom.exams;
+export const academyExams = (d: Parameters<typeof dom.exams>[0]) => dom.exams(d);
+export const academyNotes = (d: Parameters<typeof dom.notes>[0]) => dom.notes(d);

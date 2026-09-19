@@ -28,11 +28,14 @@ for fname, dom, href, peerkey in [
     orgs = load(fname)
     peers = defaultdict(list)
     for o in orgs:
-        for c, n, p in o["items"]: peers[peerkey(o, c)].append(p)
+        for it in o["items"]:
+            if len(it) > 3 and it[3] == 0: continue   # 조건 상이 — 표본에서 제외
+            peers[peerkey(o, it[0])].append(it[2])
     best = None
     core = CORE[fname]
     for o in orgs:
-        for c, n, p in o["items"]:
+        for c, n, p, *rest in o["items"]:
+            if rest and rest[0] == 0: continue
             if not core(n): continue
             arr = peers[peerkey(o, c)]
             if len(arr) < 30: continue

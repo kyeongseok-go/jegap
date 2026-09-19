@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PriceCheckup from "../../../components/PriceCheckup";
 import PriceSearch from "../../../components/PriceSearch";
-import { hiraReady, getHospital, priceExams } from "../../../lib/medical/hira";
+import { hiraReady, getHospital, priceExams, priceNotes } from "../../../lib/medical/hira";
 import RxSimple from "../../../components/RxSimple";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
@@ -20,7 +20,7 @@ export default async function HospitalPage({ params }: { params: Promise<{ id: s
   return (
     <PriceCheckup
       backHref="/h" backLabel="병원비 검진으로"
-      d={d} exams={priceExams(d)} active="med"
+      d={d} exams={priceExams(d)} notes={priceNotes(d)} active="med"
       eyebrow="병원비 검진 결과"
       srcLine="건강보험심사평가원 비급여 공개 가격 기준"
       unitNote="공개된 가격만으로 작성했습니다. 진료의 질·범위·구성은 반영되어 있지 않으며,"

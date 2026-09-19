@@ -1,4 +1,8 @@
 import { describe, it, expect } from "vitest";
+import { writeFileSync, rmSync } from "node:fs";
+import { gzipSync } from "node:zlib";
+import { join as joinPath } from "node:path";
+import { makeDomain } from "../lib/pricedom/core";
 import { percentileBelow, totalRisePct, riseMultiple } from "../lib/engine/stats";
 import { householdBand, findPeers, peerRuleText } from "../lib/engine/peers";
 import { reserveSignal, feeRiseSignal, repairSignal, overallSignal } from "../lib/engine/signals";
@@ -219,5 +223,59 @@ describe("runCheckup 통합", () => {
     const lonely = runCheckup(me, [me]);
     expect(lonely.exams.length).toBe(0);
     expect(lonely.overall).toBe("good");
+  });
+});
+
+// ── 가격 도메인 비교 가능성 게이트 (STEP 1) ───────────────────────────────
+// 공시 조건이 다른 값(rankable=0)이 배수·순위에 섞이지 않고, 표본이 모자란 항목은
+// 사라지는 대신 "공시가격 참고"로 남는지. 장례 '안치료 1일 vs 시간당' 오염이 원본 사고.
+describe("makeDomain 비교 가능성 게이트", () => {
+  const FILE = "__dom_test.json.gz";
+  const path = joinPath(process.cwd(), "data", FILE);
+  const rows = [
+    // 정상 표본 40곳 — 같은 조건(rankable=1), 10만원
+    ...Array.from({ length: 40 }, (_, i) => ({
+      id: `n${i}`, name: `정상${i}`, sido: "서울", sigungu: "강남구", kind: "x",
+      items: [["A", "항목A", 100000, 1]] as Array<[string, string, number, number]>,
+    })),
+    // 조건이 다른 값 40곳 — 시간당 요금처럼 자릿수가 다르다. 표본에 섞이면 중앙값이 무너진다.
+    ...Array.from({ length: 40 }, (_, i) => ({
+      id: `u${i}`, name: `조건상이${i}`, sido: "서울", sigungu: "강남구", kind: "x",
+      items: [["A", "항목A", 3000, 0]] as Array<[string, string, number, number]>,
+    })),
+    // 표본이 5곳뿐인 항목
+    ...Array.from({ length: 5 }, (_, i) => ({
+      id: `s${i}`, name: `희소${i}`, sido: "서울", sigungu: "강남구", kind: "x",
+      items: [["C", "항목C", 50000, 1]] as Array<[string, string, number, number]>,
+    })),
+    {
+      id: "me", name: "검진대상", sido: "서울", sigungu: "강남구", kind: "x",
+      items: [["A", "항목A", 120000, 1], ["B", "항목B", 7000, 0], ["C", "항목C", 50000, 1]] as Array<
+        [string, string, number, number]>,
+    },
+  ];
+  writeFileSync(path, gzipSync(Buffer.from(JSON.stringify(rows), "utf-8")));
+  const dom = makeDomain({
+    file: FILE, minPeers: 30,
+    peerKeys: [{ key: (o, code) => `${code}|${o.sido}`, label: (o) => `${o.sido} 기준` }],
+  });
+  const me = dom.get("me")!;
+  const { exams, notes } = dom.split(me);
+  rmSync(path);
+
+  it("조건이 다른 값은 표본을 오염시키지 않는다", () => {
+    const a = exams.find((e) => e.code === "A")!;
+    expect(a).toBeTruthy();
+    expect(a.median).toBe(100000);       // 3,000원 40곳이 섞였다면 중앙값이 무너진다
+    expect(a.peerCount).toBe(40);
+    expect(a.multiple).toBe(1.2);
+  });
+  it("조건이 다른 항목은 순위 대신 공시가격 참고로 남는다", () => {
+    expect(exams.some((e) => e.code === "B")).toBe(false);
+    expect(notes.find((n) => n.code === "B")?.reason).toBe("unit");
+  });
+  it("표본이 모자란 항목은 사라지지 않고 표본 부족으로 표시된다", () => {
+    expect(exams.some((e) => e.code === "C")).toBe(false);
+    expect(notes.find((n) => n.code === "C")?.reason).toBe("sample");
   });
 });

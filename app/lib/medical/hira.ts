@@ -19,4 +19,5 @@ export type { PriceExam };
 export const hiraReady = dom.ready;
 export const searchHospitals = dom.search;
 export const getHospital = dom.get;
-export const priceExams = dom.exams;
+export const priceExams = (d: Parameters<typeof dom.exams>[0]) => dom.exams(d);
+export const priceNotes = (d: Parameters<typeof dom.notes>[0]) => dom.notes(d);

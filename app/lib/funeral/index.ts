@@ -17,4 +17,5 @@ const dom = makeDomain({
 export const funeralReady = dom.ready;
 export const searchFunerals = dom.search;
 export const getFuneral = dom.get;
-export const funeralExams = dom.exams;
+export const funeralExams = (d: Parameters<typeof dom.exams>[0]) => dom.exams(d);
+export const funeralNotes = (d: Parameters<typeof dom.notes>[0]) => dom.notes(d);

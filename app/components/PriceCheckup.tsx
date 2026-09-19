@@ -1,4 +1,4 @@
-import type { OrgData, PriceExam } from "../lib/pricedom/core";
+import type { OrgData, PriceExam, PriceNote } from "../lib/pricedom/core";
 import { priceOpinion } from "../lib/pricedom/opinion";
 import DomainTabs from "./DomainTabs";
 import ExamTable from "./ExamTable";
@@ -7,10 +7,10 @@ import { CONTACT } from "../lib/site";
 
 /** 가격 도메인 공용 검진표 — 병원비·학원비·장례비·원비가 공유 */
 export default function PriceCheckup({
-  d, exams, active, eyebrow, srcLine, unitNote, footNote, search, rx, maxRows = 20,
+  d, exams, notes = [], active, eyebrow, srcLine, unitNote, footNote, search, rx, maxRows = 20,
   backHref, backLabel,
 }: {
-  d: OrgData; exams: PriceExam[];
+  d: OrgData; exams: PriceExam[]; notes?: PriceNote[];
   active: "med" | "aca" | "fun" | "liv";
   eyebrow: string; srcLine: string; unitNote: string; footNote: string;
   search: React.ReactNode; rx?: React.ReactNode; maxRows?: number;
@@ -59,6 +59,27 @@ export default function PriceCheckup({
             </div>
             <p className="hfoot">{unitNote} {footNote}</p>
           </Reveal>
+        )}
+        {notes.length > 0 && (
+          <details className="pnotes">
+            <summary>
+              공시가격 참고 <b>{notes.length}</b>개 — 순위를 내지 않은 항목
+            </summary>
+            <p className="fine">
+              공시된 조건이 서로 달라 같은 값으로 볼 수 없거나, 같은 조건의 비교 대상이
+              {" "}{/* minPeers */}30곳에 못 미치는 항목입니다. 가격만 그대로 옮겨 적습니다.
+            </p>
+            <div className="nlist">
+              {notes.slice(0, 60).map((n) => (
+                <span className="nrow" key={n.code}>
+                  <i>{n.name}</i>
+                  <b>{n.price.toLocaleString()}원</b>
+                  <em>{n.reason === "unit" ? "조건 상이" : "표본 부족"}</em>
+                </span>
+              ))}
+            </div>
+            {notes.length > 60 && <p className="fine">많은 항목 60개까지 표시했습니다.</p>}
+          </details>
         )}
         {rx}
         <footer>

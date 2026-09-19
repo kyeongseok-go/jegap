@@ -12,7 +12,15 @@ import { percentileBelow, median as medianOf } from "../engine/stats";
 export interface Org {
   id: string; name: string; sido: string; sigungu: string; kind: string;
 }
-export interface OrgData { h: Org; items: Array<{ code: string; name: string; price: number }>; }
+export interface OrgData {
+  h: Org;
+  items: Array<{ code: string; name: string; price: number; rankable: boolean }>;
+}
+/** 순위를 내지 못한 항목 — 공시가격만 참고로 보여준다. */
+export interface PriceNote {
+  code: string; name: string; price: number;
+  reason: "unit" | "sample";   // unit: 공시 조건(단위·수량)이 달라 비교 불가 / sample: 비교 표본 부족
+}
 export interface PriceExam {
   code: string; name: string; price: number;
   peerCount: number; percentile: number; median: number; multiple: number;
@@ -21,7 +29,8 @@ export interface PriceExam {
 
 interface Record_ {
   id: string; name: string; sido: string; sigungu: string; kind: string;
-  items: Array<[string, string, number]>;
+  /** [code, label, price] 또는 [code, label, price, rankable(1|0)] — 4번째는 인제스트가 붙인다 */
+  items: Array<[string, string, number] | [string, string, number, number]>;
 }
 
 export interface DomainConfig {
@@ -43,18 +52,20 @@ export function makeDomain(cfg: DomainConfig) {
     const raw: Record_[] = JSON.parse(gunzipSync(readFileSync(path)).toString("utf-8"));
     const all: OrgData[] = raw.map((r) => ({
       h: { id: r.id, name: r.name, sido: r.sido, sigungu: r.sigungu, kind: r.kind },
-      items: r.items.map(([code, name, price]) => ({ code, name, price })),
+      items: r.items.map((t) => ({ code: t[0], name: t[1], price: t[2], rankable: t[3] !== 0 })),
     }));
     const byId = new Map(all.map((d) => [d.h.id, d]));
     const peers = cfg.peerKeys.map(() => new Map<string, number[]>());
     for (const d of all)
-      for (const it of d.items)
+      for (const it of d.items) {
+        if (!it.rankable) continue;          // 조건이 다른 값은 표본에도 넣지 않는다
         cfg.peerKeys.forEach((pk, i) => {
           const k = pk.key(d.h, it.code);
           const arr = peers[i].get(k) ?? [];
           arr.push(it.price);
           peers[i].set(k, arr);
         });
+      }
     cache = { all, byId, peers };
     return cache;
   }
@@ -67,21 +78,32 @@ export function makeDomain(cfg: DomainConfig) {
       return load().all.filter((d) => d.h.name.includes(t)).slice(0, 8).map((d) => d.h);
     },
     get: (id: string) => load().byId.get(id) ?? null,
-    exams(d: OrgData): PriceExam[] {
+    /**
+     * 항목을 세 갈래로 나눈다.
+     *  - exams: 비교 조건이 같고 표본이 충분해 위치·배수를 낼 수 있는 항목
+     *  - notes: 공시가격만 보여줄 항목 (조건 상이 or 표본 부족)
+     *  - 버림: 중간값이 너무 작거나(단위 해석이 갈림) 50배 밖(공시 입력 오류 가능) — 무소음
+     */
+    split(d: OrgData): { exams: PriceExam[]; notes: PriceNote[] } {
       const { peers } = load();
-      const out: PriceExam[] = [];
+      const exams: PriceExam[] = [];
+      const notes: PriceNote[] = [];
       for (const it of d.items) {
+        if (!it.rankable) {                                  // 인제스트가 조건 상이로 표시한 항목
+          notes.push({ code: it.code, name: it.name, price: it.price, reason: "unit" });
+          continue;
+        }
         // 완화 사다리: 표본이 충분한 가장 좁은 규칙
         let arr: number[] | undefined, label = "";
         for (let i = 0; i < cfg.peerKeys.length; i++) {
           const a = peers[i].get(cfg.peerKeys[i].key(d.h, it.code));
           if (a && a.length >= cfg.minPeers) { arr = a; label = cfg.peerKeys[i].label(d.h); break; }
         }
-        if (!arr) continue;                                  // 무소음
+        if (!arr) { notes.push({ code: it.code, name: it.name, price: it.price, reason: "sample" }); continue; }
         // 자기 가격 1개는 표본에서 제외 (관리비편 findPeers와 기준 통일)
         const selfIdx = arr.indexOf(it.price);
         const peersArr = selfIdx >= 0 ? [...arr.slice(0, selfIdx), ...arr.slice(selfIdx + 1)] : arr;
-        if (peersArr.length < cfg.minPeers) continue;
+        if (peersArr.length < cfg.minPeers) { notes.push({ code: it.code, name: it.name, price: it.price, reason: "sample" }); continue; }
         const pctBelow = percentileBelow(it.price, peersArr);
         if (pctBelow === null) continue;
         const median = medianOf(peersArr)!;
@@ -90,14 +112,18 @@ export function makeDomain(cfg: DomainConfig) {
         if (median < 1000) continue;
         const m = it.price / median;
         if (m > 50 || m < 1 / 50) continue;
-        out.push({
+        exams.push({
           code: it.code, name: it.name, price: it.price,
           peerCount: peersArr.length, percentile: 100 - pctBelow, median: Math.round(median),
           multiple: Math.round((it.price / median) * 10) / 10,
           peerLabel: label,
         });
       }
-      return out.sort((a, b) => b.multiple - a.multiple);
+      exams.sort((a, b) => b.multiple - a.multiple);
+      notes.sort((a, b) => b.price - a.price);
+      return { exams, notes };
     },
+    exams(d: OrgData): PriceExam[] { return this.split(d).exams; },
+    notes(d: OrgData): PriceNote[] { return this.split(d).notes; },
   };
 }
