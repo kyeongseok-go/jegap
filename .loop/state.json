@@ -2,7 +2,7 @@
   "branch": "feat/domains-6-9",
   "startedAt": "2026-09-20T02:20:00+09:00",
   "stopAtLocal": "2026-09-20T08:30:00+09:00",
-  "cycles": 4,
+  "cycles": 5,
   "maxCycles": 20,
   "consecutiveFailures": {},
   "tasks": [
@@ -142,6 +142,12 @@
       "kind": "done",
       "task": "T4-ingest-specs",
       "msg": "인제스트 3종 드라이런 통과 · Swagger 추출로 참가격 오퍼레이션 4종 확정(.do 접미사, 키 대소문자 차이) · 공정위 단위는 명세에 없어 범위 게이트로 방어 · 참가격 격주 조사 실측 · 키 마스킹 버그 수정"
+    },
+    {
+      "at": "2026-09-20T04:49:38+09:00",
+      "kind": "pick",
+      "task": "T5-holdovers",
+      "msg": "cycle 5"
     }
   ],
   "scope": "마감 2026-09-20 23:59 기준 대상은 3개 — franchise(공정위)·grocery(참가격)·fuel(오피넷). KAMIS(agriculture)는 승인 결재 대기로 기한 내 불가 → 마감 후로 미룬다. 배경 이미지 agriculture-v1.png 는 보관만 하고 적용하지 않는다."

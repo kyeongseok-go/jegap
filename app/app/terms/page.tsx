@@ -7,6 +7,20 @@ export const metadata: Metadata = {
   description: "JEGAP이 무엇을 수집하지 않는지, 이 검진을 어떻게 읽어야 하는지, 데이터는 어디서 왔는지.",
 };
 
+/** 출처별 이용 조건 — 개방 페이지 원문으로 확인한 것만 유형을 적는다.
+ *  확인하지 못한 것은 "확인 중"으로 두고 추측하지 않는다. */
+const SOURCES: Array<{ name: string; license: string; asof: string; note?: string }> = [
+  { name: "국토교통부 공동주택관리정보시스템(K-apt)", license: "확인 중", asof: "공시 기준" },
+  { name: "건강보험심사평가원 비급여 진료비용 공개", license: "확인 중", asof: "공개 기준" },
+  { name: "교육부 나이스 교육정보 개방 포털", license: "확인 중", asof: "2026.9 수집" },
+  { name: "한국장례문화진흥원 e하늘 장사정보", license: "공공누리 제1유형(출처 표시)", asof: "2023.6 공시" },
+  { name: "행정안전부 지방물가·착한가격업소", license: "확인 중", asof: "2026.6~8 조사" },
+  { name: "공정거래위원회 가맹사업 정보공개", license: "이용허락범위 제한 없음 · 무료", asof: "연 1회 갱신" },
+  { name: "한국소비자원 참가격", license: "공공누리 제1유형(출처 표시) · 무료", asof: "격주 조사" },
+  { name: "한국석유공사 오피넷", license: "공공데이터포털 기준 제한 없음", asof: "매일 조사",
+    note: "오피넷 저작권정책은 수익 목적 이용 시 석유공사와 사전 협의를 요구합니다. JEGAP은 비영리로 운영하며, 수익이 생기면 먼저 협의합니다." },
+];
+
 export default function TermsPage() {
   return (
     <main className="wrap" id="main" style={{ maxWidth: 780 }}>
@@ -66,15 +80,25 @@ export default function TermsPage() {
       <section className="opinion">
         <p className="lab">4 · 데이터 출처와 이용 조건</p>
         <p>
-          국토교통부 공동주택관리정보시스템(K-apt) 공시 · 건강보험심사평가원 비급여 진료비용 공개 ·
-          교육부 나이스 교육정보 개방 포털 학원교습소 정보 · 한국장례문화진흥원 e하늘 장사정보 ·
-          행정안전부 지방물가정보 및 착한가격업소 현황.
-        </p>
-        <p className="fine">
           모두 공공데이터포털과 각 기관이 개방한 자료입니다. <b>이용 조건은 출처마다 다릅니다.</b>
-          한국장례문화진흥원 e하늘 개방 파일은 <b>공공누리 제1유형(출처 표시)</b>으로 확인했습니다.
-          나머지 출처의 이용 조건은 아직 출처별 확인표로 정리하지 못했고, 정리를 마칠 때까지 출처를
-          밝히고 이용합니다. 각 기관이 다른 조건을 안내하는 경우 그 조건을 따릅니다.
+        </p>
+        <div className="srctable" role="table" aria-label="출처별 이용 조건">
+          <div className="srow shead" role="row">
+            <span role="columnheader">출처</span>
+            <span role="columnheader">이용 조건</span>
+            <span role="columnheader">기준 시점</span>
+          </div>
+          {SOURCES.map((r) => (
+            <div className="srow" role="row" key={r.name}>
+              <span role="cell" className="sname">{r.name}</span>
+              <span role="cell">{r.license}{r.note && <i className="snote"> — {r.note}</i>}</span>
+              <span role="cell" className="sasof">{r.asof}</span>
+            </div>
+          ))}
+        </div>
+        <p className="fine">
+          &ldquo;확인 중&rdquo;은 개방 페이지에서 이용허락 유형을 아직 원문으로 확인하지 못했다는 뜻입니다.
+          확인을 마칠 때까지 출처를 밝히고 이용하며, 각 기관이 다른 조건을 안내하는 경우 그 조건을 따릅니다.
           가공한 검진 결과의 표현과 계산 방식은 JEGAP의 것이지만, 원 자료의 권리는 각 기관에 있습니다.
         </p>
       </section>
