@@ -12,3 +12,6 @@ artifacts/submission/*.png
 
 # 제출용 캡처 (재생성 가능)
 artifacts/submission-final/*.png
+
+# 루프 정지 신호 — 로컬 전용
+.loop/STOP
