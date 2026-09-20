@@ -32,6 +32,15 @@ SANE_TOTAL = (10_000_000, 300_000_000)
 FIELDS = [("jngBzmnJngAmt", "jng", "가맹금"), ("jngBzmnEduAmt", "edu", "교육비"),
           ("jngBzmnAssrncAmt", "assrnc", "보증금"), ("jngBzmnEtcAmt", "etc", "기타비용"),
           ("smtnAmt", "smtn", "합계")]
+PART_CODES = {"jng", "edu", "assrnc", "etc"}    # 합계를 뺀 개별 항목
+
+# 비교 조건 판정 (STEP 1 원칙: 조건이 다르면 순위를 내지 않는다)
+#  - jng·edu·assrnc : 정의가 명확하고 브랜드 간 조건이 같다 → 비교 가능
+#  - etc            : **무엇이 들어가는지 브랜드마다 다르다**(인테리어·장비·시설·물품대금 등).
+#                     실제로 배수 상위가 전부 이 항목이었다(최고 47.8배). 순위를 내지 않는다.
+#  - smtn           : **4개 항목을 모두 공시한 브랜드만** 비교 가능. 26%(2,999곳)는 일부만
+#                     공시해 그 합계가 전체 창업비용이 아니다. 섞으면 0.02배 같은 값이 나온다.
+NEVER_RANK = {"etc"}
 
 def call(page, rows=1000):
     q = urllib.parse.urlencode({"serviceKey": KEY or "", "pageNo": page, "numOfRows": rows,
@@ -76,16 +85,19 @@ def main():
         lclas = str(r.get("indutyLclasNm") or "").strip()
         mlsfc = str(r.get("indutyMlsfcNm") or "").strip()
         if not brand or not mlsfc: continue
-        items = []
+        vals = {}
         for api, code, label in FIELDS:
             try: v = int(float(r.get(api) or 0))
             except (TypeError, ValueError): continue
             if v <= 0: continue                     # 0원 항목은 공시 없음 — 만들지 않는다
-            won = v * AMT_UNIT_WON
+            vals[code] = (label, v * AMT_UNIT_WON)
+        if not vals: continue
+        full = PART_CODES <= set(vals)              # 개별 항목 4종이 모두 공시됐는가
+        items = []
+        for code, (label, won) in vals.items():
             if code == "smtn": totals.append(won)
-            # 브랜드가 정한 고정액이라 점포 규모와 무관 → 같은 업종 안에서 비교 조건이 같다
-            items.append([code, label, won, 1])
-        if not items: continue
+            rankable = 0 if code in NEVER_RANK else (1 if code != "smtn" or full else 0)
+            items.append([code, label, won, rankable])
         out.append({"id": slug(str(r.get("corpNm") or ""), brand, seen), "name": brand,
                     "sido": lclas, "sigungu": "", "kind": mlsfc, "items": items})
 
@@ -97,7 +109,8 @@ def main():
         sys.exit(f"합계 중앙값이 상식 범위({lo:,}~{hi:,}원) 밖이다. "
                  f"AMT_UNIT_WON={AMT_UNIT_WON} 가정이 틀렸을 가능성이 높다. "
                  f"공정위 명세로 단위를 확정하기 전에는 쓰지 않는다.")
-    print(f"브랜드 {len(out)}곳, 항목 {sum(len(x['items']) for x in out)}", flush=True)
+    nr = sum(1 for o in out for i in o["items"] if i[3] == 0)
+    print(f"브랜드 {len(out)}곳, 항목 {sum(len(x['items']) for x in out)} (순위 제외 {nr})", flush=True)
     with gzip.open(OUT, "wt", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
     print(f"wrote {OUT}: {os.path.getsize(OUT)/1e6:.2f}MB")

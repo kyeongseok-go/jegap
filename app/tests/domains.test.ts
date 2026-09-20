@@ -127,6 +127,22 @@ describe("생필품편(참가격) — 완화 사다리", () => {
     const e = exams.find((x: { code: string }) => x.code === "P1")!;
     expect(e.peerCount).toBe(45);            // 강남 5 + 기타 40 (자기 자신 제외)
   });
+  // 실데이터에서 실제로 잡은 오염: 진라면 5개입이 대형마트·슈퍼 3,950원인데 편의점은 5,000원이다.
+  // 인제스트가 code 에 업태를 붙여 분리하므로 편의점 가격이 대형마트 표본에 들어가면 안 된다.
+  it("업태가 다른 점포는 같은 표본에 들어가지 않는다", () => {
+    const rows2: Row[] = [
+      ...rep(40, (i) => ({ id: `lm${i}`, name: `마트${i}`, sido: "서울", sigungu: "강남구",
+        kind: "생필품 조사 점포", items: [["P1|LM", "라면 5개입", 3950, 1]] })),
+      ...rep(40, (i) => ({ id: `cs${i}`, name: `편의점${i}`, sido: "서울", sigungu: "강남구",
+        kind: "생필품 조사 점포", items: [["P1|CS", "라면 5개입", 5000, 1]] })),
+      { id: "me", name: "검진점포", sido: "서울", sigungu: "강남구", kind: "생필품 조사 점포",
+        items: [["P1|LM", "라면 5개입", 4500, 1]] },
+    ];
+    const r = plant(GOODS, rows2);
+    const e = r.exams.find((x: { code: string }) => x.code === "P1|LM")!;
+    expect(e.peerCount).toBe(40);            // 80이면 편의점이 섞인 것
+    expect(e.median).toBe(3950);             // 5,000원이 섞였다면 중간값이 올라간다
+  });
 });
 
 // ── 픽스처가 남지 않았는지 ───────────────────────────────────────────
