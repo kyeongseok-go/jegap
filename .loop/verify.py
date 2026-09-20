@@ -50,9 +50,8 @@ for r, b in bodies.items():
     for href in set(re.findall(r'href="(/[^"#?]*)"', b)):
         if href in seen: continue
         seen.add(href)
-        # /design 은 public/ 의 정적 산출물이다. Vercel 은 디렉터리 인덱스를 주지만
-        # 로컬 `next start` 는 주지 않는다(프로덕션 200 확인함). 로컬 오탐이라 제외한다.
-        if href.startswith("/design"): continue
+        # 2026-09-20: 여기서 /design 을 "로컬 오탐"이라며 제외했다가 E2E 에서 실제 404 로 걸렸다.
+        # 프로덕션에서 되더라도 로컬에서 404 면 그건 버그다. 예외를 두지 않는다.
         st, _ = get(href)
         if st != 200: broken.append(f"{href} (from {r}) → {st}")
 if broken: fails += [f"[링크] {x}" for x in broken]
