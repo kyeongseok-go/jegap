@@ -25,6 +25,30 @@ const SEP = String.fromCharCode(31); // 캐시 키 구분자
 /** 출력 검증: 템플릿의 숫자 집합이 그대로 남아 있고(추가·삭제·변형 없음),
  * 템플릿에 있던 법 조항 표기(제N조/제N항/제N호)가 전부 출력에 있는지.
  * 하나라도 어긋나면 false → 호출자는 그 응답을 버리고 템플릿을 낸다. */
+/**
+ * 마크다운 마커 제거 — 시스템 프롬프트로 "마크다운 금지"를 지시해도 모델이 붙일 때가 있다
+ * (관리비 안건 문서가 실제로 `# 안건명` 으로 시작했다). 사용자는 이 글을 그대로 복사해
+ * 관리사무소·병원에 제출하므로 `#` 가 남으면 안 된다.
+ * **줄머리 마커와 강조 기호만** 걷어낸다. 숫자·법 조항·문장은 건드리지 않는다.
+ */
+export function stripMarkdown(s: string): string {
+  return s
+    .split("\n")
+    .map((line) =>
+      line
+        .replace(/^\s{0,3}#{1,6}\s+/, "")          // # 제목
+        .replace(/^\s{0,3}>\s?/, "")               // > 인용
+        .replace(/^(\s*)[*+]\s+/, "$1- ")          // * 불릿 → 가운뎃줄표(한국 문서 관행)
+        .replace(/^\s{0,3}(?:[-*_]\s?){3,}\s*$/, "")  // --- 구분선
+    )
+    .join("\n")
+    .replace(/\*\*([^*\n]+)\*\*/g, "$1")          // **강조**
+    .replace(/(?<![*\w])\*([^*\n]+)\*(?![*\w])/g, "$1")  // *기울임*
+    .replace(/`([^`\n]+)`/g, "$1")                 // `코드`
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
 export function preservesFacts(template: string, out: string): boolean {
   const nums = (s: string) =>
     (s.match(/\d[\d,]*/g) ?? []).map((t) => t.replace(/,/g, "")).sort();
@@ -66,7 +90,9 @@ async function callUpstream(template: string, system: string): Promise<string | 
       .map((b) => b.text as string)
       .join("")
       .trim();
-    return text && preservesFacts(template, text) ? text : null;
+    // 마크다운을 먼저 걷어낸 뒤 사실 검증한다 — 마커 제거가 숫자·조항을 바꾸지 않음을 함께 보증한다.
+    const clean = stripMarkdown(text);
+    return clean && preservesFacts(template, clean) ? clean : null;
   } catch {
     return null;
   } finally {

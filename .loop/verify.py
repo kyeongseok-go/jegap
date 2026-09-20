@@ -90,13 +90,32 @@ for r, b in bodies.items():
         fails.append(f"[출처] {r} → 기준 시점/출처 표기 없음")
 print(f"5. 출처 표기 : 위반 {len([x for x in fails if x.startswith('[출처]')])}")
 
-# 6) 픽스처 유출
+# 6) 보안 헤더 — 값이 아니라 **모드**를 눈에 보이게 찍는다.
+#    2026-09-20: CSP 를 강제 모드로 임시 전환해 시험한 뒤 복원했다고 믿고 커밋했는데
+#    실제로는 강제 모드가 그대로 남아 있었다(grep 출력을 오독). 사용자가 승인하지 않은
+#    설정이 배포될 뻔했다. 임시 전환은 반드시 여기 찍히게 한다.
+import urllib.request as _u
+try:
+    with _u.urlopen(ORIGIN + "/", timeout=20) as r:
+        h = {k.lower(): v for k, v in r.headers.items()}
+except Exception:
+    h = {}
+csp_enforce = "content-security-policy" in h
+csp_report = "content-security-policy-report-only" in h
+mode = "강제(Content-Security-Policy)" if csp_enforce else ("Report-Only" if csp_report else "없음")
+print(f"6. 보안 헤더  : CSP {mode}"
+      f" · X-Frame-Options {h.get('x-frame-options','없음')}"
+      f" · nosniff {'O' if h.get('x-content-type-options')=='nosniff' else 'X'}")
+if not (csp_enforce or csp_report): fails.append("[헤더] CSP 헤더가 없다")
+if not h.get("x-frame-options"): fails.append("[헤더] X-Frame-Options 가 없다")
+
+# 7) 픽스처 유출
 import os
 ALLOWED = {"kapt.json.gz","hira.json.gz","academy.json.gz","funeral.json.gz","living.json.gz",
            "goodprice.json.gz","highlights.json","franchise.json.gz","oil.json.gz","goods.json.gz"}
 stray = [f for f in os.listdir("app/data") if f not in ALLOWED]
 if stray: fails.append(f"[데이터] app/data 에 허용 목록 밖 파일: {stray}")
-print(f"6. 데이터 격리: 이상 {len(stray)}")
+print(f"7. 데이터 격리: 이상 {len(stray)}")
 
 print()
 if fails:
