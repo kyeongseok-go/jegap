@@ -196,5 +196,10 @@
       "msg": "docs/2026-09-20-CROSS-EXAM-6to9.md 작성 — 3개 도메인 설계·한계를 자족형으로 기술하고 7개 축의 반례를 요구. 실행은 GATE에 남김"
     }
   ],
-  "scope": "마감 2026-09-20 23:59 기준 대상은 3개 — franchise(공정위)·grocery(참가격)·fuel(오피넷). KAMIS(agriculture)는 승인 결재 대기로 기한 내 불가 → 마감 후로 미룬다. 배경 이미지 agriculture-v1.png 는 보관만 하고 적용하지 않는다."
+  "scope": "마감 2026-09-20 23:59 기준 대상은 3개 — franchise(공정위)·grocery(참가격)·fuel(오피넷). KAMIS(agriculture)는 승인 결재 대기로 기한 내 불가 → 마감 후로 미룬다. 배경 이미지 agriculture-v1.png 는 보관만 하고 적용하지 않는다.",
+  "deployed": {
+    "at": "2026-09-20",
+    "commits": 31,
+    "note": "main push → Vercel Ready. 라이브 13경로 200."
+  }
 }
