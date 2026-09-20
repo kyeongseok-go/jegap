@@ -2,7 +2,7 @@
   "branch": "feat/domains-6-9",
   "startedAt": "2026-09-20T02:20:00+09:00",
   "stopAtLocal": "2026-09-20T22:00:00+09:00",
-  "cycles": 7,
+  "cycles": 8,
   "maxCycles": 40,
   "consecutiveFailures": {},
   "tasks": [
@@ -181,6 +181,12 @@
       "kind": "done",
       "task": "T6-hard-verify",
       "msg": "9개 항목 전수 통과(.loop/VERIFY.md) · 창업비용 배수 오염 제거(기타비용·부분공시 합계) · a11y 2건 수정 · /method 3개 절 추가"
+    },
+    {
+      "at": "2026-09-20T09:56:07+09:00",
+      "kind": "pick",
+      "task": "T9-codex",
+      "msg": "cycle 8"
     }
   ],
   "scope": "마감 2026-09-20 23:59 기준 대상은 3개 — franchise(공정위)·grocery(참가격)·fuel(오피넷). KAMIS(agriculture)는 승인 결재 대기로 기한 내 불가 → 마감 후로 미룬다. 배경 이미지 agriculture-v1.png 는 보관만 하고 적용하지 않는다."
