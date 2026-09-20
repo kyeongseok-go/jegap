@@ -25,6 +25,9 @@ if not KEY and not DRY: sys.exit("OPINET_KEY 필요 (opinet.co.kr/user/custapi/c
 BASE = "http://www.opinet.co.kr/api"
 # 유종 코드 — 오피넷 일반 API 문서 및 실호출로 확인된 것만 쓴다
 PRODS = [("B027", "휘발유"), ("D047", "경유"), ("B034", "고급휘발유"), ("C004", "실내등유")]
+# 오피넷은 전남과 광주를 한 지역(SIDOCD 20 "전남광주")으로 묶어 조사한다. 임의로 분리하면 추정이 되므로
+# 묶인 사실은 그대로 두고 **표기만** 읽기 쉽게 고친다. 비교군은 여전히 하나다.
+SIDO_DISPLAY = {"전남광주": "전남·광주"}
 
 def call(op, **params):
     q = urllib.parse.urlencode({"out": "json", "code": KEY, **params})
@@ -47,7 +50,8 @@ def main():
         # 드라이런에서는 실제 시도 목록이 없으니 코드 조립만 검증한다
         sidos = [("01", "서울")]
     orgs, calls = {}, 1
-    for cd, nm in sidos:
+    for cd, raw_nm in sidos:
+        nm = SIDO_DISPLAY.get(raw_nm, raw_nm)
         for prodcd, prodnm in PRODS:
             rows = call("avgSigunPrice", sido=cd, prodcd=prodcd)["RESULT"]["OIL"]
             calls += 1
@@ -56,8 +60,8 @@ def main():
                 price = float(r["PRICE"])
                 if price <= 0: continue                      # 조사값 없음 — 만들지 않는다
                 # "서울종로구" → 시도명을 접두사로 떼어 시군구만 남긴다
-                sigungu = sgnm[len(nm):].strip() if sgnm.startswith(nm) else sgnm
-                o = orgs.setdefault(sgcd, {"id": sgcd, "name": sgnm, "sido": nm,
+                sigungu = sgnm[len(raw_nm):].strip() if sgnm.startswith(raw_nm) else sgnm
+                o = orgs.setdefault(sgcd, {"id": sgcd, "name": f"{nm} {sigungu}".strip(), "sido": nm,
                                            "sigungu": sigungu or sgnm, "kind": "주유소 평균",
                                            "_items": {}})
                 # 유종은 단위(원/L)가 같다 → rankable 1. 유종 간 비교는 code 가 달라 애초에 섞이지 않는다.

@@ -16,8 +16,16 @@
   → 최근 금요일부터 거슬러 올라가며 데이터가 있는 첫 날짜를 조사일로 삼는다.
 
 비교 단위 보존(STEP 1 교훈 적용):
-  할인 중(goodDcYn=Y)이거나 1+1(plusoneYn=Y)인 가격은 평상시 단가가 아니다 → rankable=0.
-  순위를 내지 않고 공시가격만 보여준다.
+  1) 할인 중(goodDcYn=Y)이거나 1+1(plusoneYn=Y)인 가격은 평상시 단가가 아니다 → rankable=0.
+     순위를 내지 않고 조사가격만 보여준다.
+  2) **업태(entpTypeCode)가 다른 점포를 한 표본에 넣으면 안 된다.** 편의점과 대형마트의
+     같은 상품 가격을 섞으면 배수가 오염된다. 그런데 업태 코드(LM/SM/DP/CS)의 뜻을
+     확인할 방법이 없다 — getStandardInfoSvc.do 의 classCode 유효값이 명세에 없고
+     (01~06·ENTP_TYPE·AREA·UNIT 전부 거부), price.go.kr 은 응답하지 않는다.
+     → **의미를 추측하지 않고 code 에 업태를 붙여 같은 업태끼리만 비교**하게 한다.
+        `code = "{goodId}|{업태코드}"`. 화면에는 코드를 노출하지 않는다.
+  3) 주소의 시도 표기가 제각각이다("서울" 31곳 / "서울특별시" 83곳). 정규화하지 않으면
+     같은 지역이 두 유사군으로 쪼개진다. SIDO_NORM 으로 통일한다.
 
 용법: DATA_GO_KR_KEY=... python3.14 ingest_goodsprice.py <출력.json.gz> [--dry-run]
 """
@@ -30,6 +38,19 @@ DRY = "--dry-run" in sys.argv
 KEY = os.environ.get("DATA_GO_KR_KEY")
 if not KEY and not DRY: sys.exit("DATA_GO_KR_KEY 필요 (data.go.kr 15158701 활용신청)")
 BASE = "https://apis.data.go.kr/B551919/ProductPriceInfoService"
+
+# 주소의 시도 표기 통일. 참가격 주소는 "서울"/"서울특별시" 가 섞여 있고,
+# 광주광역시를 "전남광주" 로 적은 건도 있다(오피넷과 같은 표기 관습). 묶인 사실은 유지한다.
+SIDO_NORM = {
+    "서울특별시": "서울", "부산광역시": "부산", "대구광역시": "대구", "인천광역시": "인천",
+    "광주광역시": "광주", "대전광역시": "대전", "울산광역시": "울산",
+    "세종특별자치시": "세종", "세종특별자치": "세종",
+    "경기도": "경기", "강원도": "강원", "강원특별자치도": "강원",
+    "충청북도": "충북", "충청남도": "충남", "전라북도": "전북", "전북특별자치도": "전북",
+    "전라남도": "전남", "경상북도": "경북", "경상남도": "경남",
+    "제주특별자치도": "제주", "제주도": "제주",
+    "전남광주": "전남·광주",
+}
 
 def call(op, keyparam="ServiceKey", **params):
     q = urllib.parse.urlencode({keyparam: KEY or "", **params})
@@ -80,9 +101,9 @@ def main():
     orgs, calls = {}, 2
     for g in goods:
         gid = g["goodId"]
+        calls += 1
         for r in rows(call("getProductPriceInfoSvc", keyparam="serviceKey",
                            goodInspectDay=day, goodId=gid)):
-            calls += 1
             eid, price = r.get("entpId"), r.get("goodPrice")
             if not eid or not price or eid not in smap: continue
             try: p = int(float(price))
@@ -91,14 +112,18 @@ def main():
             s = smap[eid]
             addr = s.get("plmkAddrBasic", "")
             parts = addr.split()
-            sido = parts[0] if parts else ""
+            sido = SIDO_NORM.get(parts[0], parts[0]) if parts else ""
             sigungu = parts[1] if len(parts) > 1 else ""
+            etype = (s.get("entpTypeCode") or "").strip() or "NA"
             o = orgs.setdefault(eid, {"id": eid, "name": s.get("entpName", eid), "sido": sido,
-                                      "sigungu": sigungu, "kind": s.get("entpTypeCode", ""),
+                                      "sigungu": sigungu, "kind": "생필품 조사 점포",
                                       "_items": {}})
             # 할인/1+1 은 평상시 단가가 아니다 → 순위 산출에서 제외(가격만 표시)
             rankable = 0 if (r.get("goodDcYn") == "Y" or r.get("plusoneYn") == "Y") else 1
-            o["_items"][gid] = [gid, gmap.get(gid, gid), p, rankable]
+            # 업태를 code 에 붙여 같은 업태끼리만 비교한다. 코드의 뜻은 확인하지 못했으나,
+            # 뜻을 몰라도 같은 코드끼리만 묶으면 오염은 막힌다. 화면에는 label(상품명)만 나간다.
+            code = f"{gid}|{etype}"
+            o["_items"][code] = [code, gmap.get(gid, gid), p, rankable]
         time.sleep(0.15)
 
     out = []
