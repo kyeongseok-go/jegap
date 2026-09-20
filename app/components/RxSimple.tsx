@@ -47,7 +47,7 @@ export default function RxSimple({
 
   return (
     <section className="rx reveal in">
-      <h3>{title}</h3>
+      <h2>{title}</h2>
       <p>{lead}</p>
       {hint && <p className="rx-hint">{hint}</p>}
       <div className="acts">

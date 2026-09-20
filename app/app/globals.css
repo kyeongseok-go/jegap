@@ -302,6 +302,17 @@ footer .next b{color:var(--signal)}
 .popinion .body{font-size:15.5px;line-height:1.75}
 .popinion .fine{margin-top:10px;font-size:12px;color:var(--slate)}
 
+/* 출처별 이용 조건 표 (/terms) */
+.srctable{margin:14px 0 12px;display:flex;flex-direction:column;gap:1px;background:var(--hair);max-width:70ch}
+.srow{display:grid;grid-template-columns:1.1fr 1.5fr auto;gap:12px;background:var(--paper);padding:9px 2px;
+  font-size:13px;line-height:1.55;align-items:baseline}
+.srow.shead{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--slate)}
+.srow .sname{font-weight:600;min-width:0;overflow-wrap:anywhere}
+.srow .snote{font-style:normal;color:var(--slate);display:block;margin-top:3px;font-size:12px}
+.srow .sasof{font-family:var(--mono);font-size:11.5px;color:var(--slate);white-space:nowrap}
+@media(max-width:620px){.srow{grid-template-columns:1fr;row-gap:2px}.srow.shead{display:none}
+  .srow .sasof{font-size:11px}}
+
 /* 공시가격 참고 — 순위를 내지 않은 항목 (조건 상이 / 표본 부족) */
 .pnotes{margin-top:26px;border-top:1px solid var(--hair);padding-top:14px;max-width:70ch}
 .pnotes>summary{cursor:pointer;font-size:13.5px;color:var(--slate);list-style:none;padding:4px 0}
@@ -431,6 +442,9 @@ footer .next b{color:var(--signal)}
 .hero-scene[data-scene="aca"]{--scene-image:url('/images/heroes/aca-v1.webp');--scene-tint:rgba(183,149,66,.06)}
 .hero-scene[data-scene="fun"]{--scene-image:url('/images/heroes/fun-v1.webp');--scene-tint:rgba(108,91,109,.05)}
 .hero-scene[data-scene="liv"]{--scene-image:url('/images/heroes/liv-v1.webp');--scene-tint:rgba(112,132,89,.05)}
+.hero-scene[data-scene="fra"]{--scene-image:url('/images/heroes/fra-v1.webp');--scene-tint:rgba(166,118,72,.06)}
+.hero-scene[data-scene="oil"]{--scene-image:url('/images/heroes/oil-v1.webp');--scene-tint:rgba(96,106,124,.06)}
+.hero-scene[data-scene="gro"]{--scene-image:url('/images/heroes/gro-v1.webp');--scene-tint:rgba(134,127,96,.06)}
 .hero-scene::before{content:"";position:absolute;z-index:-2;pointer-events:none;
   top:0;bottom:-36px;left:50%;width:100vw;transform:translateX(-50%);
   background-image:linear-gradient(to bottom,transparent 65%,var(--paper) 100%),

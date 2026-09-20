@@ -1,6 +1,6 @@
 import type { OrgData, PriceExam, PriceNote } from "../lib/pricedom/core";
 import { priceOpinion } from "../lib/pricedom/opinion";
-import DomainTabs from "./DomainTabs";
+import DomainTabs, { type DomainKey } from "./DomainTabs";
 import ExamTable from "./ExamTable";
 import Reveal from "./Reveal";
 import { CONTACT } from "../lib/site";
@@ -8,13 +8,17 @@ import { CONTACT } from "../lib/site";
 /** 가격 도메인 공용 검진표 — 병원비·학원비·장례비·원비가 공유 */
 export default function PriceCheckup({
   d, exams, notes = [], active, eyebrow, srcLine, unitNote, footNote, search, rx, maxRows = 20,
-  backHref, backLabel,
+  backHref, backLabel, peerWord = "유사 기관", tableNote,
 }: {
   d: OrgData; exams: PriceExam[]; notes?: PriceNote[];
-  active: "med" | "aca" | "fun" | "liv";
+  active: DomainKey;
   eyebrow: string; srcLine: string; unitNote: string; footNote: string;
   search: React.ReactNode; rx?: React.ReactNode; maxRows?: number;
   backHref: string; backLabel: string;
+  /** 비교 대상을 부르는 말(기본 "유사 기관"). 지역을 비교하는 도메인은 바꿔 쓴다. */
+  peerWord?: string;
+  /** 표 제목 옆에 붙는 주의 — 아래 작은 글씨로 미루면 안 되는 한계를 여기에 적는다. */
+  tableNote?: string;
 }) {
   const labelCounts = new Map<string, number>();
   for (const e of exams) labelCounts.set(e.peerLabel, (labelCounts.get(e.peerLabel) ?? 0) + 1);
@@ -38,7 +42,7 @@ export default function PriceCheckup({
           <p className="eyebrow"><span className="pulse" aria-hidden="true"></span>{eyebrow}</p>
           <div className="subject">
             <h1>{d.h.name}</h1>
-            <span className="meta">{d.h.sido} {d.h.sigungu} · {d.h.kind}</span>
+            <span className="meta">{[[d.h.sido, d.h.sigungu].filter(Boolean).join(" "), d.h.kind].filter(Boolean).join(" · ")}</span>
             <span className="src">{srcLine}</span>
           </div>
         </section>
@@ -50,11 +54,11 @@ export default function PriceCheckup({
           </p></section>
         ) : (
           <Reveal as="section" className="hexams">
-            <h2>공개 항목별 가격 위치 <span className="hnote">· {mainLabel}{mixed && " · 표본이 좁은 항목은 행에 기준 별도 표기"}</span></h2>
-            <ExamTable exams={exams} mainLabel={mainLabel} maxRows={maxRows} />
+            <h2>공개 항목별 가격 위치 <span className="hnote">· {mainLabel}{mixed && " · 표본이 좁은 항목은 행에 기준 별도 표기"}{tableNote && ` · ${tableNote}`}</span></h2>
+            <ExamTable exams={exams} mainLabel={mainLabel} maxRows={maxRows} peerWord={peerWord} />
             <div className="popinion">
               <p className="lab">종합 소견</p>
-              <p className="body">{priceOpinion(exams, mixed ? `${mainLabel} 외 · 항목별 표기 참조` : mainLabel)}</p>
+              <p className="body">{priceOpinion(exams, mixed ? `${mainLabel} 외 · 항목별 표기 참조` : mainLabel, peerWord)}</p>
               <p className="fine">공개된 가격만으로 규칙에 따라 작성한 요약입니다. 평가나 추천이 아닙니다.</p>
             </div>
             <p className="hfoot">{unitNote} {footNote}</p>

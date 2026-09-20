@@ -8,6 +8,7 @@ import { householdBand, findPeers, peerRuleText } from "../lib/engine/peers";
 import { reserveSignal, feeRiseSignal, repairSignal, overallSignal } from "../lib/engine/signals";
 import { buildOpinion, FORBIDDEN } from "../lib/engine/opinion";
 import { buildInquiry } from "../lib/engine/rx";
+import { stripMarkdown, preservesFacts } from "../lib/pricedom/polish";
 import { runCheckup } from "../lib/engine/checkup";
 import type { Danji, DanjiData } from "../lib/engine/types";
 
@@ -277,5 +278,38 @@ describe("makeDomain 비교 가능성 게이트", () => {
   it("표본이 모자란 항목은 사라지지 않고 표본 부족으로 표시된다", () => {
     expect(exams.some((e) => e.code === "C")).toBe(false);
     expect(notes.find((n) => n.code === "C")?.reason).toBe("sample");
+  });
+});
+
+// ── LLM 출력의 마크다운 제거 ────────────────────────────────────────
+// 시스템 프롬프트로 "마크다운 금지"를 지시해도 모델이 붙였다(관리비 안건이 `# 안건명` 으로 시작).
+// 사용자는 이 글을 그대로 복사해 관리사무소·병원에 제출한다.
+describe("stripMarkdown", () => {
+  it("줄머리 마커를 걷어낸다", () => {
+    expect(stripMarkdown("# 안건명")).toBe("안건명");
+    expect(stripMarkdown("### 제목\n본문")).toBe("제목\n본문");
+    expect(stripMarkdown("> 인용문")).toBe("인용문");
+    expect(stripMarkdown("* 항목")).toBe("- 항목");
+    expect(stripMarkdown("---")).toBe("");
+  });
+  it("강조·코드 기호를 걷어낸다", () => {
+    expect(stripMarkdown("**장기수선충당금**을 확인")).toBe("장기수선충당금을 확인");
+    expect(stripMarkdown("*강조* 문구")).toBe("강조 문구");
+    expect(stripMarkdown("`코드`")).toBe("코드");
+  });
+  it("숫자와 법 조항을 바꾸지 않는다", () => {
+    const t = "## 요청\n공동주택관리법 제30조 제2항에 따라 **1,234,000원**의 내역을 요청합니다.";
+    const out = stripMarkdown(t);
+    expect(out).toContain("제30조");
+    expect(out).toContain("제2항");
+    expect(out).toContain("1,234,000원");
+    expect(preservesFacts(t, out)).toBe(true);   // 사실 검증도 통과해야 한다
+  });
+  it("마크다운이 없으면 내용을 그대로 둔다", () => {
+    const t = "수신  은마 관리사무소\n제목  장기수선충당금 적립 현황 확인 요청\n\n안녕하십니까.";
+    expect(stripMarkdown(t)).toBe(t);
+  });
+  it("곱셈 기호나 강조가 아닌 별표는 건드리지 않는다", () => {
+    expect(stripMarkdown("면적 3*4 규격")).toBe("면적 3*4 규격");
   });
 });

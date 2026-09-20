@@ -87,6 +87,45 @@
 - ⚠️ **이용허락 충돌**: data.go.kr은 "이용허락범위 제한 없음"인데, 오피넷 저작권정책은 *"콘텐츠로 수익을 얻거나 이에 상응하는 혜택을 누리고자 하는 경우에는 석유공사와 사전에 별도의 협의를 하거나 허락을 득하여야"* 라고 명시. **비상업 단계면 일반 API로 가능하나, 수익화 시 사전 협의 필수**
 - 설계 제약: 300call/일은 사용자마다 반경 검색을 호출하면 즉시 소진 → **서버 배치 수집 + 캐시 전제**로만 설계할 것
 
+#### 실호출 확인 (2026-09-20, 활용신청 후)
+
+- **공정위 `FftcBrandFntnStatsService/getBrandFntnStats`**: `resultCode 00`, `totalCount 11409`.
+  응답 필드 실물 확인 — `yr · indutyLclasNm · indutyMlsfcNm · brandNm · corpNm ·
+  jngBzmnJngAmt · jngBzmnEduAmt · jngBzmnAssrncAmt · jngBzmnEtcAmt · smtnAmt`.
+  ⚠ **금액 단위 미확인** — 샘플값이 5000·2000·1000·30500(합계 38500)이라 천원 단위로 보이나
+  명세로 확정하지 않았다. 인제스트 전에 단위를 반드시 확정할 것(틀리면 1000배 오차).
+- **참가격 `B551919/ProductPriceInfoService`**: 인증 통과(`resultCode 01 "올바른 조사일자가 아닙니다"`).
+  **조사일자 파라미터가 필수**다. 기준데이터 오퍼레이션으로 유효 조사일자를 먼저 받아올 것.
+- **오피넷 실호출 성공(키 발급 완료)**. 응답 필드 실물 확인:
+  - `api/avgAllPrice.do?out=json&code=KEY` → `TRADE_DT · PRODCD · PRODNM · PRICE · DIFF`
+    (B027 휘발유, B034 고급휘발유, D047 경유 등). **당일 값만. 시계열 없음.**
+  - `api/lowTop10.do?out=json&code=KEY&area=01&prodcd=B027&cnt=20` → **개별 주유소 단위**
+    `UNI_ID · PRICE · POLL_DIV_CD(상표) · OS_NM(상호) · VAN_ADR(지번) · NEW_ADR(도로명)
+     · GIS_X_COOR · GIS_Y_COOR`
+  - ⚠ 좌표는 **WGS84 위경도가 아니라 KATEC/TM 계열**(x≈298014, y≈547054). 지도에 쓰려면 변환 필요.
+    변환 라이브러리를 새로 넣지 말고, 좌표를 쓰지 않는 설계(주소 표기)로 가는 편이 싸다.
+  - ⚠ 응답 본문에 공백·개행이 다량 섞여 있다. JSON 파싱은 되지만 정규식 처리는 하지 말 것.
+- **오피넷**: 안내 `opinet.co.kr/user/custapi/custApiInfo.do` · 신청 `.../custApiNew.do`
+  (기존 설계서의 `infoCustAPI.do` 는 404). 일반 API 19종 자동승인·즉시발급.
+  ⚠ **클라이언트 IP 등록·체크**(Key당 최대 3개). **Vercel 서버리스에서 런타임 호출 불가** —
+  로컬 배치 수집 + 리포 번들 캐시 구조로만 설계할 것.
+
+#### Swagger 추출로 확정한 명세 (2026-09-20)
+
+data.go.kr 의 API 상세 페이지 HTML 에 **Swagger JSON 전문이 `const swaggerJson = \`...\`` 로 박혀 있다.**
+정규식으로 뽑으면 파라미터·응답 필드를 전부 확인할 수 있다. 앞으로 새 API 는 이 방법으로 먼저 확인할 것.
+
+- **참가격** `apis.data.go.kr/B551919/ProductPriceInfoService` — 오퍼레이션 4종.
+  `/getProductPriceInfoSvc` (키 파라미터 **소문자 `serviceKey`**, `goodInspectDay` 필수, `entpId|goodId` 택1) ·
+  `/getStoreInfoSvc.do` · `/getProductInfoSvc.do` · `/getStandardInfoSvc.do` (이 셋은 **대문자 `ServiceKey`**).
+  ⚠ `.do` 접미사와 키 파라미터 대소문자가 오퍼레이션마다 다르다.
+  조사 주기는 문서상 '매주 금요일'이나 **실측은 격주**(20260911 O / 20260918·20260904 X).
+- **공정위** `/getBrandFntnStats` — `yr` 필수. **금액 단위는 Swagger 설명에도 없다**(확인 완료).
+  인제스트에 `AMT_UNIT_WON=1000` 가정 + 합계 중앙값이 1천만~3억원 밖이면 거부하는 게이트를 넣었다.
+  이건 명세 확인이 아니라 범위 타당성 추론이다 — 배포 전 사용자 확인 필요.
+- **오피넷** `avgSigunPrice.do?sido=NN&prodcd=XXX` (파라미터가 `area=` 가 아니라 `sido=`).
+  개별 주유소 `aroundAll.do` 는 반경 전수(5km 69곳 실측)지만 TM 좌표 격자가 필요.
+
 선정 기준(헌법): ① 불투명 ② 개인이 협상 불가 ③ 물어볼 권리가 법에 있음 ④ 정부 데이터 존재. ③을 충족하면 대필(질의서) 기능이 성립하므로 **FairData 우선**.
 
 착수 전 필수: 이용허락 조건(공공누리 유형)·일일 호출 한도·상업적 이용 제한을 **원문으로 확인**하고 `/terms`의 출처표에 추가.

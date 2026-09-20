@@ -27,14 +27,6 @@ const nextConfig: NextConfig = {
     "/**": ["./data/*.gz"],
     "/d/[code]/opengraph-image": ["./assets/fonts/*"],
   },
-  // public/design/ 은 정적 산출물이다. Vercel 은 디렉터리 인덱스를 주지만 `next start` 는 주지 않아
-  // 로컬에서 /design/ 이 404 가 된다(E2E 에서 실제로 걸렸다). 두 환경 모두에서 동작하게 rewrite 한다.
-  async rewrites() {
-    return [
-      { source: "/design", destination: "/design/index.html" },
-      { source: "/design/", destination: "/design/index.html" },
-    ];
-  },
   async headers() {
     return [
       {

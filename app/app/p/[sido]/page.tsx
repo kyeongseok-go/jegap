@@ -43,7 +43,7 @@ export default async function LivingSidoPage({ params }: { params: Promise<{ sid
           <p className="backlink"><a href="/p">← 지역 다시 고르기</a></p>
           <p className="eyebrow"><span className="pulse" aria-hidden="true"></span>생활물가 검진 결과</p>
           <div className="subject">
-            <h2>{s.label}</h2>
+            <h1>{s.label}</h1>
             <span className="meta">서민밀접 {exams.length}개 품목 · {ym.slice(0, 4)}년 {ym.slice(4)}월 조사</span>
             <span className="src">행정안전부 지방물가 조사 기준</span>
           </div>
