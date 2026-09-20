@@ -4,8 +4,11 @@ import type { PriceExam } from "../lib/pricedom/core";
 
 /** 항목 표 — 이름 필터와 전체 보기 토글. 모바일에서는 CSS가 카드형 행으로 바꾼다. */
 export default function ExamTable({
-  exams, mainLabel, maxRows,
-}: { exams: PriceExam[]; mainLabel: string; maxRows: number }) {
+  exams, mainLabel, maxRows, peerWord = "유사 기관",
+}: { exams: PriceExam[]; mainLabel: string; maxRows: number;
+  /** 비교 대상을 부르는 말. 주유소편은 기관이 아니라 지역(시군구)을 비교한다.
+   *  기본값은 기존 도메인의 표현 그대로라 바꾸지 않으면 화면이 달라지지 않는다. */
+  peerWord?: string }) {
   const [q, setQ] = useState("");
   const [all, setAll] = useState(false);
   const key = q.trim().toLowerCase();
@@ -30,14 +33,14 @@ export default function ExamTable({
         <div className="hrow hhead" role="row">
           <span role="columnheader">항목</span>
           <span role="columnheader">이곳</span>
-          <span role="columnheader">유사 기관 중간값</span>
+          <span role="columnheader">{peerWord} 중간값</span>
           <span role="columnheader">위치</span>
         </div>
         {rows.map((e) => (
           <div className="hrow" role="row" key={e.code}>
             <span role="cell" className="hname">{e.name}{e.peerLabel !== mainLabel && <i className="unit"> · {e.peerLabel}</i>}</span>
             <span role="cell" className="num" data-l="이곳">{e.price.toLocaleString()}원</span>
-            <span role="cell" className="num slate" data-l="유사 기관 중간값">{e.median.toLocaleString()}원 <i>({e.peerCount}곳)</i></span>
+            <span role="cell" className="num slate" data-l={`${peerWord} 중간값`}>{e.median.toLocaleString()}원 <i>({e.peerCount}곳)</i></span>
             <span role="cell" className={`num ${e.multiple >= 2 ? "hot" : ""}`} data-l="위치">
               중간값의 {e.multiple}배 · 가격 높은 쪽 상위 {Math.max(1, Math.min(99, e.percentile))}%
             </span>

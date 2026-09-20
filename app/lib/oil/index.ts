@@ -18,7 +18,7 @@ export const CONFIG: DomainConfig = {
   minPeers: 10,   // 시도 안 시군구 수가 적다(세종 1, 제주 2) — 시도에서 못 채우면 전국으로 넘어간다
   peerKeys: [
     { key: (o, code) => `${code}|${o.sido}`, label: (o) => `${o.sido} 기준` },
-    { key: (o, code) => code, label: () => `전국 기준 (표본 확대)` },
+    { key: (o, code) => code, label: () => `전국 시군구 기준 (표본 확대)` },
   ],
 };
 const dom = makeDomain(CONFIG);
