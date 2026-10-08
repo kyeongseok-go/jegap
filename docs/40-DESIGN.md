@@ -39,7 +39,9 @@
 | 네이버 검색 API | 뉴스 검색(무료 쿼터) | 병력 후보 기사 |
 | (D1 게이트) | 위 API 실호출로 시계열 범위·장충금 필드 실측 — 실패 시 K-apt CSV 다운로드 폴백 | |
 
-### 스키마 (Supabase Postgres, 6테이블)
+### 스키마 (Supabase Postgres, 6테이블) ⚠️ 현재 구조와 다름
+> **현재 구조**: 외부 DB 없음. 인제스트 산출물을 압축 JSON(`app/data/*.json.gz`)으로 저장소에 커밋하고 앱이 읽는다(커밋 `56d775b`부터, ADR-04 대체됨 참조). 아래 6테이블 스키마는 설계 당시 원문이다.
+
 ```
 danji        kaptCode PK · 명칭 · 주소 · 시도/시군구 · 연식 · 세대수 · 난방방식 · 인제스트 상태
 fee_monthly  kaptCode FK · 년월 · 항목코드 · ㎡당 금액        -- 3년 시계열
@@ -67,6 +69,7 @@ report_cache kaptCode FK · 검진 JSON · 신호등 · 백분위 · 생성일  
 
 Next.js App Router + Vercel(ISR) / Supabase Postgres / Claude API / OG=@vercel/og / 인증 없음 / 상태관리 기본 React.
 인제스트 = 로컬 배치 + cron-job.org 증분 트리거(ADR-02). 모니터링 = cron-job.org 5분 핑(심사기간 필수). 기술 선택 근거 전체 = 50-ADR.md.
+> ⚠️ 대체됨: 위 스택의 "Supabase Postgres"는 도입되지 않았다. 현재는 외부 DB 없이 `app/data/*.json.gz` 번들을 읽는다(ADR-04 참조).
 
 ## 6. 5일 실행 일정 (시간상자+폴백, PC3)
 
@@ -88,7 +91,7 @@ Next.js App Router + Vercel(ISR) / Supabase Postgres / Claude API / OG=@vercel/o
 | "등급=의견" 법리 | 신호등+백분위 사실 서술+산식 공개 (§2 표현 원칙) |
 | 기사 저작권 | 2문장 요약+원문 링크+출처 명기 = 인용 범위 (§4①) |
 | API 상한·지연 | 사전 2,000+온디맨드+CSV 폴백 (§3, §6 D1) |
-| 심사기간 다운 | uptime 5분 핑+Supabase 유휴 방지 (§5) |
+| 심사기간 다운 | uptime 5분 핑+Supabase 유휴 방지 (§5) — ⚠️ Supabase 미도입(외부 DB 없음, ADR-04)이라 유휴 방지 항목은 해당 없음 |
 | 정정 요청 | 푸터 정정 채널+24h 내 숨김 약속 (§2 S2) |
 | LLM 비용 | 역할별 단가 상한+영구 캐시 (§4) |
 
