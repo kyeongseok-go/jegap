@@ -7,4 +7,5 @@
    - 장충금·관리비 서비스: 응답 XML/JSON에서 월별 시계열·㎡당 단가 존재 확인
 3. **게이트 판정**: 장충금 월별 필드가 API에 있으면 → API 증분 경로. 없으면 → K-apt 파일데이터(CSV) 다운로드 경로
 4. 통과 시 lib/data/kapt.ts 구현 + Supabase 적재 (스키마: docs/40-DESIGN §3)
+   - ⚠️ 대체됨: Supabase 적재는 하지 않았다. 현재는 `scripts/ingest.py`가 K-apt 벌크를 `data/kapt.json.gz`로 만들고 `lib/data/kapt.ts`가 이 번들을 읽는다(외부 DB 없음, 커밋 `56d775b`, docs/50-ADR ADR-04).
 5. 실패 시(둘 다 불가) → 40-DESIGN 폴백: 수백 단지 수동 CSV로 축소

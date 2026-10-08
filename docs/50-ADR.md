@@ -36,7 +36,10 @@
 - **결정 사유**: 공식·무료 25,000콜/일·즉시 발급(확인 2026-09-16, developers.naver.com). 커버리지 한국 언론 최대.
 - **트레이드오프**: 네이버 미제휴 언론 누락 가능 → 병력 문구에 "네이버 뉴스 기준" 명시.
 
-## ADR-07 단지 자동완성 — Supabase pg_trgm 서버 검색
+## ADR-07 단지 자동완성 — Supabase pg_trgm 서버 검색 ⚠️대체됨(Superseded)
+> **상태: 대체됨.** 전제였던 Supabase DB(ADR-04)가 도입되지 않아 pg_trgm 인덱스도 없다. 현재 단지 검색은 `/api/search` → `app/lib/data/kapt.ts`의 `search()`가 번들 파일(`app/data/kapt.json.gz`)의 단지명을 부분 일치로 거른다(커밋 `56d775b`부터).
+> 아래는 당시 판단 원문이다.
+
 - **대안**: (a) 클라이언트 전체 목록 fuzzy(Fuse.js) — 4.5만 단지 ≈ 수 MB 초기 로드, 탈락 (b) Algolia — 과잉+비용
 - **결정**: `ilike + pg_trgm` 인덱스, 디바운스 200ms. ponytail: 외부 검색엔진 금지.
 
