@@ -1,7 +1,7 @@
 # LOOP — 6~9호 도메인 자동 진행 작업지시서
 
 이 문서는 **크론이 깨울 때마다 읽는 작업지시서**다. 새 세션이 이 대화를 전혀 못 봤다는 전제로 쓰였다.
-설계 배경은 `HANDOFF.md`(같은 저장소 루트). 진행 상태는 `.loop/state.json`.
+설계 배경은 `docs/notes/HANDOFF.md`. 진행 상태는 `.loop/state.json`.
 
 ---
 
@@ -150,7 +150,7 @@ echo "usage-limit-warning $(date -Iseconds)" > .loop/STOP
 
 ## 8. 참조
 
-- 확장 설계: `HANDOFF.md`
+- 확장 설계: `docs/notes/HANDOFF.md`
 - 검토 보고서: `docs/2026-09-17-UX-SECURITY-REVIEW.md` / 대응: `docs/2026-09-17-REVIEW-RESPONSE.md`
 - 도메인 공통 엔진: `app/lib/pricedom/core.ts` (STEP 1에서 `split()`·`rankable` 추가됨)
 - 히어로 배경 원본: `artifacts/category-backgrounds/*.png` (Codex 생성, 1536×1024)

@@ -1,0 +1,5 @@
+# GitHub 언어 집계에서 문서·설계 산출물(HTML 다이어그램 등)을 제외한다
+artifacts/** linguist-documentation
+design/** linguist-documentation
+docs/** linguist-documentation
+app/public/design/** linguist-documentation
